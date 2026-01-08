@@ -552,12 +552,26 @@ def get_rationales(id: str):
     # Normalize query ID just in case
     clean_id = normalize_id(id)
     
+    # 1. Try Exact ID Match
     matches = DF_RATIONAL[DF_RATIONAL['index'] == clean_id]
     
-    # Debug if empty
+    # 2. If no match, try Name Match (Fallback)
+    if matches.empty and not DF_CODES.empty:
+        # Find the name of the movement with this ID from the main table
+        main_row = DF_CODES[DF_CODES['index'] == clean_id]
+        if not main_row.empty:
+            name = main_row.iloc[0].get('protest_name', '')
+            if name:
+                # Try finding this name in Rationale table (using protest_name_v2 or similar)
+                # The debug JSON shows 'protest_name_v2' exists in Rationale
+                matches = DF_RATIONAL[DF_RATIONAL['protest_name_v2'] == name]
+                if matches.empty:
+                     # Try loose string match
+                     matches = DF_RATIONAL[DF_RATIONAL['protest_name_v2'].astype(str).str.contains(name, regex=False, case=False)]
+
+    # Debug if still empty
     if matches.empty:
-        print(f"DEBUG: No rationales found for ID: {id} (clean: {clean_id})")
-        # print(f"Sample Rationale IDs: {DF_RATIONAL['index'].head().tolist()}")
+        print(f"DEBUG: No rationales found for ID: {id} (clean: {clean_id}) even after name fallback.")
         
     res = []
     for _, row in matches.iterrows():
