@@ -366,75 +366,95 @@
 /* --- RESPONSIVE LAYOUT (Mobile & Tablet) --- */
 
 @media (max-width: 1024px) {
-    .app-container {
-        overflow-y: auto;
+    /* 1. Global Safety to prevent horizontal scroll */
+    .app-container, body, html {
+        overflow-x: hidden !important;
+        width: 100%;
+        max-width: 100vw;
     }
 
     .main-content {
         padding: 12px;
-        max-width: 100%;
-        overflow-x: hidden;
+        width: 100%;
+        max-width: 100vw;
+        box-sizing: border-box;
     }
 
-    /* Stack layout vertically */
+    /* 2. Stack Layout */
     .main-grid-layout {
         display: flex;
         flex-direction: column;
         gap: 32px;
+        width: 100%;
+        max-width: 100%;
     }
 
     .left-column {
         width: 100%;
+        max-width: 100%;
         gap: 32px;
     }
 
-    /* Force Dashboard to single column stack */
+    /* 3. Dashboard Cards - CRITICAL WIDTH FIX */
     .dashboard-grid-2x2 {
         display: flex;
         flex-direction: column;
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
+        width: 100%;
+        max-width: 100%;
         height: auto;
         row-gap: 24px;
         margin-bottom: 24px !important;
     }
 
-    /* Reset specific grid positioning for mobile */
+    /* Reset grid & Force cards to fit width */
     .dashboard-grid-2x2 > .map-card,
     .dashboard-grid-2x2 > .timeline-card,
     .dashboard-grid-2x2 > .category-card,
     .dashboard-grid-2x2 > .regime-card {
         grid-row: auto;
         grid-column: auto;
-        min-height: 300px; /* Give cards enough height */
+        min-height: 300px;
+        width: 100% !important; /* Force fit */
+        margin: 0 !important;
+        box-sizing: border-box; /* Include padding in width */
     }
 
     .dashboard-card {
-        width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* 4. Specific Chart Fixes */
+    /* Map Container */
+    .map-container {
+        width: 100% !important;
+        max-width: 100%;
     }
 
     /* Results List */
     .results-panel {
-        min-height: auto;
-        height: auto;
+        width: 100% !important;
+        box-sizing: border-box;
     }
     
     .scroll-area {
-        max-height: 600px; /* Reduce scroll height on mobile */
+        max-height: 600px;
     }
 
-    /* Chat moves to bottom */
+    /* 5. Chat Panel */
     .right-column {
-        width: 100%;
-        height: 600px; /* Fixed height for chat on mobile */
+        width: 100% !important;
+        height: 600px;
         position: static;
         margin-top: 0;
         align-self: stretch;
+        box-sizing: border-box;
     }
 
     /* Adjust typography */
     .hero-section h1 {
         font-size: 2.2rem;
+        word-wrap: break-word; /* Prevent long words breaking layout */
     }
     
     .hero-section p {
