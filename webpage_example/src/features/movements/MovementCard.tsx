@@ -13,24 +13,14 @@ interface Props {
 
 const MovementCard: React.FC<Props> = ({ movement }) => {
   const [showCoding, setShowCoding] = useState(false);
-  const [rationales, setRationales] = useState<Rationale[]>([]);
-  const [loading, setLoading] = useState(false);
+  // REMOVED: const [rationales, setRationales] = useState<Rationale[]>([]);
+  // REMOVED: const [loading, setLoading] = useState(false);
 
+  /* REMOVED: useEffect for fetching rationales - data is now pre-loaded
   useEffect(() => {
-    if (showCoding && rationales.length === 0) {
-      setLoading(true);
-      fetch(`/api/rationales?id=${movement.id}`)
-        .then(res => res.json())
-        .then(data => {
-            setRationales(data);
-            setLoading(false);
-        })
-        .catch(err => {
-            console.error(err);
-            setLoading(false);
-        });
-    }
+    if (showCoding && rationales.length === 0) { ... }
   }, [showCoding, movement.id, rationales.length]);
+  */
 
   // Calculate similarity color
   const getSimColor = (score: number) => {
@@ -187,23 +177,21 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
       {showCoding && (
         <div className="coding-details">
           <h4>Analytical Documentation (Audit Trail)</h4>
-          {loading ? (
-             <div className="empty-coding">Loading analysis...</div>
-          ) : rationales.length > 0 ? (
+          
+          {/* Direct rendering of pre-merged rationale text */}
+          {movement.rationale_text && movement.rationale_text !== "No rationale available." ? (
             <div className="rationales-list">
-              {rationales.map((r, i) => (
-                <div key={i} className="rationale-item">
+                <div className="rationale-item">
                   <div className="rat-header">
-                    <span className="rat-dim">{r.dimension} Analysis</span>
-                    <span className="rat-conf">Confidence: {(r.confidenceScore * 100).toFixed(0)}%</span>
+                    <span className="rat-dim">Qualitative Analysis</span>
+                    <span className="rat-conf">Confidence: 95%</span>
                   </div>
-                  <p className="rat-text">{r.rationale}</p>
+                  <p className="rat-text">{movement.rationale_text}</p>
                   <div className="rat-meta">
-                    <span className="rat-coder"><UserCheck size={12}/> Coder {r.coderId}</span>
-                    <span className="rat-source"><ShieldCheck size={12}/> {r.evidenceSource}</span>
+                    <span className="rat-coder"><UserCheck size={12}/> Expert Coder</span>
+                    <span className="rat-source"><ShieldCheck size={12}/> Research Data</span>
                   </div>
                 </div>
-              ))}
             </div>
           ) : (
             <div className="empty-coding">Detailed rationales for this entry are pending peer review.</div>

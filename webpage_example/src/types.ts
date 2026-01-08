@@ -26,6 +26,7 @@ export interface Movement {
   twitter_penetration: string;
   star_rating: number;
   offline_presence: string;
+  rationale_text?: string; // New: Pre-merged rationale
 }
 
 export interface Rationale {

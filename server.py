@@ -124,15 +124,26 @@ def load_data():
             elif 'no' in DF_RATIONAL.columns:
                 DF_RATIONAL['index'] = DF_RATIONAL['no'].apply(normalize_id)
             
-            # --- MERGE DESCRIPTION INTO DF_CODES ---
-            if 'Description' in DF_RATIONAL.columns and not DF_CODES.empty:
-                print("Merging 'Description' from Rationale to Main Data...")
-                # Create a subset with just index and Description
-                desc_map = DF_RATIONAL[['index', 'Description']].drop_duplicates(subset='index')
-                # Merge
-                DF_CODES = pd.merge(DF_CODES, desc_map, on='index', how='left')
-                # Fill NaNs with empty string
-                DF_CODES['Description'] = DF_CODES['Description'].fillna('')
+            # --- MERGE DESCRIPTION INTO DF_CODES (THE NUCLEAR OPTION) ---
+            # Since rows are aligned by 'no', we can just merge based on 'index'
+            if not DF_CODES.empty and not DF_RATIONAL.empty:
+                print("Merging Rationale Description into Main Data...")
+                
+                # Ensure indices match for merging
+                # We'll create a dictionary mapping index -> description
+                desc_map = dict(zip(DF_RATIONAL['index'], DF_RATIONAL['Description']))
+                
+                # Map it to DF_CODES
+                DF_CODES['merged_description'] = DF_CODES['index'].map(desc_map)
+                
+                # Fill NaNs
+                DF_CODES['merged_description'] = DF_CODES['merged_description'].fillna("No rationale available.")
+                
+                # CRITICAL: Also update the main 'Description' column for backward compatibility 
+                # (e.g. for card summaries and embedding logic relying on row['Description'])
+                DF_CODES['Description'] = DF_CODES['merged_description']
+                
+                print("Merge complete. Added 'merged_description' and updated 'Description' column.")
         
         print("Data loaded. Checking embeddings cache...")
         
@@ -249,6 +260,7 @@ class Movement(BaseModel):
     twitter_penetration: str # Raw value for display
     star_rating: int        # 1-5 stars based on penetration
     offline_presence: str   # New: Offline column
+    rationale_text: str     # Pre-merged rationale text
 
 class Rationale(BaseModel):
     movementId: str
@@ -375,7 +387,8 @@ def map_row_to_movement(row) -> Movement:
         wikipedia=clean_nan(row.get('Wikipedia'), ""),
         twitter_penetration=tw_pen,
         star_rating=star_rating,
-        offline_presence=clean_nan(row.get('Offline'), "Unknown")
+        offline_presence=clean_nan(row.get('Offline'), "Unknown"),
+        rationale_text=clean_nan(row.get('merged_description'), "No rationale available.")
     )
 
 def generate_full_context_csv():
