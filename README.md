@@ -1,53 +1,103 @@
-# Online Social Movements Explorer (Full Stack Version)
+# Social Movement Lens 🌍
 
-这是一个基于 React (Vite) 和 FastAPI (Python) 的全栈应用，使用了现代的 Cyberpunk 风格设计。
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_Site-2ea44f?style=for-the-badge&logo=vercel)](https://social-movement-lens.vercel.app)
+[![Python](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/Frontend-React_Vite-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
-## 核心功能
+> **[中文说明 (Chinese Version)](#-中文说明-chinese-version)** 👇
 
--   **Frontend**: React + TypeScript + Lucide Icons + Custom CSS (暗黑风格).
--   **Backend**: FastAPI 提供数据检索 API 和 OpenAI 集成.
--   **Data**: 自动读取 Excel 表格 (`Coding_LATEST_LH.xlsx`, `CodingRational_LATEST.xlsx`).
+**Social Movement Lens** is an AI-powered full-stack platform for exploring and analyzing global social movements. It combines quantitative data visualization with qualitative semantic search, powered by LLM agents.
 
-## 环境准备
+---
 
-需要同时安装 Python 和 Node.js。
+## ✨ Key Features
 
-1.  **Python 依赖**:
-    ```bash
-    pip install -r requirements_backend.txt
-    ```
+- **🤖 AI Agent Analyst**: Ask complex questions about the dataset (e.g., "Compare the impact of BLM and Umbrella Movement"). The agent intelligently switches between screen-context RAG and full-database analysis.
+- **🗺️ Geospatial Intelligence**: Interactive 3D/2D global map highlighting movement locations.
+- **📊 Temporal & Categorical Analytics**: Timeline charts, category distribution, and regime type analysis.
+- **🔍 Semantic Search**: Vector-based retrieval (OpenAI Embeddings) allows searching by concept, not just keyword.
+- **📱 Responsive Cyberpunk UI**: A modern, immersive interface built with React and Recharts.
 
-2.  **Node.js 依赖**:
-    ```bash
-    cd webpage_example
-    npm install
-    ```
+## 🚀 Tech Stack
 
-## 如何运行
+- **Frontend**: React, TypeScript, Vite, Recharts, React-Simple-Maps
+- **Backend**: Python, FastAPI, Pandas, OpenAI/Gemini API
+- **Deployment**: Vercel (Frontend) + Render (Backend)
 
-你需要开启两个终端窗口分别运行后端和前端。
+## 🛠️ Local Installation
 
-### 1. 启动后端 (API Server)
-在项目根目录下：
+### Prerequisites
+- Python 3.9+
+- Node.js 18+
+- OpenAI API Key
+
+### 1. Backend Setup
 ```bash
-export OPENAI_API_KEY="你的key"  # 如果需要AI功能
+# Install dependencies
+pip install -r requirements.txt
+
+# Set API Key (Windows PowerShell)
+$env:OPENAI_API_KEY="sk-..."
+
+# Run Server
 python server.py
 ```
-后端默认运行在 `http://localhost:8000`。
 
-### 2. 启动前端 (Web Interface)
-打开一个新的终端窗口：
+### 2. Frontend Setup
 ```bash
 cd webpage_example
+npm install
 npm run dev
 ```
-前端默认运行在 `http://localhost:5173`。
 
-打开浏览器访问前端地址，即可体验完整的交互式应用。
+---
 
-## 目录结构
+<div id="chinese-version"></div>
 
--   `server.py`: 后端逻辑，负责 Excel 读取和 API 响应。
--   `webpage_example/`: 前端 React 项目代码。
-    -   `src/`: 源代码。
-    -   `vite.config.ts`: 前端配置 (已配置 API 代理)。
+# 🇨🇳 中文说明 (Chinese Version)
+
+**Social Movement Lens** 是一个由 AI 驱动的全栈社会运动分析平台。它结合了定量数据可视化与定性语义检索，利用大语言模型 (LLM) 代理为研究人员提供深度洞察。
+
+## ✨ 核心功能
+
+- **🤖 AI 智能分析员**: 可以回答关于数据集的复杂问题（例如：“对比 BLM 和雨伞运动的影响力”）。AI Agent 会根据问题自动在“当前屏幕上下文”和“全量数据库”之间切换策略。
+- **🗺️ 地理空间智能**: 交互式全球地图，高亮显示运动发生地。
+- **📊 多维数据分析**: 提供时间线趋势图、分类分布图以及政体类型分析。
+- **🔍 语义检索**: 基于向量（Embeddings）的检索技术，支持概念搜索，而不仅仅是关键词匹配。
+- **📱 赛博朋克风 UI**: 现代沉浸式界面，适配移动端与桌面端。
+
+## 🚀 技术栈
+
+- **前端**: React, TypeScript, Vite, Recharts
+- **后端**: Python, FastAPI, Pandas, OpenAI/Gemini API
+- **部署**: Vercel (前端) + Render (后端)
+
+## 🛠️ 本地运行指南
+
+### 环境要求
+- Python 3.9+
+- Node.js 18+
+- OpenAI API Key
+
+### 1. 启动后端
+```bash
+# 安装依赖
+pip install -r requirements.txt
+
+# 设置 API Key (Windows PowerShell)
+$env:OPENAI_API_KEY="sk-..."
+
+# 启动服务器
+python server.py
+```
+
+### 2. 启动前端
+```bash
+cd webpage_example
+npm install
+npm run dev
+```
+
+---
+*Created by Jacobzwj*
