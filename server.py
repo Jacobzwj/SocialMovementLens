@@ -77,12 +77,12 @@ def load_data():
 
             DF_CODES.columns = [c.strip() for c in DF_CODES.columns]
             
-            # Normalize Index - STRICTLY USE 'no' COLUMN
-            if 'no' in DF_CODES.columns:
-                DF_CODES['index'] = DF_CODES['no'].astype(str).apply(normalize_id)
-            elif 'index' in DF_CODES.columns:
-                # Fallback if 'no' is missing but 'index' exists
+            # Normalize Index - PREFER ORIGINAL 'index' COLUMN
+            if 'index' in DF_CODES.columns:
                 DF_CODES['index'] = DF_CODES['index'].astype(str).apply(normalize_id)
+            elif 'no' in DF_CODES.columns:
+                # Fallback if 'index' is missing
+                DF_CODES['index'] = DF_CODES['no'].astype(str).apply(normalize_id)
             else:
                 # Create default index if missing
                 DF_CODES['index'] = DF_CODES.index.astype(str)
@@ -108,13 +108,13 @@ def load_data():
 
             DF_RATIONAL.columns = [c.strip() for c in DF_RATIONAL.columns]
             
-            # Normalize Index for Rationale - STRICTLY USE 'no' COLUMN
-            if 'no' in DF_RATIONAL.columns:
-                DF_RATIONAL['index'] = DF_RATIONAL['no'].astype(str).apply(normalize_id)
-            elif 'index' in DF_RATIONAL.columns:
+            # Normalize Index for Rationale - PREFER ORIGINAL 'index' COLUMN
+            if 'index' in DF_RATIONAL.columns:
                 DF_RATIONAL['index'] = DF_RATIONAL['index'].astype(str).apply(normalize_id)
+            elif 'no' in DF_RATIONAL.columns:
+                DF_RATIONAL['index'] = DF_RATIONAL['no'].astype(str).apply(normalize_id)
             else:
-                print("Warning: Rationale file has neither 'no' nor 'index' column!")
+                print("Warning: Rationale file has neither 'index' nor 'no' column!")
             
             # --- MERGE DESCRIPTION INTO DF_CODES ---
             
