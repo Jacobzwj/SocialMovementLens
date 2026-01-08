@@ -107,6 +107,21 @@ def load_data():
 
             DF_RATIONAL.columns = [c.strip() for c in DF_RATIONAL.columns]
             
+            # Normalize Index for Rationale - CRITICAL FIX
+            # Force conversion to string and handle both 'index' and 'no' columns
+            if 'index' in DF_RATIONAL.columns:
+                DF_RATIONAL['index'] = DF_RATIONAL['index'].astype(str).apply(normalize_id)
+            elif 'no' in DF_RATIONAL.columns:
+                DF_RATIONAL['index'] = DF_RATIONAL['no'].astype(str).apply(normalize_id)
+            else:
+                print("Warning: Rationale file has neither 'index' nor 'no' column!")
+            
+            # Ensure index is treated as string for merging
+            if 'index' in DF_RATIONAL.columns:
+                 DF_RATIONAL['index'] = DF_RATIONAL['index'].astype(str)
+
+            # --- MERGE DESCRIPTION INTO DF_CODES ---
+            
             # Normalize Index for Rationale
             if 'index' in DF_RATIONAL.columns:
                 DF_RATIONAL['index'] = DF_RATIONAL['index'].apply(normalize_id)
