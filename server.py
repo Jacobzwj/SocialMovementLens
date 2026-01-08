@@ -77,11 +77,12 @@ def load_data():
 
             DF_CODES.columns = [c.strip() for c in DF_CODES.columns]
             
-            # Normalize Index
-            if 'index' in DF_CODES.columns:
-                DF_CODES['index'] = DF_CODES['index'].apply(normalize_id)
-            elif 'no' in DF_CODES.columns:
-                DF_CODES['index'] = DF_CODES['no'].apply(normalize_id)
+            # Normalize Index - STRICTLY USE 'no' COLUMN
+            if 'no' in DF_CODES.columns:
+                DF_CODES['index'] = DF_CODES['no'].astype(str).apply(normalize_id)
+            elif 'index' in DF_CODES.columns:
+                # Fallback if 'no' is missing but 'index' exists
+                DF_CODES['index'] = DF_CODES['index'].astype(str).apply(normalize_id)
             else:
                 # Create default index if missing
                 DF_CODES['index'] = DF_CODES.index.astype(str)
@@ -107,19 +108,14 @@ def load_data():
 
             DF_RATIONAL.columns = [c.strip() for c in DF_RATIONAL.columns]
             
-            # Normalize Index for Rationale - CRITICAL FIX
-            # Force conversion to string and handle both 'index' and 'no' columns
-            if 'index' in DF_RATIONAL.columns:
-                DF_RATIONAL['index'] = DF_RATIONAL['index'].astype(str).apply(normalize_id)
-            elif 'no' in DF_RATIONAL.columns:
+            # Normalize Index for Rationale - STRICTLY USE 'no' COLUMN
+            if 'no' in DF_RATIONAL.columns:
                 DF_RATIONAL['index'] = DF_RATIONAL['no'].astype(str).apply(normalize_id)
+            elif 'index' in DF_RATIONAL.columns:
+                DF_RATIONAL['index'] = DF_RATIONAL['index'].astype(str).apply(normalize_id)
             else:
-                print("Warning: Rationale file has neither 'index' nor 'no' column!")
+                print("Warning: Rationale file has neither 'no' nor 'index' column!")
             
-            # Ensure index is treated as string for merging
-            if 'index' in DF_RATIONAL.columns:
-                 DF_RATIONAL['index'] = DF_RATIONAL['index'].astype(str)
-
             # --- MERGE DESCRIPTION INTO DF_CODES ---
             
             # Normalize Index for Rationale
@@ -552,26 +548,12 @@ def get_rationales(id: str):
     # Normalize query ID just in case
     clean_id = normalize_id(id)
     
-    # 1. Try Exact ID Match
+    # Strict Match using the normalized 'no' column (which is now 'index')
     matches = DF_RATIONAL[DF_RATIONAL['index'] == clean_id]
     
-    # 2. If no match, try Name Match (Fallback)
-    if matches.empty and not DF_CODES.empty:
-        # Find the name of the movement with this ID from the main table
-        main_row = DF_CODES[DF_CODES['index'] == clean_id]
-        if not main_row.empty:
-            name = main_row.iloc[0].get('protest_name', '')
-            if name:
-                # Try finding this name in Rationale table (using protest_name_v2 or similar)
-                # The debug JSON shows 'protest_name_v2' exists in Rationale
-                matches = DF_RATIONAL[DF_RATIONAL['protest_name_v2'] == name]
-                if matches.empty:
-                     # Try loose string match
-                     matches = DF_RATIONAL[DF_RATIONAL['protest_name_v2'].astype(str).str.contains(name, regex=False, case=False)]
-
-    # Debug if still empty
+    # Debug if empty
     if matches.empty:
-        print(f"DEBUG: No rationales found for ID: {id} (clean: {clean_id}) even after name fallback.")
+        print(f"DEBUG: No rationales found for ID: {id} (clean: {clean_id})")
         
     res = []
     for _, row in matches.iterrows():
