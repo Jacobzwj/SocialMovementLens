@@ -1,0 +1,66 @@
+/* ... existing ... */
+
+/* --- RESPONSIVE SCROLL FIXES --- */
+
+/* Make the entire left column scrollable */
+.left-column {
+    overflow-y: auto !important;
+    padding-right: 8px; /* Space for scrollbar */
+    /* Ensure it doesn't get cut off */
+    max-height: 100%; 
+}
+
+/* Customize scrollbar for left column */
+.left-column::-webkit-scrollbar { width: 6px; }
+.left-column::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
+
+/* Let the results panel grow naturally, no internal scroll */
+.results-panel {
+    flex: none !important; /* Don't try to fill space, just take what you need */
+    height: auto !important;
+    overflow: visible !important;
+    min-height: 400px; /* Minimum height so it's not empty */
+}
+
+.scroll-area {
+    overflow: visible !important; /* No internal scroll */
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* Ensure the main grid constraints content to viewport height */
+.main-grid-layout {
+    overflow: hidden !important; /* Only left-column and right-column scroll internally */
+}
+
+/* --- MOBILE / TABLET LAYOUT --- */
+
+@media (max-width: 1024px) {
+    /* Stack Left and Right columns */
+    .main-grid-layout {
+        grid-template-columns: 1fr !important;
+        overflow-y: auto !important; /* Main window scrolls on mobile */
+        display: block !important; /* Block layout for simple stacking */
+    }
+
+    /* Reset heights for stacking */
+    .left-column {
+        overflow: visible !important; /* Let body scroll */
+        height: auto !important;
+        max-height: none !important;
+        margin-bottom: 40px;
+    }
+
+    .right-column {
+        height: 600px !important; /* Fixed height for chat on mobile */
+        margin-top: 20px;
+    }
+    
+    /* Stack Dashboard Grid */
+    .dashboard-grid-2x2 {
+        grid-template-columns: 1fr !important; /* Single column */
+        grid-template-rows: auto auto auto auto !important; /* 4 rows */
+        height: auto !important;
+        gap: 24px !important;
+    }
+}

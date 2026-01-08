@@ -1,0 +1,57 @@
+.dashboard-card {
+    background: rgba(24, 24, 27, 0.6); /* Zinc-900 with opacity */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.map-card {
+    grid-column: span 2; /* Map takes more space usually */
+    min-height: 350px;
+}
+
+.timeline-card {
+    grid-column: span 1;
+    min-height: 350px;
+}
+
+.card-header-sm {
+    margin-bottom: 1rem;
+    border-left: 2px solid var(--neon-purple);
+    padding-left: 0.75rem;
+}
+
+.card-header-sm h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e4e4e7;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.card-header-sm .subtitle {
+    font-size: 0.75rem;
+    color: #a1a1aa;
+}
+
+.map-container {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    /* Ensure map doesn't overflow awkwardly */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Tooltip customization */
+#map-tooltip {
+    z-index: 1000;
+    font-size: 0.8rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}

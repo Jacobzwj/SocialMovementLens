@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: social-movement-explorer
+    runtime: python
+    buildCommand: |
+      pip install -r requirements.txt
+      cd webpage_example && npm install && npm run build
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: NODE_VERSION
+        value: 18.17.0

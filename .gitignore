@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Data & Cache (Optional: upload excel if public, ignore cache)
+embeddings_cache.pkl
+# Uncomment below if you DON'T want to share the excel files
+# *.xlsx
+
+# Javascript / Node
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp

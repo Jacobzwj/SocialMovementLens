@@ -1,0 +1,20 @@
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Map is wider */
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto 2rem auto; /* Bottom margin to separate from list */
+    padding: 0 2rem;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .map-card {
+        grid-column: span 1;
+        min-height: 300px;
+    }
+}

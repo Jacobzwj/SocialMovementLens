@@ -1,0 +1,20 @@
+/* Fix overlap by enforcing flow */
+.viz-row {
+    margin-bottom: 32px !important; /* Force space below map/timeline */
+    height: auto !important; /* Allow height to be determined by content */
+    min-height: 350px; /* But keep a minimum */
+}
+
+.results-panel {
+    margin-top: 0 !important; 
+    z-index: 1; /* Ensure it stacks correctly */
+}
+
+/* Ensure map container has size */
+.map-container {
+    width: 100%;
+    height: 300px; /* Explicit height for map area */
+    background: #18181b; /* Temporary debug bg to see container */
+    border-radius: 8px;
+    overflow: hidden; /* Keep zoom inside */
+}

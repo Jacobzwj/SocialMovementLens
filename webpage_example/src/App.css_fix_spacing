@@ -1,0 +1,20 @@
+/* ... existing CSS ... */
+
+/* Update grid layout to prevent squeezing */
+.dashboard-grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 350px 300px; /* Explicit row heights */
+    column-gap: 32px; /* Horizontal gap */
+    row-gap: 64px; /* Vertical gap between rows */
+    width: 100%;
+    margin-bottom: 64px !important; /* Bottom margin to list - MATCHES ROW GAP */
+    height: auto;
+    min-height: 0;
+}
+
+/* Ensure cards inside grid fill their cells */
+.dashboard-grid-2x2 > .dashboard-card {
+    height: 100%;
+    min-height: 0;
+}
