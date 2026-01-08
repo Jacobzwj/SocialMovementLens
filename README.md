@@ -1,5 +1,5 @@
-# Social Movement Lens: Human-AI Collaborative Research Engine
-# 社会运动透镜：人机协作研究引擎
+# Social Movement Lens
+### Human-AI Collaborative Research Engine | 人机协作研究引擎
 
 > **🔴 [Click Here to Launch Live Demo / 点击进入在线网站](https://social-movement-lens.vercel.app)** 🔴
 
