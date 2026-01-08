@@ -529,6 +529,21 @@ def search_movements(q: str = ""):
     results = DF_CODES[mask].head(20)
     return [map_row_to_movement(row) for _, row in results.iterrows()]
 
+@app.get("/api/debug_rationales")
+def debug_rationales():
+    """Temporary endpoint to debug Rationale data loading on Render"""
+    if DF_RATIONAL.empty:
+        return {"status": "error", "message": "DF_RATIONAL is empty!", "files_found": os.listdir('.')}
+    
+    return {
+        "status": "ok",
+        "count": len(DF_RATIONAL),
+        "columns": DF_RATIONAL.columns.tolist(),
+        "sample_ids": DF_RATIONAL['index'].head(10).tolist(),
+        "sample_row": DF_RATIONAL.iloc[0].to_dict() if not DF_RATIONAL.empty else {},
+        "current_dir_files": os.listdir('.')
+    }
+
 @app.get("/api/rationales", response_model=List[Rationale])
 def get_rationales(id: str):
     if DF_RATIONAL.empty:
