@@ -363,7 +363,7 @@
   opacity: 0.5;
 }
 
-/* --- RESPONSIVE LAYOUT --- */
+/* --- RESPONSIVE LAYOUT (Mobile & Tablet) --- */
 
 @media (max-width: 1024px) {
     .app-container {
@@ -371,37 +371,74 @@
     }
 
     .main-content {
-        padding: 16px;
+        padding: 12px;
+        max-width: 100%;
+        overflow-x: hidden;
     }
 
-    /* Stack Left and Right columns */
+    /* Stack layout vertically */
     .main-grid-layout {
-        grid-template-columns: 1fr;
         display: flex;
         flex-direction: column;
+        gap: 32px;
     }
 
     .left-column {
         width: 100%;
+        gap: 32px;
     }
 
-    /* Chat moves to bottom and has fixed height */
-    .right-column {
-        height: 500px;
-        position: static; /* No sticky on mobile */
-        margin-top: 40px;
-    }
-    
-    /* Stack Dashboard Grid */
+    /* Force Dashboard to single column stack */
     .dashboard-grid-2x2 {
+        display: flex;
+        flex-direction: column;
         grid-template-columns: 1fr;
         grid-template-rows: auto;
         height: auto;
         row-gap: 24px;
-        margin-bottom: 40px !important;
+        margin-bottom: 24px !important;
+    }
+
+    /* Reset specific grid positioning for mobile */
+    .dashboard-grid-2x2 > .map-card,
+    .dashboard-grid-2x2 > .timeline-card,
+    .dashboard-grid-2x2 > .category-card,
+    .dashboard-grid-2x2 > .regime-card {
+        grid-row: auto;
+        grid-column: auto;
+        min-height: 300px; /* Give cards enough height */
+    }
+
+    .dashboard-card {
+        width: 100%;
+    }
+
+    /* Results List */
+    .results-panel {
+        min-height: auto;
+        height: auto;
     }
     
-    .dashboard-card {
-        min-height: 350px;
+    .scroll-area {
+        max-height: 600px; /* Reduce scroll height on mobile */
+    }
+
+    /* Chat moves to bottom */
+    .right-column {
+        width: 100%;
+        height: 600px; /* Fixed height for chat on mobile */
+        position: static;
+        margin-top: 0;
+        align-self: stretch;
+    }
+
+    /* Adjust typography */
+    .hero-section h1 {
+        font-size: 2.2rem;
+    }
+    
+    .hero-section p {
+        font-size: 1rem;
+        padding: 0 16px;
     }
 }
