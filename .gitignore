@@ -6,7 +6,7 @@ venv/
 .env
 
 # Data & Cache (Optional: upload excel if public, ignore cache)
-embeddings_cache.pkl
+# embeddings_cache.pkl  <-- Commented out to allow upload
 # Uncomment below if you DON'T want to share the excel files
 # *.xlsx
 
