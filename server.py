@@ -77,19 +77,15 @@ def load_data():
 
             DF_CODES.columns = [c.strip() for c in DF_CODES.columns]
             
-            # --- STANDARDIZE ID COLUMN (Critical Fix) ---
-            # We will use 'movement_id' as the internal standard ID.
-            # We prefer 'no' column from Excel.
+            # Normalize Index - STRICTLY USE 'no' COLUMN
             if 'no' in DF_CODES.columns:
-                DF_CODES['movement_id'] = DF_CODES['no'].astype(str).apply(normalize_id)
+                DF_CODES['index'] = DF_CODES['no'].astype(str).apply(normalize_id)
             elif 'index' in DF_CODES.columns:
-                DF_CODES['movement_id'] = DF_CODES['index'].astype(str).apply(normalize_id)
+                # Fallback if 'no' is missing but 'index' exists
+                DF_CODES['index'] = DF_CODES['index'].astype(str).apply(normalize_id)
             else:
                 # Create default index if missing
-                DF_CODES['movement_id'] = DF_CODES.index.astype(str)
-            
-            # Ensure we don't rely on the ambiguous 'index' column anymore
-            # print(f"Main Table Sample IDs: {DF_CODES['movement_id'].head().tolist()}")
+                DF_CODES['index'] = DF_CODES.index.astype(str)
             
             # --- Type Conversion for Analytics ---
             # Ensure numeric columns are actually numeric for the Agent to calculate stats
@@ -172,7 +168,7 @@ def generate_embeddings():
     
     # Batch processing to be safe, though simple loop is fine for <10k rows
     for _, row in DF_CODES.iterrows():
-        idx = str(row.get('movement_id', '')) # Use standard ID
+        idx = str(row.get('index', ''))
         name = str(row.get('protest_name', ''))
         # Description is NOT in Coding_clean, so we initialize it as empty here
         # and rely on the Rationale join below to populate it.
@@ -273,8 +269,8 @@ def clean_nan(val, default=""):
     return str(val)
 
 def map_row_to_movement(row) -> Movement:
-    # STRICTLY use the standardized 'movement_id'
-    idx = str(row.get('movement_id', '0'))
+    # Use normalized index if available, else fall back to raw
+    idx = str(row.get('index', row.get('no', '0')))
     
     # Debug regime
     # print(f"Row {idx} Regime: {row.get('Regime_Democracy')}")
@@ -582,13 +578,39 @@ def get_rationales(id: str):
     if DF_RATIONAL.empty:
         return []
     
-    # Normalize query ID just in case
+    # Normalize query ID
     clean_id = normalize_id(id)
     
-    # Strict Match using the standardized 'movement_id' column
-    matches = DF_RATIONAL[DF_RATIONAL['movement_id'] == clean_id]
+    # DEBUG: Print what we are looking for
+    print(f"--- FETCHING RATIONALES FOR ID: {clean_id} (Original: {id}) ---")
     
-    # Debug if empty
+    # 1. Try Strict ID Match
+    matches = DF_RATIONAL[DF_RATIONAL['index'] == clean_id]
+    
+    if not matches.empty:
+        print(f"  -> Found match by ID! Name: {matches.iloc[0].get('protest_name_v2')}")
+    else:
+        print(f"  -> NO match by ID '{clean_id}'.")
+        # Diagnostic: Check if this ID exists in Codes
+        code_match = DF_CODES[DF_CODES['index'] == clean_id]
+        if not code_match.empty:
+            target_name = str(code_match.iloc[0].get('protest_name', '')).strip()
+            print(f"  -> This ID corresponds to Code Name: '{target_name}'")
+            
+            # 2. Try Name Match (Fallback)
+            if target_name:
+                print(f"  -> Attempting Name Fallback with: '{target_name}'")
+                matches = DF_RATIONAL[DF_RATIONAL['protest_name_v2'].astype(str).str.strip() == target_name]
+                
+                if matches.empty:
+                    # Loose Match
+                    matches = DF_RATIONAL[DF_RATIONAL['protest_name_v2'].astype(str).str.contains(target_name, regex=False, case=False)]
+                    if not matches.empty:
+                        print(f"  -> Found Loose Name match: {matches.iloc[0].get('protest_name_v2')}")
+        else:
+            print("  -> This ID does not even exist in DF_CODES!")
+
+    # Debug if still empty
     if matches.empty:
         print(f"DEBUG: No rationales found for ID: {id} (clean: {clean_id})")
         
