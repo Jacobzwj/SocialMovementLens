@@ -55,9 +55,9 @@ function App() {
 
       <main className="main-content">
         <section className="hero-section">
-          <div className="meta-tag">AI-Powered Research Engine</div>
+          <div className="meta-tag">AI Agent-Powered Research Engine</div>
           <h1>Social Movement <span className="gradient-text">Lens</span></h1>
-          <p>Embedding-powered semantic search for global activism. Combining human coding with AI insights.</p>
+          <p>Embedding-powered semantic search for global activism. Combining human coding with autonomous AI Agent insights.</p>
           
           <form className="search-box" onSubmit={handleSearch}>
             <Search className="search-icon" />

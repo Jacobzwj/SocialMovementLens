@@ -1,19 +1,20 @@
 # Social Movement Lens 🌍
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit_Site-2ea44f?style=for-the-badge&logo=vercel)](https://social-movement-lens.vercel.app)
-[![Python](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/Frontend-React_Vite-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
+> **🔴 [Click Here to Launch Live Demo / 点击进入在线网站](https://social-movement-lens.vercel.app)** 🔴
+
+[![Backend](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Frontend](https://img.shields.io/badge/Frontend-React_Vite-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
-> **[中文说明 (Chinese Version)](#-中文说明-chinese-version)** 👇
-
-**Social Movement Lens** is an AI-powered full-stack platform for exploring and analyzing global social movements. It combines quantitative data visualization with qualitative semantic search, powered by LLM agents.
+**Social Movement Lens** is an **AI Agent-Powered** full-stack platform for exploring and analyzing global social movements. It combines quantitative data visualization with qualitative semantic search, powered by autonomous LLM agents.
 
 ---
 
+[中文说明 (Chinese Version)](#-中文说明-chinese-version) 👇
+
 ## ✨ Key Features
 
-- **🤖 AI Agent Analyst**: Ask complex questions about the dataset (e.g., "Compare the impact of BLM and Umbrella Movement"). The agent intelligently switches between screen-context RAG and full-database analysis.
+- **🤖 Autonomous AI Agent Analyst**: Ask complex questions about the dataset. The **AI Agent** intelligently switches strategies—using retrieval-augmented generation (RAG) for screen context or autonomous tool-use for full-database analysis.
 - **🗺️ Geospatial Intelligence**: Interactive 3D/2D global map highlighting movement locations.
 - **📊 Temporal & Categorical Analytics**: Timeline charts, category distribution, and regime type analysis.
 - **🔍 Semantic Search**: Vector-based retrieval (OpenAI Embeddings) allows searching by concept, not just keyword.
@@ -57,11 +58,13 @@ npm run dev
 
 # 🇨🇳 中文说明 (Chinese Version)
 
-**Social Movement Lens** 是一个由 AI 驱动的全栈社会运动分析平台。它结合了定量数据可视化与定性语义检索，利用大语言模型 (LLM) 代理为研究人员提供深度洞察。
+> **🔴 [点击进入在线网站 / Launch Live Demo](https://social-movement-lens.vercel.app)** 🔴
+
+**Social Movement Lens** 是一个由 **AI Agent (智能体)** 驱动的全栈社会运动分析平台。它结合了定量数据可视化与定性语义检索，利用自主 LLM Agent 为研究人员提供深度洞察。
 
 ## ✨ 核心功能
 
-- **🤖 AI 智能分析员**: 可以回答关于数据集的复杂问题（例如：“对比 BLM 和雨伞运动的影响力”）。AI Agent 会根据问题自动在“当前屏幕上下文”和“全量数据库”之间切换策略。
+- **🤖 自主 AI Agent 分析员**: 可以回答关于数据集的复杂问题。**AI Agent** 会根据问题自动判断策略——利用 RAG 技术分析当前屏幕内容，或自主调用工具进行全量数据库分析。
 - **🗺️ 地理空间智能**: 交互式全球地图，高亮显示运动发生地。
 - **📊 多维数据分析**: 提供时间线趋势图、分类分布图以及政体类型分析。
 - **🔍 语义检索**: 基于向量（Embeddings）的检索技术，支持概念搜索，而不仅仅是关键词匹配。
