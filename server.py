@@ -540,6 +540,39 @@ def debug_rationales():
         "current_dir_files": os.listdir('.')
     }
 
+# --- DEBUG ENDPOINT (CRITICAL) ---
+@app.get("/api/debug_data_match")
+def debug_data_match():
+    """Diagnose why Codes and Rationales are not matching"""
+    report = {
+        "status": "ok",
+        "codes_count": len(DF_CODES),
+        "rational_count": len(DF_RATIONAL),
+        "codes_sample": [],
+        "rational_sample": [],
+        "match_test": "Not performed"
+    }
+    
+    if not DF_CODES.empty:
+        # Show ID and Name from main table
+        cols = ['index', 'no', 'protest_name']
+        valid_cols = [c for c in cols if c in DF_CODES.columns]
+        report["codes_sample"] = DF_CODES[valid_cols].head(5).to_dict(orient='records')
+        
+    if not DF_RATIONAL.empty:
+        # Show ID and Name from rationale table
+        cols = ['index', 'no', 'protest_name_v2'] # Assuming protest_name_v2 is the name col in rational
+        valid_cols = [c for c in cols if c in DF_RATIONAL.columns]
+        report["rational_sample"] = DF_RATIONAL[valid_cols].head(5).to_dict(orient='records')
+
+    # Try to find a match for the first row of Codes
+    if not DF_CODES.empty and not DF_RATIONAL.empty:
+        target_id = str(DF_CODES.iloc[0].get('index', ''))
+        match = DF_RATIONAL[DF_RATIONAL['index'] == target_id]
+        report["match_test"] = f"Searching for Code ID '{target_id}' in Rationale table... Found {len(match)} matches."
+
+    return report
+
 @app.get("/api/rationales", response_model=List[Rationale])
 def get_rationales(id: str):
     if DF_RATIONAL.empty:
