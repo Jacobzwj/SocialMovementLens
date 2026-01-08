@@ -77,15 +77,19 @@ def load_data():
 
             DF_CODES.columns = [c.strip() for c in DF_CODES.columns]
             
-            # Normalize Index - STRICTLY USE 'no' COLUMN
+            # --- STANDARDIZE ID COLUMN (Critical Fix) ---
+            # We will use 'movement_id' as the internal standard ID.
+            # We prefer 'no' column from Excel.
             if 'no' in DF_CODES.columns:
-                DF_CODES['index'] = DF_CODES['no'].astype(str).apply(normalize_id)
+                DF_CODES['movement_id'] = DF_CODES['no'].astype(str).apply(normalize_id)
             elif 'index' in DF_CODES.columns:
-                # Fallback if 'no' is missing but 'index' exists
-                DF_CODES['index'] = DF_CODES['index'].astype(str).apply(normalize_id)
+                DF_CODES['movement_id'] = DF_CODES['index'].astype(str).apply(normalize_id)
             else:
                 # Create default index if missing
-                DF_CODES['index'] = DF_CODES.index.astype(str)
+                DF_CODES['movement_id'] = DF_CODES.index.astype(str)
+            
+            # Ensure we don't rely on the ambiguous 'index' column anymore
+            # print(f"Main Table Sample IDs: {DF_CODES['movement_id'].head().tolist()}")
             
             # --- Type Conversion for Analytics ---
             # Ensure numeric columns are actually numeric for the Agent to calculate stats
@@ -168,7 +172,7 @@ def generate_embeddings():
     
     # Batch processing to be safe, though simple loop is fine for <10k rows
     for _, row in DF_CODES.iterrows():
-        idx = str(row.get('index', ''))
+        idx = str(row.get('movement_id', '')) # Use standard ID
         name = str(row.get('protest_name', ''))
         # Description is NOT in Coding_clean, so we initialize it as empty here
         # and rely on the Rationale join below to populate it.
@@ -269,8 +273,8 @@ def clean_nan(val, default=""):
     return str(val)
 
 def map_row_to_movement(row) -> Movement:
-    # Use normalized index if available, else fall back to raw
-    idx = str(row.get('index', row.get('no', '0')))
+    # STRICTLY use the standardized 'movement_id'
+    idx = str(row.get('movement_id', '0'))
     
     # Debug regime
     # print(f"Row {idx} Regime: {row.get('Regime_Democracy')}")
@@ -581,8 +585,8 @@ def get_rationales(id: str):
     # Normalize query ID just in case
     clean_id = normalize_id(id)
     
-    # Strict Match using the normalized 'no' column (which is now 'index')
-    matches = DF_RATIONAL[DF_RATIONAL['index'] == clean_id]
+    # Strict Match using the standardized 'movement_id' column
+    matches = DF_RATIONAL[DF_RATIONAL['movement_id'] == clean_id]
     
     # Debug if empty
     if matches.empty:
