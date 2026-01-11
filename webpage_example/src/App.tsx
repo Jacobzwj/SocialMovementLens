@@ -118,24 +118,17 @@ function App() {
         </div>
 
         {/* Funding & Acknowledgements Section */}
-        <section style={{ 
-          marginTop: '60px', 
-          padding: '24px 0', 
-          borderTop: '1px solid var(--border)',
-          color: 'var(--text-muted)',
-          fontSize: '0.85rem',
-          lineHeight: '1.6',
-          textAlign: 'center',
-          maxWidth: '800px',
-          alignSelf: 'center',
-          width: '100%'
-        }}>
-            <p style={{ marginBottom: '12px' }}>
-              <strong>Funding:</strong> This work was supported by the Hong Kong Research Grants Council under GRF: 14601723 (PI: Hai Liang, hailiang@cuhk.edu.hk).
-            </p>
-            <p>
-              <strong>Acknowledgements:</strong> We would like to thank Nathan L.T. Tsang and Wangjiang Zhang for their assistance with data collection, as well as Sidi Huang, Yingdan Lu, Yilang Peng, and Cindy Shen for refining the coding scheme and performing manual coding and checking.
-            </p>
+        <section className="footer-info-section">
+            <div className="footer-info-content">
+                <div className="footer-column">
+                    <h3>Funding</h3>
+                    <p>This work was supported by the Hong Kong Research Grants Council under GRF: 14601723 (PI: Hai Liang, hailiang@cuhk.edu.hk).</p>
+                </div>
+                <div className="footer-column">
+                    <h3>Acknowledgements</h3>
+                    <p>We would like to thank Nathan L.T. Tsang and Wangjiang Zhang for their assistance with data collection, as well as Sidi Huang, Yingdan Lu, Yilang Peng, and Cindy Shen for refining the coding scheme and performing manual coding and checking.</p>
+                </div>
+            </div>
         </section>
 
       </main>

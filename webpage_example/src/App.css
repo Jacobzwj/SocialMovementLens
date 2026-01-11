@@ -332,6 +332,46 @@
   margin-top: 40px;
 }
 
+/* Funding & Acknowledgements Section */
+.footer-info-section {
+    margin-top: 80px;
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+    width: 100%;
+    background-color: transparent;
+  }
+  
+  .footer-info-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    text-align: left;
+    max-width: 100%;
+  }
+  
+  .footer-column h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .footer-column p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .footer-info-content {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
 .status-dot {
   width: 8px;
   height: 8px;
