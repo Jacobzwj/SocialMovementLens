@@ -61,7 +61,7 @@ npm install
 npm run dev
 ```
 
-## 📄 Funding & Acknowledgements
+## 📄 Funding & Acknowledgements 
 
 **Funding:**  
 This work was supported by the Hong Kong Research Grants Council under GRF: 14601723 (PI: Hai Liang, [hailiang@cuhk.edu.hk](mailto:hailiang@cuhk.edu.hk)).
