@@ -12,6 +12,15 @@ import { getApiUrl } from './config';
 import './App.css';
 import './features/dashboard/Dashboard.css';
 
+const SUGGESTED_QUERIES = [
+  "#ClimateStrike",
+  "Student Movements",
+  "Digital Rights in Asia",
+  "2024",
+  "Latin America",
+  "工人权益"
+];
+
 function App() {
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState(''); // Store the query only after search is triggered
@@ -20,16 +29,15 @@ function App() {
 
   // Initial load
   useEffect(() => {
-    handleSearch(new Event('submit') as any);
+    executeSearch('');
   }, []);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const executeSearch = async (searchTerm: string) => {
     setIsSearching(true);
-    setResults([]); // Clear previous results to prevent AI from analyzing old data with new query
-    setSubmittedQuery(query); // Update the query for AI only on submit
+    setResults([]); 
+    setSubmittedQuery(searchTerm);
     try {
-        const res = await fetch(getApiUrl(`/api/search?q=${query}`));
+        const res = await fetch(getApiUrl(`/api/search?q=${searchTerm}`));
         const data = await res.json();
         setResults(data);
     } catch (err) {
@@ -37,6 +45,16 @@ function App() {
     } finally {
         setIsSearching(false);
     }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    executeSearch(query);
+  };
+
+  const handleQuickSearch = (suggestion: string) => {
+    setQuery(suggestion);
+    executeSearch(suggestion);
   };
 
   return (
@@ -71,6 +89,20 @@ function App() {
               {isSearching ? <div className="spinner"></div> : 'Query Data'}
             </button>
           </form>
+
+          {/* Quick Suggestions */}
+          <div className="suggestion-chips">
+            <span className="suggestion-label">Try searching:</span>
+            {SUGGESTED_QUERIES.map((q) => (
+              <button 
+                key={q} 
+                className="chip"
+                onClick={() => handleQuickSearch(q)}
+              >
+                {q}
+              </button>
+            ))}
+          </div>
         </section>
 
         {/* Main Grid Layout */}
@@ -92,7 +124,7 @@ function App() {
             <div className="panel-header">
               <div className="title-group">
                 <Activity size={18} />
-                <h2>Verified Movements</h2>
+                <h2>{submittedQuery ? `Results for: ${submittedQuery}` : "Latest Indexed Movements"}</h2>
                 <span className="count-badge">{results.length} Indexed</span>
               </div>
             </div>
