@@ -61,6 +61,14 @@ npm install
 npm run dev
 ```
 
+## 📄 Funding & Acknowledgements
+
+**Funding:**  
+This work was supported by the Hong Kong Research Grants Council under GRF: 14601723 (PI: Hai Liang, [hailiang@cuhk.edu.hk](mailto:hailiang@cuhk.edu.hk)).
+
+**Acknowledgements:**  
+We would like to thank Nathan L.T. Tsang and Wangjiang Zhang for their assistance with data collection, as well as Sidi Huang, Yingdan Lu, Yilang Peng, and Cindy Shen for refining the coding scheme and performing manual coding and checking.
+
 ---
 
 <div id="chinese-version"></div>
@@ -117,15 +125,13 @@ npm install
 npm run dev
 ```
 
----
+## 📄 资助与致谢 (Funding & Acknowledgements)
 
-## 📄 Funding & Acknowledgements
+**资助 (Funding):**  
+本研究由香港研究资助局 GRF: 14601723 资助（PI: 梁海, [hailiang@cuhk.edu.hk](mailto:hailiang@cuhk.edu.hk)）。
 
-**Funding:**  
-This work was supported by the Hong Kong Research Grants Council under GRF: 14601723 (PI: Hai Liang, hailiang@cuhk.edu.hk).
-
-**Acknowledgements:**  
-We would like to thank Nathan L.T. Tsang and Wangjiang Zhang for their assistance with data collection, as well as Sidi Huang, Yingdan Lu, Yilang Peng, and Cindy Shen for refining the coding scheme and performing manual coding and checking.
+**致谢 (Acknowledgements):**  
+我们要感谢 Nathan L.T. Tsang 和 Wangjiang Zhang 在数据收集方面的协助，以及 Sidi Huang, Yingdan Lu, Yilang Peng 和 Cindy Shen 对编码方案的改进以及手动编码和检查工作的贡献。
 
 ---
 *Created by Jacobzwj*

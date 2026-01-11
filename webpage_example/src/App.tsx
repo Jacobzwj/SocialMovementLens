@@ -122,7 +122,7 @@ function App() {
             <div className="footer-info-content">
                 <div className="footer-column">
                     <h3>Funding</h3>
-                    <p>This work was supported by the Hong Kong Research Grants Council under GRF: 14601723 (PI: Hai Liang, hailiang@cuhk.edu.hk).</p>
+                    <p>This work was supported by the Hong Kong Research Grants Council under GRF: 14601723 (PI: Hai Liang, <a href="mailto:hailiang@cuhk.edu.hk" style={{ color: '#3b82f6', textDecoration: 'none' }}>hailiang@cuhk.edu.hk</a>).</p>
                 </div>
                 <div className="footer-column">
                     <h3>Acknowledgements</h3>
@@ -132,13 +132,6 @@ function App() {
         </section>
 
       </main>
-      
-      <footer className="footer">
-        <div className="status-dot"></div>
-        <span>Data Version: 2.4.0 (Synchronized)</span>
-        <div className="spacer"></div>
-        <span>Built for Social Intelligence Research</span>
-      </footer>
     </div>
   );
 }
