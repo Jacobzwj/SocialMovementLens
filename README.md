@@ -118,4 +118,14 @@ npm run dev
 ```
 
 ---
+
+## 📄 Funding & Acknowledgements
+
+**Funding:**  
+This work was supported by the Hong Kong Research Grants Council under GRF: 14601723 (PI: Hai Liang, hailiang@cuhk.edu.hk).
+
+**Acknowledgements:**  
+We would like to thank Nathan L.T. Tsang and Wangjiang Zhang for their assistance with data collection, as well as Sidi Huang, Yingdan Lu, Yilang Peng, and Cindy Shen for refining the coding scheme and performing manual coding and checking.
+
+---
 *Created by Jacobzwj*
