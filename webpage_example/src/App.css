@@ -258,7 +258,7 @@
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-muted);
-  text-transform: uppercase;
+  /* text-transform: uppercase; Removed to allow normal casing */
   margin: 0;
 }
 

@@ -13,12 +13,12 @@ import './App.css';
 import './features/dashboard/Dashboard.css';
 
 const SUGGESTED_QUERIES = [
-  "#ClimateStrike",
-  "Student Movements",
-  "Digital Rights in Asia",
-  "2024",
-  "Latin America",
-  "工人权益"
+  "#OscarsSoWhite",
+  "Anti-Austerity",
+  "Refugees",
+  "2014",
+  "Europe",
+  "Feminism"
 ];
 
 function App() {
@@ -119,7 +119,7 @@ function App() {
                             {submittedQuery ? (
                                 <>Visualizing Results for: <span className="highlight-query">{submittedQuery}</span></>
                             ) : (
-                                "Visualizing Latest Indexed Movements"
+                                "Visualizing Top 20 Movements by Twitter Impact"
                             )}
                         </h2>
                         <span className="count-badge">{results.length} Found</span>
