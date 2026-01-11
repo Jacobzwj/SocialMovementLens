@@ -81,7 +81,7 @@ function App() {
             <Search className="search-icon" />
             <input 
               type="text" 
-              placeholder="Search by movement names, tags, or coding themes..." 
+              placeholder="Search movements, hashtags, topics, years (multilingual supported)..." 
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -119,7 +119,7 @@ function App() {
                             {submittedQuery ? (
                                 <>Visualizing Results for: <span className="highlight-query">{submittedQuery}</span></>
                             ) : (
-                                <>Visualizing Results for: <span className="highlight-query">Top 20 Movements by Twitter Impact</span></>
+                                <>Visualizing Results for: <span className="highlight-query">Top 20 Movements by Twitter Impact (Default)</span></>
                             )}
                         </h2>
                         <span className="count-badge">{results.length} Found</span>
@@ -144,7 +144,7 @@ function App() {
                             {submittedQuery ? (
                                 <>Detailed Movement Records for: <span className="highlight-query">{submittedQuery}</span></>
                             ) : (
-                                <>Detailed Movement Records for: <span className="highlight-query">Top 20 Movements by Twitter Impact</span></>
+                                <>Detailed Movement Records for: <span className="highlight-query">Top 20 Movements by Twitter Impact (Default)</span></>
                             )}
                         </h3>
                     </div>
