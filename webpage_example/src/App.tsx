@@ -111,6 +111,21 @@ function App() {
             {/* Left Column: Dashboard + Results */}
             <div className="left-column">
                 
+                {/* Unified Results Header (Now controls both Visuals and List) */}
+                <div className="section-header">
+                    <div className="title-group">
+                        <Activity size={20} className="text-accent" />
+                        <h2>
+                            {submittedQuery ? (
+                                <>Visualizing Results for: <span className="highlight-query">{submittedQuery}</span></>
+                            ) : (
+                                "Visualizing Latest Indexed Movements"
+                            )}
+                        </h2>
+                        <span className="count-badge">{results.length} Found</span>
+                    </div>
+                </div>
+
                 {/* Top Section: 2x2 Dashboard Grid */}
                 <section className="dashboard-grid-2x2">
                     <GlobalMap movements={results} />
@@ -121,24 +136,24 @@ function App() {
 
                 {/* Bottom Row: Results List */}
                 <section className="results-panel">
-            <div className="panel-header">
-              <div className="title-group">
-                <Activity size={18} />
-                <h2>{submittedQuery ? `Results for: ${submittedQuery}` : "Latest Indexed Movements"}</h2>
-                <span className="count-badge">{results.length} Indexed</span>
-              </div>
-            </div>
-            <div className="scroll-area">
-              {results.map(movement => (
-                <MovementCard key={movement.id} movement={movement} />
-              ))}
-              {results.length === 0 && (
-                <div className="empty-state">
-                  <Info size={40} />
-                  <p>No coded movements match this specific cross-reference.</p>
-                </div>
-              )}
-            </div>
+                    {/* Inner header removed since we have the top one now, 
+                        but we keep a subtle label for the list itself if needed, 
+                        or just keep it clean. Let's keep a minimal label. */}
+                    <div className="panel-header-minimal">
+                        <h3>Detailed Movement Records</h3>
+                    </div>
+
+                    <div className="scroll-area">
+                    {results.map(movement => (
+                        <MovementCard key={movement.id} movement={movement} />
+                    ))}
+                    {results.length === 0 && (
+                        <div className="empty-state">
+                        <Info size={40} />
+                        <p>No coded movements match this specific cross-reference.</p>
+                        </div>
+                    )}
+                    </div>
                 </section>
           </div>
 
