@@ -206,13 +206,30 @@
     text-overflow: ellipsis;
 }
 
-/* Details Preview */
-.details-preview {
-  display: flex;
-    flex-direction: column;
-    gap: 8px;
+/* --- New Expanded Layout Styles --- */
+
+.details-expanded {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
     margin-bottom: 16px;
     padding: 0 4px;
+}
+
+.details-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.col-header {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #52525b;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #27272a;
+    padding-bottom: 4px;
 }
 
 .detail-row {
@@ -222,20 +239,80 @@
     font-size: 0.85rem;
 }
 
-.detail-icon {
-    color: #52525b;
-    margin-top: 2px;
-}
-
-.detail-label {
+.label {
     color: #71717a;
-  font-weight: 600;
-    min-width: 80px;
+    min-width: 90px; /* Aligns values */
+    flex-shrink: 0;
 }
 
-.detail-val {
+.val {
     color: #e4e4e7;
     line-height: 1.4;
+    word-break: break-word; /* Prevent overflow */
+}
+
+/* Response Grid */
+.response-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.resp-tag {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #27272a; /* Inactive: dark grey */
+    color: #52525b; /* Inactive: muted text */
+    border: 1px solid transparent;
+}
+
+.resp-tag.active {
+    background: rgba(239, 68, 68, 0.15); /* Active: Red tint */
+    color: #f87171; /* Active: Red text */
+    border-color: rgba(239, 68, 68, 0.3);
+    font-weight: 600;
+}
+
+/* Casualty Bar */
+.casualty-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: rgba(239, 68, 68, 0.05); /* Very subtle red bg */
+    border: 1px solid rgba(239, 68, 68, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 0.8rem;
+    color: #e4e4e7;
+}
+
+.cas-item {
+    font-weight: 500;
+}
+
+.cas-divider {
+    color: #52525b;
+}
+
+/* Reference Footer */
+.card-footer-ref {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #27272a;
+    font-size: 0.75rem;
+    color: #71717a;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.ref-label {
+    font-weight: 600;
+    font-style: normal;
+    color: #52525b;
+    margin-right: 4px;
 }
 
 /* Actions Row */
@@ -243,7 +320,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid #27272a;
+    /* border-top: 1px solid #27272a; Removed border as Ref has it now */
     padding-top: 12px;
 }
 

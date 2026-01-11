@@ -261,6 +261,22 @@ class Movement(BaseModel):
     star_rating: int        # 1-5 stars based on penetration
     offline_presence: str   # New: Offline column
     rationale_text: str     # Pre-merged rationale text
+    
+    # --- Expanded Fields for Card V2 ---
+    smo_leader: str
+    grassroots: str
+    kind: str
+    outcome_raw: str
+    state_accommodation: str
+    state_distraction: str
+    state_repression: str
+    state_ignore: str
+    injuries: str
+    police_injuries: str
+    deaths: str
+    police_deaths: str
+    arrests: str
+    reference: str
 
 class Rationale(BaseModel):
     movementId: str
@@ -388,7 +404,23 @@ def map_row_to_movement(row) -> Movement:
         twitter_penetration=tw_pen,
         star_rating=star_rating,
         offline_presence=clean_nan(row.get('Offline'), "Unknown"),
-        rationale_text=clean_nan(row.get('merged_description'), "No rationale available.")
+        rationale_text=clean_nan(row.get('merged_description'), "No rationale available."),
+        
+        # --- Expanded Fields ---
+        smo_leader=clean_nan(row.get('SMO_Leaders'), "Unknown"),
+        grassroots=clean_nan(row.get('Grassroots_Mobilization'), "Unknown"),
+        kind=clean_nan(row.get('Kind_Movement'), "General"),
+        outcome_raw=clean_nan(row.get('Outcome'), "Ongoing"),
+        state_accommodation=clean_nan(row.get('State_response_accomendation'), "No"),
+        state_distraction=clean_nan(row.get('State_response_distraction'), "No"),
+        state_repression=clean_nan(row.get('State_response_repression'), "No"),
+        state_ignore=clean_nan(row.get('State_response_ignore'), "No"),
+        injuries=clean_nan(row.get('Injuries_total'), "0"),
+        police_injuries=clean_nan(row.get('Police_injuries'), "0"),
+        deaths=clean_nan(row.get('Deaths_total'), "0"),
+        police_deaths=clean_nan(row.get('Police_deaths'), "0"),
+        arrests=clean_nan(row.get('Arrested'), "0"),
+        reference=f"{clean_nan(row.get('Authors'), 'Unknown Author')} ({clean_nan(row.get('Publication_Year'), 'n.d.')}). {clean_nan(row.get('Article_Title'), 'Title Unavailable')}."
     )
 
 def generate_full_context_csv():

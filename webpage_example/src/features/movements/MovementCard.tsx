@@ -127,7 +127,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                         ? 'Ongoing' 
                         : `${movement.length_days} Days`}
                 </span>
-          </div>
+            </div>
             <div className="stat-item tooltip-container" data-tooltip="Reoccurrence Frequency">
                 <Repeat size={14} className="stat-icon"/> 
                 <span className="stat-val">
@@ -135,26 +135,46 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                         ? 'Once' 
                         : movement.reoccurrence}
                 </span>
-          </div>
+            </div>
             <div className="stat-item tooltip-container" data-tooltip="Movement Outcome">
                 <TrendingUp size={14} className="stat-icon"/> 
-                <span className="stat-val">{movement.outcome}</span>
-          </div>
+                <span className="stat-val">{movement.outcome_raw}</span>
+            </div>
         </div>
 
-        {/* Key Participants & Structure */}
-        <div className="details-preview">
-            <div className="detail-row tooltip-container" data-tooltip="Key Social Groups Involved">
-                <Users size={14} className="detail-icon" />
-                <span className="detail-label">Participants:</span>
-                <span className="detail-val">{movement.key_participants}</span>
-          </div>
-            <div className="detail-row tooltip-container" data-tooltip="Did the movement have offline protests?">
-                <ShieldCheck size={14} className="detail-icon" />
-                <span className="detail-label">Offline:</span>
-                <span className="detail-val">{movement.offline_presence}</span>
-          </div>
+        {/* --- New Details Section --- */}
+        <div className="details-expanded">
+            {/* Column 1: Profile */}
+            <div className="details-col">
+                <span className="col-header">Movement Profile</span>
+                <div className="detail-row"><span className="label">Kind:</span> <span className="val">{movement.kind}</span></div>
+                <div className="detail-row"><span className="label">Grassroots:</span> <span className="val">{movement.grassroots}</span></div>
+                <div className="detail-row"><span className="label">SMO Leaders:</span> <span className="val">{movement.smo_leader}</span></div>
+                <div className="detail-row"><span className="label">Participants:</span> <span className="val">{movement.key_participants}</span></div>
+            </div>
+
+            {/* Column 2: State Response */}
+            <div className="details-col">
+                <span className="col-header">State Response</span>
+                <div className="response-grid">
+                    <span className={`resp-tag ${movement.state_accommodation.toLowerCase() === 'yes' ? 'active' : ''}`}>Accommodation</span>
+                    <span className={`resp-tag ${movement.state_distraction.toLowerCase() === 'yes' ? 'active' : ''}`}>Distraction</span>
+                    <span className={`resp-tag ${movement.state_repression.toLowerCase() === 'yes' ? 'active' : ''}`}>Repression</span>
+                    <span className={`resp-tag ${movement.state_ignore.toLowerCase() === 'yes' ? 'active' : ''}`}>Ignore</span>
+                </div>
+            </div>
         </div>
+
+        {/* Casualty Stats (Only show if non-zero) */}
+        {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') && (
+            <div className="casualty-bar">
+                <span className="cas-item">🤕 Injuries: {movement.injuries} (Police: {movement.police_injuries})</span>
+                <span className="cas-divider">|</span>
+                <span className="cas-item">💀 Deaths: {movement.deaths} (Police: {movement.police_deaths})</span>
+                <span className="cas-divider">|</span>
+                <span className="cas-item">⛓️ Arrests: {movement.arrests}</span>
+            </div>
+        )}
 
         <div className="actions-row">
             <div className="tags-group">
@@ -171,6 +191,11 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
           {showCoding ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </button>
             </div>
+        </div>
+        
+        {/* Reference Footer */}
+        <div className="card-footer-ref">
+            <span className="ref-label">Source:</span> {movement.reference}
         </div>
       </div>
 

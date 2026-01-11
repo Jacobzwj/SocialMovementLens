@@ -26,7 +26,23 @@ export interface Movement {
   twitter_penetration: string;
   star_rating: number;
   offline_presence: string;
-  rationale_text?: string; // New: Pre-merged rationale
+  rationale_text?: string;
+  
+  // Expanded Fields
+  smo_leader: string;
+  grassroots: string;
+  kind: string;
+  outcome_raw: string;
+  state_accommodation: string;
+  state_distraction: string;
+  state_repression: string;
+  state_ignore: string;
+  injuries: string;
+  police_injuries: string;
+  deaths: string;
+  police_deaths: string;
+  arrests: string;
+  reference: string;
 }
 
 export interface Rationale {
