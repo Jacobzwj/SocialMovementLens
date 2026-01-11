@@ -457,6 +457,18 @@ def search_movements(q: str = ""):
     if DF_CODES.empty:
         return []
     
+    # --- Case 0: Empty Query -> Return Top 20 by Tweet Count (Impact) ---
+    if not q or not q.strip():
+        # Ensure '#tweets' is numeric, sort descending, take top 20
+        # Note: '#tweets' was converted to numeric in load_data()
+        try:
+            top_movements = DF_CODES.sort_values(by='#tweets', ascending=False).head(20)
+            return [map_row_to_movement(row) for _, row in top_movements.iterrows()]
+        except Exception as e:
+            print(f"Error sorting by tweets: {e}")
+            # Fallback to first 20 if sort fails
+            return [map_row_to_movement(row) for _, row in DF_CODES.head(20).iterrows()]
+
     client = get_openai_client()
     
     # Strategy: 
