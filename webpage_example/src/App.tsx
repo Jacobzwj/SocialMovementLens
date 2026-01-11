@@ -119,7 +119,7 @@ function App() {
                             {submittedQuery ? (
                                 <>Visualizing Results for: <span className="highlight-query">{submittedQuery}</span></>
                             ) : (
-                                "Visualizing Top 20 Movements by Twitter Impact"
+                                <>Visualizing Results for: <span className="highlight-query">Top 20 Movements by Twitter Impact</span></>
                             )}
                         </h2>
                         <span className="count-badge">{results.length} Found</span>
@@ -140,7 +140,13 @@ function App() {
                         but we keep a subtle label for the list itself if needed, 
                         or just keep it clean. Let's keep a minimal label. */}
                     <div className="panel-header-minimal">
-                        <h3>Detailed Movement Records</h3>
+                        <h3>
+                            {submittedQuery ? (
+                                <>Detailed Movement Records for: <span className="highlight-query">{submittedQuery}</span></>
+                            ) : (
+                                <>Detailed Movement Records for: <span className="highlight-query">Top 20 Movements by Twitter Impact</span></>
+                            )}
+                        </h3>
                     </div>
 
                     <div className="scroll-area">
