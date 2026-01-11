@@ -18,7 +18,8 @@ const SUGGESTED_QUERIES = [
   "Refugees",
   "2014",
   "Europe",
-  "Feminism"
+  "Feminism",
+  "种族相关的"
 ];
 
 function App() {
