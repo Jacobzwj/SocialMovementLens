@@ -367,24 +367,27 @@
 
 /* Right Column (AI Chat) - Sticky */
 .right-column {
-    height: calc(100vh - 120px); /* Fixed height relative to viewport */
+    /* FIXED HEIGHT: Matches viewport height minus header space */
+    height: calc(100vh - 140px); 
+    max-height: calc(100vh - 140px);
     position: sticky;
-    top: 24px; /* ALIGNMENT FIX: Adjusted from 88px to align with section header */
-    overflow: hidden;
+    top: 24px;
+    overflow: hidden; /* Prevent column itself from scrolling */
     display: flex;
     flex-direction: column;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 12px;
-    align-self: start; /* CRITICAL: Prevent stretching to match left column height */
-    margin-top: 24px; /* ALIGNMENT FIX: Ensure it starts below the hero section just like the left column */
+    align-self: start; 
+    margin-top: 24px;
 }
 
 .ai-panel {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; /* Crucial: prevent inner overflow */
   height: 100%;
+  flex: 1;
 }
 
 .dashboard-card {
