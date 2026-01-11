@@ -681,6 +681,7 @@ def chat_with_ai(req: ChatRequest):
     - **Context Awareness**: The `Current Search Results` list IS the user's screen. If a movement is NOT in that list, you MUST say "It is not currently displayed in your search results".
     - **No Hallucination**: Do NOT claim a movement is present in the search results just because you know it exists in the database. 
     - **Clarification**: If the user asks "Do you have BLM?", check the Current Results first. If not there, call the tool to check the Full Database, and answer: "It is NOT in your current search results, BUT it exists in the full database as..."
+    - **Privacy**: **NEVER** mention internal movement IDs (e.g., "ID 248", "ID: 12") in your response to the user. Refer to movements by their **Name** only.
     """
     
     messages = [
