@@ -274,27 +274,21 @@
     font-weight: 600;
 }
 
-/* Casualty Bar */
-.casualty-bar {
+/* Casualty List (New Style) */
+.casualty-list {
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
-    background: rgba(239, 68, 68, 0.05); /* Very subtle red bg */
-    border: 1px solid rgba(239, 68, 68, 0.1);
-    padding: 8px 12px;
-    border-radius: 6px;
-    margin-bottom: 16px;
-    font-size: 0.8rem;
-    color: #e4e4e7;
+    gap: 6px;
+    margin-top: 4px;
 }
 
-.cas-item {
-    font-weight: 500;
-}
-
-.cas-divider {
-    color: #52525b;
+.cas-tag {
+    font-size: 0.75rem;
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 /* Reference Footer */
