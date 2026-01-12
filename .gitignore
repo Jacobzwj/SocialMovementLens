@@ -7,6 +7,7 @@ venv/
 
 # Data & Cache (Optional: upload excel if public, ignore cache)
 # embeddings_cache.pkl  <-- Commented out to allow upload
+generate_cache.py
 # Uncomment below if you DON'T want to share the excel files
 # *.xlsx
 
