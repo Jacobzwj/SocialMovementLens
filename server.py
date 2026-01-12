@@ -261,6 +261,7 @@ class Movement(BaseModel):
     star_rating: int        # 1-5 stars based on penetration
     offline_presence: str   # New: Offline column
     rationale_text: str     # Pre-merged rationale text
+    rationales: dict[str, str] = {} # Structured rationales for specific fields
     
     # --- Expanded Fields for Card V2 ---
     smo_leader: str
@@ -406,6 +407,16 @@ def map_row_to_movement(row) -> Movement:
         offline_presence=clean_nan(row.get('Offline'), "Unknown"),
         rationale_text=clean_nan(row.get('merged_description'), "No rationale available."),
         
+        # --- Structured Rationales (Justification) ---
+        rationales={
+            "Kind": clean_nan(row.get('Kind_Movement'), "N/A"),
+            "Grassroots": clean_nan(row.get('Grassroots_mobilization'), "N/A"),
+            "SMO Leaders": clean_nan(row.get('SMO_Leaders'), "N/A"),
+            "Participants": clean_nan(row.get('Key_Participants'), "N/A"),
+            "Outcome": clean_nan(row.get('Outcome'), "N/A"),
+            "Offline": clean_nan(row.get('Offline'), "N/A")
+        },
+
         # --- Expanded Fields ---
         smo_leader=clean_nan(row.get('SMO_Leaders'), "Unknown"),
         grassroots=clean_nan(row.get('Grassroots_Mobilization'), "Unknown"),

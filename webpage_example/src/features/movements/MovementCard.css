@@ -274,6 +274,39 @@
     font-weight: 600;
 }
 
+/* Rationale Grid V2 */
+.rationales-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.rationale-item-v2 {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rationale-item-v2:last-child {
+    border-bottom: none;
+}
+
+.rat-label {
+    font-size: 0.75rem;
+    color: #a1a1aa;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.rat-val {
+    font-size: 0.85rem;
+    color: #e4e4e7;
+    line-height: 1.5;
+}
+
 /* Casualty List (New Style) */
 .casualty-list {
     display: flex;

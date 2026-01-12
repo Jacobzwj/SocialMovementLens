@@ -27,6 +27,7 @@ export interface Movement {
   star_rating: number;
   offline_presence: string;
   rationale_text?: string;
+  rationales?: Record<string, string>;
   
   // Expanded Fields
   smo_leader: string;

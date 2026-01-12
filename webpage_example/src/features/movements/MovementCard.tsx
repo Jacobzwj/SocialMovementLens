@@ -13,14 +13,6 @@ interface Props {
 
 const MovementCard: React.FC<Props> = ({ movement }) => {
   const [showCoding, setShowCoding] = useState(false);
-  // REMOVED: const [rationales, setRationales] = useState<Rationale[]>([]);
-  // REMOVED: const [loading, setLoading] = useState(false);
-
-  /* REMOVED: useEffect for fetching rationales - data is now pre-loaded
-  useEffect(() => {
-    if (showCoding && rationales.length === 0) { ... }
-  }, [showCoding, movement.id, rationales.length]);
-  */
 
   // Calculate similarity color
   const getSimColor = (score: number) => {
@@ -42,6 +34,12 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
       ));
   };
 
+  // Helper to truncate text for display cards (not for rationales)
+  const truncate = (text: string, limit: number = 40) => {
+    if (!text || text.length <= limit) return text;
+    return text.substring(0, limit) + '...';
+  };
+
   // Process Twitter Query: Take only the first term
   const rawQuery = movement.twitter_query || movement.hashtag || "";
   // Split by comma or space to get the first tag/term
@@ -59,8 +57,6 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
         <div className="card-header">
           <div>
             <div className="header-top-row">
-                {/* REMOVED: Redundant Type Badge */}
-                
                 {movement.similarity !== undefined && (
                     <div className="similarity-badge tooltip-container" 
                          data-tooltip="Semantic Match Score (Vector Similarity)"
@@ -83,7 +79,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                     </a>
                 )}
 
-                {/* Wikipedia Link (Moved here) */}
+                {/* Wikipedia Link */}
                 {movement.wikipedia && (
                     <a href={movement.wikipedia} target="_blank" rel="noopener noreferrer" className="wiki-link" title="Read on Wikipedia">
                         <BookOpen size={12} />
@@ -103,7 +99,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
           </div>
         </div>
         
-        {/* Expanded Stats Grid with Tooltips */}
+        {/* Expanded Stats Grid (FACTUAL DATA) */}
         <div className="stats-grid">
             {/* Row 1 */}
             <div className="stat-item tooltip-container" data-tooltip="Start Year">
@@ -136,35 +132,44 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                         : movement.reoccurrence}
                 </span>
             </div>
-            
-            {/* REMOVED: Outcome from Grid */}
-            <div className="stat-item empty-stat">
-                {/* Placeholder to keep grid aligned if needed, or CSS grid will handle it. 
-                    Actually CSS grid 3 cols will leave a hole if we have 5 items. 
-                    Let's just remove it and let the grid flow. */}
-            </div>
+
+             {/* Casualties (Moved to Top Stats - Factual) */}
+             {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') ? (
+                <div className="stat-item tooltip-container" data-tooltip="Casualties & Arrests">
+                    <ShieldCheck size={14} className="stat-icon" style={{color: '#f87171'}}/> 
+                    <span className="stat-val" style={{color: '#fca5a5', fontSize: '0.75rem'}}>
+                        {[
+                            movement.deaths !== '0' ? `${movement.deaths} Deaths` : '',
+                            movement.injuries !== '0' ? `${movement.injuries} Inj` : '',
+                            movement.arrests !== '0' ? `${movement.arrests} Arr` : ''
+                        ].filter(Boolean).join(', ')}
+                    </span>
+                </div>
+            ) : (
+                <div className="stat-item empty-stat"></div>
+            )}
         </div>
 
-        {/* --- New Details Section --- */}
+        {/* --- New Details Section (INTERPRETATIVE) --- */}
         <div className="details-expanded">
             {/* Column 1: Profile */}
             <div className="details-col">
-                <span className="col-header">Movement Profile</span>
-                <div className="detail-row"><span className="label">Kind:</span> <span className="val">{movement.kind}</span></div>
-                <div className="detail-row"><span className="label">Grassroots:</span> <span className="val">{movement.grassroots}</span></div>
-                <div className="detail-row"><span className="label">SMO Leaders:</span> <span className="val">{movement.smo_leader}</span></div>
-                <div className="detail-row"><span className="label">Participants:</span> <span className="val">{movement.key_participants}</span></div>
-                <div className="detail-row"><span className="label">Offline:</span> <span className="val">{movement.offline_presence}</span></div>
+                <span className="col-header">Movement Profile (Interpretative)</span>
+                <div className="detail-row"><span className="label">Kind:</span> <span className="val">{truncate(movement.kind, 50)}</span></div>
+                <div className="detail-row"><span className="label">Grassroots:</span> <span className="val">{truncate(movement.grassroots, 50)}</span></div>
+                <div className="detail-row"><span className="label">SMO Leaders:</span> <span className="val">{truncate(movement.smo_leader, 50)}</span></div>
+                <div className="detail-row"><span className="label">Participants:</span> <span className="val">{truncate(movement.key_participants, 50)}</span></div>
+                <div className="detail-row"><span className="label">Offline:</span> <span className="val">{truncate(movement.offline_presence, 50)}</span></div>
             </div>
 
             {/* Column 2: Consequences */}
             <div className="details-col">
-                <span className="col-header">Consequences</span>
+                <span className="col-header">Consequences (Interpretative)</span>
                 
                 {/* Outcome - Highlighted */}
                 <div className="detail-row" style={{ marginBottom: 8 }}>
                     <span className="label">Outcome:</span> 
-                    <span className="val" style={{ fontWeight: 600, color: '#f4f4f5' }}>{movement.outcome_raw}</span>
+                    <span className="val" style={{ fontWeight: 600, color: '#f4f4f5' }}>{truncate(movement.outcome_raw, 60)}</span>
                 </div>
 
                 {/* State Response */}
@@ -177,18 +182,6 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                         <span className={`resp-tag ${movement.state_ignore.toLowerCase() === 'yes' ? 'active' : ''}`}>Ignore</span>
                     </div>
                 </div>
-
-                {/* Casualties (Moved here) */}
-                {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') && (
-                    <div className="detail-row" style={{ marginTop: 8 }}>
-                        <span className="label">Casualties:</span>
-                        <div className="casualty-list">
-                            {movement.injuries !== '0' && <span className="cas-tag">🤕 {movement.injuries} Injured</span>}
-                            {movement.deaths !== '0' && <span className="cas-tag">💀 {movement.deaths} Deaths</span>}
-                            {movement.arrests !== '0' && <span className="cas-tag">⛓️ {movement.arrests} Arrested</span>}
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
 
@@ -200,7 +193,6 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
         </div>
 
             <div className="buttons-group">
-                {/* Wiki Button Removed from here */}
         <button className="coding-trigger" onClick={() => setShowCoding(!showCoding)}>
           <FileText size={14} />
                     <span>Rationales</span>
@@ -217,26 +209,28 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
 
       {showCoding && (
         <div className="coding-details">
-          <h4>Analytical Documentation (Audit Trail)</h4>
+          <h4>Coding Decisions & Justifications (Audit Trail)</h4>
           
-          {/* Direct rendering of pre-merged rationale text */}
-          {movement.rationale_text && movement.rationale_text !== "No rationale available." ? (
-            <div className="rationales-list">
-                <div className="rationale-item">
-                  <div className="rat-header">
-                    <span className="rat-dim">Qualitative Analysis</span>
-                    <span className="rat-conf">Confidence: 95%</span>
-                  </div>
-                  <p className="rat-text">{movement.rationale_text}</p>
-                  <div className="rat-meta">
-                    <span className="rat-coder"><UserCheck size={12}/> Expert Coder</span>
-                    <span className="rat-source"><ShieldCheck size={12}/> Research Data</span>
-                  </div>
-                </div>
-            </div>
-          ) : (
-            <div className="empty-coding">Detailed rationales for this entry are pending peer review.</div>
-          )}
+          <div className="rationales-grid">
+            {movement.rationales ? (
+                Object.entries(movement.rationales).map(([key, val]) => (
+                    <div key={key} className="rationale-item-v2">
+                        <span className="rat-label">{key}:</span>
+                        <span className="rat-val">{val}</span>
+                    </div>
+                ))
+            ) : (
+                <p className="rat-text">{movement.rationale_text || "No detailed rationales available."}</p>
+            )}
+            
+            {/* Fallback to main description if not in structured list */}
+            {!movement.rationales && (
+                 <div className="rationale-item-v2">
+                    <span className="rat-label">General Description:</span>
+                    <span className="rat-val">{movement.rationale_text}</span>
+                 </div>
+            )}
+          </div>
         </div>
       )}
     </div>
