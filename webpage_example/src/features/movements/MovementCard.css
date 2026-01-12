@@ -252,6 +252,29 @@
     text-transform: capitalize; /* Capitalize first letter of words */
 }
 
+/* Topic Grid */
+.topic-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.topic-tag {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: #27272a;
+    color: #52525b;
+    border: 1px solid transparent;
+}
+
+.topic-tag.active {
+    background: rgba(59, 130, 246, 0.15); /* Blue tint */
+    color: #60a5fa; /* Blue text */
+    border-color: rgba(59, 130, 246, 0.3);
+    font-weight: 600;
+}
+
 /* Response Grid */
 .response-grid {
     display: flex;
@@ -269,9 +292,10 @@
 }
 
 .resp-tag.active {
-    background: rgba(239, 68, 68, 0.15); /* Active: Red tint */
-    color: #f87171; /* Active: Red text */
-    border-color: rgba(239, 68, 68, 0.3);
+    /* Unified Style: Use Blue/Purple theme like Topic */
+    background: rgba(59, 130, 246, 0.15); 
+    color: #60a5fa; 
+    border-color: rgba(59, 130, 246, 0.3);
     font-weight: 600;
 }
 
@@ -344,7 +368,7 @@
     padding-top: 12px;
     border-top: 1px solid #27272a;
     font-size: 0.75rem;
-    color: #71717a;
+    color: #a1a1aa; /* Lighter grey for better readability */
     font-style: italic;
     line-height: 1.4;
 }
@@ -352,7 +376,7 @@
 .ref-label {
     font-weight: 600;
     font-style: normal;
-    color: #52525b;
+    color: #e4e4e7; /* Even lighter for label */
     margin-right: 4px;
 }
 

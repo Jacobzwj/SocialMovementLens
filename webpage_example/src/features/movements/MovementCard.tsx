@@ -51,6 +51,9 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
         : `https://twitter.com/search?q=${encodeURIComponent(rawQuery)}`)
     : null;
 
+  // Predefined Topics
+  const ALL_TOPICS = ['Political', 'Economic', 'Environmental', 'Social', 'Others'];
+
   return (
     <div className={`movement-card-v2 ${showCoding ? 'expanded' : ''}`}>
       <div className="card-primary">
@@ -142,7 +145,22 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             {/* Column 1: Profile */}
             <div className="details-col">
                 <span className="col-header">Movement Profile</span>
-                <div className="detail-row"><span className="label">Topic:</span> <span className="val">{movement.tags.join(', ')}</span></div>
+                
+                {/* Topic Grid */}
+                <div className="detail-row">
+                    <span className="label">Topic:</span>
+                    <div className="topic-grid">
+                        {ALL_TOPICS.map(topic => {
+                            const isActive = movement.tags.map(t => t.toLowerCase()).includes(topic.toLowerCase());
+                            return (
+                                <span key={topic} className={`topic-tag ${isActive ? 'active' : ''}`}>
+                                    {topic}
+                                </span>
+                            );
+                        })}
+                    </div>
+                </div>
+
                 <div className="detail-row"><span className="label">Kind:</span> <span className="val">{truncate(movement.kind, 50)}</span></div>
                 <div className="detail-row"><span className="label">Grassroots:</span> <span className="val">{truncate(movement.grassroots, 50)}</span></div>
                 <div className="detail-row"><span className="label">SMO Leaders:</span> <span className="val">{truncate(movement.smo_leader, 50)}</span></div>
@@ -226,7 +244,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
         
         {/* Reference Footer */}
         <div className="card-footer-ref">
-            <span className="ref-label">Source:</span> {movement.reference}
+            <span className="ref-label">Key Reference:</span> {movement.reference}
         </div>
       </div>
 
