@@ -142,6 +142,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             {/* Column 1: Profile */}
             <div className="details-col">
                 <span className="col-header">Movement Profile</span>
+                <div className="detail-row"><span className="label">Topic:</span> <span className="val">{movement.tags.join(', ')}</span></div>
                 <div className="detail-row"><span className="label">Kind:</span> <span className="val">{truncate(movement.kind, 50)}</span></div>
                 <div className="detail-row"><span className="label">Grassroots:</span> <span className="val">{truncate(movement.grassroots, 50)}</span></div>
                 <div className="detail-row"><span className="label">SMO Leaders:</span> <span className="val">{truncate(movement.smo_leader, 50)}</span></div>
@@ -171,7 +172,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                             {/* Injuries */}
                             {movement.injuries !== '0' && (
                                 <div className="cas-row">
-                                    <span className="cas-icon">🤕</span>
+                                    <span className="cas-icon">🏥</span>
                                     <span className="cas-label">Injuries:</span>
                                     <span className="cas-val">{movement.injuries}</span>
                                     {movement.police_injuries !== '0' && <span className="cas-sub">(Police: {movement.police_injuries})</span>}
@@ -211,10 +212,8 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
 
         <div className="actions-row">
             <div className="tags-group">
-          {movement.tags.map(tag => (
-            <span key={tag} className="tag-v2">{tag}</span>
-          ))}
-        </div>
+                {/* Topic tags moved to Profile section */}
+            </div>
 
             <div className="buttons-group">
         <button className="coding-trigger" onClick={() => setShowCoding(!showCoding)}>

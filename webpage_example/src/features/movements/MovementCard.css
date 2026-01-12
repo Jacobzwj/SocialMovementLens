@@ -249,6 +249,7 @@
     color: #e4e4e7;
     line-height: 1.4;
     word-break: break-word; /* Prevent overflow */
+    text-transform: capitalize; /* Capitalize first letter of words */
 }
 
 /* Response Grid */

@@ -297,6 +297,18 @@ def clean_nan(val, default=""):
         return default
     return str(val)
 
+def format_float_to_int(val, default=""):
+    """Converts '2021.0' to '2021'."""
+    s = clean_nan(val, default)
+    try:
+        # Check if it looks like a float ending in .0
+        if s.endswith('.0'):
+            return s[:-2]
+        # Or if it is a float string like '367.0'
+        return str(int(float(s)))
+    except:
+        return s
+
 def map_row_to_movement(row) -> Movement:
     # Use normalized index if available, else fall back to raw
     idx = str(row.get('index', row.get('no', '0')))
@@ -490,7 +502,7 @@ def map_row_to_movement(row) -> Movement:
         tweets_count=clean_nan(row.get('#tweets'), "N/A"),
         key_participants=clean_nan(row.get('Key_Participants'), "General Public"),
         reoccurrence=clean_nan(row.get('Reoccurrence'), "Once"),
-        length_days=clean_nan(row.get('Length_Days'), "Unknown"),
+        length_days=format_float_to_int(row.get('Length_Days'), "Unknown"),
         wikipedia=clean_nan(row.get('Wikipedia'), ""),
         twitter_penetration=tw_pen,
         star_rating=star_rating,
@@ -514,7 +526,7 @@ def map_row_to_movement(row) -> Movement:
         deaths=clean_nan(row.get('Deaths_total'), "0"),
         police_deaths=clean_nan(row.get('Police_deaths'), "0"),
         arrests=clean_nan(row.get('Arrested'), "0"),
-        reference=f"{clean_nan(row.get('Authors'), 'Unknown Author')} ({clean_nan(row.get('Publication_Year'), 'n.d.')}). {clean_nan(row.get('Article_Title'), 'Title Unavailable')}."
+        reference=f"{clean_nan(row.get('Authors'), 'Unknown Author')} ({format_float_to_int(row.get('Publication_Year'), 'n.d.')}). {clean_nan(row.get('Article_Title'), 'Title Unavailable')}."
     )
 
 def generate_full_context_csv():
