@@ -377,6 +377,76 @@ def map_row_to_movement(row) -> Movement:
     except Exception as e:
         print(f"Error parsing star rating for {tw_pen}: {e}")
         star_rating = 1
+
+    # --- RATIONALE LOOKUP ---
+    # Find matching row in DF_RATIONAL based on Index
+    rationales_found = {}
+    rat_row = None
+    if not DF_RATIONAL.empty:
+        matches = DF_RATIONAL[DF_RATIONAL['index'] == idx]
+        if not matches.empty:
+            rat_row = matches.iloc[0]
+
+    # Helper to check if rationale is substantive (different from code)
+    def get_rationale_if_diff(col_name_code, col_name_rat=None):
+        if not col_name_rat: col_name_rat = col_name_code
+        
+        val_code = clean_nan(row.get(col_name_code), "N/A").strip()
+        val_rat = "N/A"
+        
+        if rat_row is not None:
+            val_rat = clean_nan(rat_row.get(col_name_rat), "N/A").strip()
+            
+        # If Rationale is just "N/A" or empty, skip
+        if val_rat in ["N/A", "", "nan", "None"]:
+            return None
+            
+        # If Code is "N/A" but Rationale has content, show Rationale
+        if val_code in ["N/A", "", "nan", "None"] and val_rat:
+            return val_rat
+
+        # If Code matches Rationale exactly (case insensitive), SKIP (User Request)
+        if val_code.lower() == val_rat.lower():
+            return None
+            
+        # Also skip if Rationale is just "yes"/"no" and matches code
+        if val_rat.lower() in ['yes', 'no'] and val_code.lower() in ['yes', 'no']:
+            return None
+
+        return val_rat
+
+    # Populate Rationales
+    # Only add to dict if get_rationale_if_diff returns a value
+    
+    r_kind = get_rationale_if_diff('Kind_Movement')
+    if r_kind: rationales_found["Kind"] = r_kind
+    
+    r_grass = get_rationale_if_diff('Grassroots_mobilization') # Note: Check spelling in files
+    if not r_grass: r_grass = get_rationale_if_diff('Grassroots_Mobilization')
+    if r_grass: rationales_found["Grassroots"] = r_grass
+    
+    r_smo = get_rationale_if_diff('SMO_Leaders')
+    if r_smo: rationales_found["SMO Leaders"] = r_smo
+    
+    r_part = get_rationale_if_diff('Key_Participants')
+    if r_part: rationales_found["Participants"] = r_part
+    
+    r_off = get_rationale_if_diff('Offline')
+    if r_off: rationales_found["Offline"] = r_off
+    
+    r_out = get_rationale_if_diff('Outcome')
+    if r_out: rationales_found["Outcome"] = r_out
+
+    # State Responses are tricky, usually just "yes/no" in both?
+    # Let's check accommodation
+    r_acc = get_rationale_if_diff('State_response_accomendation')
+    if r_acc: rationales_found["State Accommodation"] = r_acc
+
+    # If no specific rationales found, fallback to merged description if available
+    final_rationale_text = clean_nan(row.get('merged_description'), "No rationale available.")
+    
+    # If we have specific rationales, we might not need the generic text, 
+    # but let's keep it as a fallback in the UI
             
     return Movement(
         id=idx,
@@ -405,17 +475,10 @@ def map_row_to_movement(row) -> Movement:
         twitter_penetration=tw_pen,
         star_rating=star_rating,
         offline_presence=clean_nan(row.get('Offline'), "Unknown"),
-        rationale_text=clean_nan(row.get('merged_description'), "No rationale available."),
+        rationale_text=final_rationale_text,
         
         # --- Structured Rationales (Justification) ---
-        rationales={
-            "Kind": clean_nan(row.get('Kind_Movement'), "N/A"),
-            "Grassroots": clean_nan(row.get('Grassroots_mobilization'), "N/A"),
-            "SMO Leaders": clean_nan(row.get('SMO_Leaders'), "N/A"),
-            "Participants": clean_nan(row.get('Key_Participants'), "N/A"),
-            "Outcome": clean_nan(row.get('Outcome'), "N/A"),
-            "Offline": clean_nan(row.get('Offline'), "N/A")
-        },
+        rationales=rationales_found,
 
         # --- Expanded Fields ---
         smo_leader=clean_nan(row.get('SMO_Leaders'), "Unknown"),
