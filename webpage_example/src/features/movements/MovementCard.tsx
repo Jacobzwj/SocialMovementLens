@@ -152,32 +152,16 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             {/* Column 2: Consequences */}
             <div className="details-col">
                 <span className="col-header">Consequences</span>
-                
-                {/* Outcome - Highlighted */}
-                <div className="detail-row" style={{ marginBottom: 8 }}>
-                    <span className="label">Outcome:</span> 
-                    <span className="val" style={{ fontWeight: 600, color: '#f4f4f5' }}>{truncate(movement.outcome_raw, 60)}</span>
-                </div>
 
-                {/* State Response */}
-                <div className="detail-row">
-                    <span className="label">State Resp:</span>
-                    <div className="response-grid">
-                        <span className={`resp-tag ${movement.state_accommodation.toLowerCase() === 'yes' ? 'active' : ''}`}>Accommodation</span>
-                        <span className={`resp-tag ${movement.state_distraction.toLowerCase() === 'yes' ? 'active' : ''}`}>Distraction</span>
-                        <span className={`resp-tag ${movement.state_repression.toLowerCase() === 'yes' ? 'active' : ''}`}>Repression</span>
-                        <span className={`resp-tag ${movement.state_ignore.toLowerCase() === 'yes' ? 'active' : ''}`}>Ignore</span>
-                    </div>
-                </div>
-
-                {/* Casualties (Returned here with full detail) */}
+                {/* 1. Casualties (First Row) */}
                 {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') && (
-                    <div className="detail-row" style={{ marginTop: 12, borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 8 }}>
+                    <div className="detail-row" style={{ marginBottom: 12 }}>
                         <span className="label" style={{color: '#f87171'}}>Casualties:</span>
                         <div className="casualty-list-v2">
                             {/* Deaths */}
                             {movement.deaths !== '0' && (
                                 <div className="cas-row">
+                                    <span className="cas-icon">💀</span>
                                     <span className="cas-label">Deaths:</span>
                                     <span className="cas-val">{movement.deaths}</span>
                                     {movement.police_deaths !== '0' && <span className="cas-sub">(Police: {movement.police_deaths})</span>}
@@ -187,6 +171,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                             {/* Injuries */}
                             {movement.injuries !== '0' && (
                                 <div className="cas-row">
+                                    <span className="cas-icon">🤕</span>
                                     <span className="cas-label">Injuries:</span>
                                     <span className="cas-val">{movement.injuries}</span>
                                     {movement.police_injuries !== '0' && <span className="cas-sub">(Police: {movement.police_injuries})</span>}
@@ -196,6 +181,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                             {/* Arrests */}
                             {movement.arrests !== '0' && (
                                 <div className="cas-row">
+                                    <span className="cas-icon">⛓️</span>
                                     <span className="cas-label">Arrested:</span>
                                     <span className="cas-val">{movement.arrests}</span>
                                 </div>
@@ -203,6 +189,23 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                         </div>
                     </div>
                 )}
+                
+                {/* 2. State Response (Second Row) */}
+                <div className="detail-row" style={{ marginBottom: 8 }}>
+                    <span className="label">State Resp:</span>
+                    <div className="response-grid">
+                        <span className={`resp-tag ${movement.state_accommodation.toLowerCase() === 'yes' ? 'active' : ''}`}>Accommodation</span>
+                        <span className={`resp-tag ${movement.state_distraction.toLowerCase() === 'yes' ? 'active' : ''}`}>Distraction</span>
+                        <span className={`resp-tag ${movement.state_repression.toLowerCase() === 'yes' ? 'active' : ''}`}>Repression</span>
+                        <span className={`resp-tag ${movement.state_ignore.toLowerCase() === 'yes' ? 'active' : ''}`}>Ignore</span>
+                    </div>
+                </div>
+
+                {/* 3. Outcome (Third Row) */}
+                <div className="detail-row">
+                    <span className="label">Outcome:</span> 
+                    <span className="val" style={{ fontWeight: 600, color: '#f4f4f5' }}>{truncate(movement.outcome_raw, 60)}</span>
+                </div>
             </div>
         </div>
 
