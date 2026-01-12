@@ -132,29 +132,16 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                         : movement.reoccurrence}
                 </span>
             </div>
-
-             {/* Casualties (Moved to Top Stats - Factual) */}
-             {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') ? (
-                <div className="stat-item tooltip-container" data-tooltip="Casualties & Arrests">
-                    <ShieldCheck size={14} className="stat-icon" style={{color: '#f87171'}}/> 
-                    <span className="stat-val" style={{color: '#fca5a5', fontSize: '0.75rem'}}>
-                        {[
-                            movement.deaths !== '0' ? `${movement.deaths} Deaths` : '',
-                            movement.injuries !== '0' ? `${movement.injuries} Inj` : '',
-                            movement.arrests !== '0' ? `${movement.arrests} Arr` : ''
-                        ].filter(Boolean).join(', ')}
-                    </span>
-                </div>
-            ) : (
-                <div className="stat-item empty-stat"></div>
-            )}
+            
+            {/* Empty slot for alignment */}
+            <div className="stat-item empty-stat"></div>
         </div>
 
         {/* --- New Details Section (INTERPRETATIVE) --- */}
         <div className="details-expanded">
             {/* Column 1: Profile */}
             <div className="details-col">
-                <span className="col-header">Movement Profile (Interpretative)</span>
+                <span className="col-header">Movement Profile</span>
                 <div className="detail-row"><span className="label">Kind:</span> <span className="val">{truncate(movement.kind, 50)}</span></div>
                 <div className="detail-row"><span className="label">Grassroots:</span> <span className="val">{truncate(movement.grassroots, 50)}</span></div>
                 <div className="detail-row"><span className="label">SMO Leaders:</span> <span className="val">{truncate(movement.smo_leader, 50)}</span></div>
@@ -164,7 +151,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
 
             {/* Column 2: Consequences */}
             <div className="details-col">
-                <span className="col-header">Consequences (Interpretative)</span>
+                <span className="col-header">Consequences</span>
                 
                 {/* Outcome - Highlighted */}
                 <div className="detail-row" style={{ marginBottom: 8 }}>
@@ -182,6 +169,40 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                         <span className={`resp-tag ${movement.state_ignore.toLowerCase() === 'yes' ? 'active' : ''}`}>Ignore</span>
                     </div>
                 </div>
+
+                {/* Casualties (Returned here with full detail) */}
+                {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') && (
+                    <div className="detail-row" style={{ marginTop: 12, borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 8 }}>
+                        <span className="label" style={{color: '#f87171'}}>Casualties:</span>
+                        <div className="casualty-list-v2">
+                            {/* Deaths */}
+                            {movement.deaths !== '0' && (
+                                <div className="cas-row">
+                                    <span className="cas-label">Deaths:</span>
+                                    <span className="cas-val">{movement.deaths}</span>
+                                    {movement.police_deaths !== '0' && <span className="cas-sub">(Police: {movement.police_deaths})</span>}
+                                </div>
+                            )}
+                            
+                            {/* Injuries */}
+                            {movement.injuries !== '0' && (
+                                <div className="cas-row">
+                                    <span className="cas-label">Injuries:</span>
+                                    <span className="cas-val">{movement.injuries}</span>
+                                    {movement.police_injuries !== '0' && <span className="cas-sub">(Police: {movement.police_injuries})</span>}
+                                </div>
+                            )}
+
+                            {/* Arrests */}
+                            {movement.arrests !== '0' && (
+                                <div className="cas-row">
+                                    <span className="cas-label">Arrested:</span>
+                                    <span className="cas-val">{movement.arrests}</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
 
@@ -224,7 +245,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             )}
             
             {/* Fallback to main description if not in structured list */}
-            {!movement.rationales && (
+            {(!movement.rationales || Object.keys(movement.rationales).length === 0) && (
                  <div className="rationale-item-v2">
                     <span className="rat-label">General Description:</span>
                     <span className="rat-val">{movement.rationale_text}</span>

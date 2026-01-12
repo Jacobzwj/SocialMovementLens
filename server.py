@@ -437,6 +437,26 @@ def map_row_to_movement(row) -> Movement:
     r_out = get_rationale_if_diff('Outcome')
     if r_out: rationales_found["Outcome"] = r_out
 
+    # --- Casualties & Arrests Rationales ---
+    r_inj = get_rationale_if_diff('Injuries_total')
+    if r_inj: rationales_found["Injuries"] = r_inj
+    
+    r_pol_inj = get_rationale_if_diff('Police_injuries')
+    if r_pol_inj: rationales_found["Police Injuries"] = r_pol_inj
+    
+    r_dth = get_rationale_if_diff('Deaths_total')
+    if r_dth: rationales_found["Deaths"] = r_dth
+    
+    r_pol_dth = get_rationale_if_diff('Police_deaths')
+    if r_pol_dth: rationales_found["Police Deaths"] = r_pol_dth
+    
+    r_arr = get_rationale_if_diff('Arrested')
+    if r_arr: rationales_found["Arrests"] = r_arr
+    
+    # --- Facts Rationales ---
+    r_reoc = get_rationale_if_diff('Reoccurrence')
+    if r_reoc: rationales_found["Reoccurrence"] = r_reoc
+
     # State Responses are tricky, usually just "yes/no" in both?
     # Let's check accommodation
     r_acc = get_rationale_if_diff('State_response_accomendation')
