@@ -122,8 +122,10 @@ def load_data():
             # Check the theme columns
             topics = set()
             if 'Theme_political' in DF_CODES.columns: topics.add('political')
+            if 'Theme_economic' in DF_CODES.columns: topics.add('economic')
             if 'Theme_social' in DF_CODES.columns: topics.add('social')
             if 'Theme_environmental' in DF_CODES.columns: topics.add('environmental')
+            if 'Theme_others' in DF_CODES.columns: topics.add('other')
             METADATA_INDEX["topics"] = topics
             
             print(f"Index Built: {len(METADATA_INDEX['years'])} Years, {len(METADATA_INDEX['regions'])} Regions")
@@ -371,8 +373,10 @@ def map_row_to_movement(row) -> Movement:
     
     tags = []
     if clean_nan(row.get('Theme_political')) != 'no': tags.append('Political')
+    if clean_nan(row.get('Theme_economic')) != 'no': tags.append('Economic')
     if clean_nan(row.get('Theme_environmental')) != 'no': tags.append('Environmental')
     if clean_nan(row.get('Theme_social')) != 'no': tags.append('Social')
+    if clean_nan(row.get('Theme_others')) != 'no': tags.append('Other')
     
     tw_pen = clean_nan(row.get('Twitter_Penetration'), '0')
     maturity = 5
@@ -580,8 +584,10 @@ def generate_full_context_csv():
         # Tags
         tags = []
         if str(row.get('Theme_political')).lower() != 'no': tags.append('Political')
+        if str(row.get('Theme_economic')).lower() != 'no': tags.append('Economic')
         if str(row.get('Theme_environmental')).lower() != 'no': tags.append('Environmental')
         if str(row.get('Theme_social')).lower() != 'no': tags.append('Social')
+        if str(row.get('Theme_others')).lower() != 'no': tags.append('Other')
         category = ",".join(tags)
         
         tweets = str(row.get('#tweets', '0'))
