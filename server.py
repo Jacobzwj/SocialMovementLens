@@ -503,6 +503,9 @@ def map_row_to_movement(row) -> Movement:
     r_reoc = get_rationale_if_diff('Reoccurrence')
     if r_reoc: rationales_found["Reoccurrence"] = r_reoc
 
+    r_regime = get_rationale_if_diff('Regime_Democracy')
+    if r_regime: rationales_found["Regime"] = r_regime
+
     # State Responses are tricky, usually just "yes/no" in both?
     # Let's check accommodation
     r_acc = get_rationale_if_diff('State_response_accomendation')
