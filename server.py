@@ -434,10 +434,12 @@ def map_row_to_movement(row) -> Movement:
             rat_row = matches.iloc[0]
 
     # Helper to check if rationale is substantive (different from code)
-    def get_rationale_if_diff(col_name_code, col_name_rat=None, force_show=False):
+    def get_rationale_if_diff(col_name_code, col_name_rat=None):
         if not col_name_rat: col_name_rat = col_name_code
         
-        val_code = clean_nan(row.get(col_name_code), "N/A").strip()
+        # We don't strictly need val_code anymore for comparison, 
+        # but kept for reference if needed
+        # val_code = clean_nan(row.get(col_name_code), "N/A").strip()
         val_rat = "N/A"
         
         if rat_row is not None:
@@ -447,30 +449,19 @@ def map_row_to_movement(row) -> Movement:
         if val_rat in ["N/A", "", "nan", "None"]:
             return None
             
-        # If Code is "N/A" but Rationale has content, show Rationale
-        if val_code in ["N/A", "", "nan", "None"] and val_rat:
-            return val_rat
-
-        if force_show:
-            return val_rat
-
-        # If Code matches Rationale exactly (case insensitive), SKIP (User Request)
-        if val_code.lower() == val_rat.lower():
-            return None
-            
-        # Also skip if Rationale is just "yes"/"no" and matches code
-        if val_rat.lower() in ['yes', 'no'] and val_code.lower() in ['yes', 'no']:
-            return None
-
+        # User requested to ALWAYS show rationale if it exists in the Rationale sheet,
+        # regardless of whether it matches the coding sheet or not.
         return val_rat
 
     # Populate Rationales
     # Only add to dict if get_rationale_if_diff returns a value
     
-    r_kind = get_rationale_if_diff('Kind_Movement', force_show=True)
+    r_kind = get_rationale_if_diff('Kind_Movement')
     if r_kind: rationales_found["Kind"] = r_kind
     
     r_grass = get_rationale_if_diff('Grassroots_mobilization') # Note: Check spelling in files
+    if not r_grass: r_grass = get_rationale_if_diff('Grassroots_Mobilization')
+    if r_grass: rationales_found["Grassroots"] = r_grass
     if not r_grass: r_grass = get_rationale_if_diff('Grassroots_Mobilization')
     if r_grass: rationales_found["Grassroots"] = r_grass
     
@@ -503,7 +494,7 @@ def map_row_to_movement(row) -> Movement:
     if r_arr: rationales_found["Arrests"] = r_arr
     
     # --- Facts Rationales ---
-    r_reoc = get_rationale_if_diff('Reoccurrence', force_show=True)
+    r_reoc = get_rationale_if_diff('Reoccurrence')
     if r_reoc: rationales_found["Reoccurrence"] = r_reoc
 
     r_regime = get_rationale_if_diff('Regime_Democracy')
