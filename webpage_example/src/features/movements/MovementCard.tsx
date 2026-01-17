@@ -54,6 +54,18 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
   // Predefined Topics
   const ALL_TOPICS = ['Political', 'Economic', 'Environmental', 'Social', 'Others'];
 
+  // Helper to get active state responses
+  const getActiveStateResponses = () => {
+      const responses = [];
+      if (movement.state_accommodation.toLowerCase() === 'yes') responses.push('Accommodation');
+      if (movement.state_distraction.toLowerCase() === 'yes') responses.push('Distraction');
+      if (movement.state_repression.toLowerCase() === 'yes') responses.push('Repression');
+      if (movement.state_ignore.toLowerCase() === 'yes') responses.push('Ignore');
+      return responses;
+  };
+
+  const activeStateResponses = getActiveStateResponses();
+
   return (
     <div className={`movement-card-v2 ${showCoding ? 'expanded' : ''}`}>
       <div className="card-primary">
@@ -146,18 +158,19 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             <div className="details-col">
                 <span className="col-header">Movement Profile</span>
                 
-                {/* Topic Grid */}
+                {/* Topic Badges (Active Only) */}
                 <div className="detail-row">
                     <span className="label">Topic:</span>
                     <div className="topic-grid">
-                        {ALL_TOPICS.map(topic => {
-                            const isActive = movement.tags.map(t => t.toLowerCase()).includes(topic.toLowerCase());
-                            return (
-                                <span key={topic} className={`topic-tag ${isActive ? 'active' : ''}`}>
-                                    {topic}
+                        {movement.tags.length > 0 ? (
+                            movement.tags.map(tag => (
+                                <span key={tag} className="topic-tag active">
+                                    {tag}
                                 </span>
-                            );
-                        })}
+                            ))
+                        ) : (
+                            <span className="val">General</span>
+                        )}
                     </div>
                 </div>
 
@@ -209,14 +222,17 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                     </div>
                 )}
                 
-                {/* 2. State Response (Second Row) */}
+                {/* 2. State Response (Active Only) */}
                 <div className="detail-row" style={{ marginBottom: 8 }}>
                     <span className="label">State Resp:</span>
                     <div className="response-grid">
-                        <span className={`resp-tag ${movement.state_accommodation.toLowerCase() === 'yes' ? 'active' : ''}`}>Accommodation</span>
-                        <span className={`resp-tag ${movement.state_distraction.toLowerCase() === 'yes' ? 'active' : ''}`}>Distraction</span>
-                        <span className={`resp-tag ${movement.state_repression.toLowerCase() === 'yes' ? 'active' : ''}`}>Repression</span>
-                        <span className={`resp-tag ${movement.state_ignore.toLowerCase() === 'yes' ? 'active' : ''}`}>Ignore</span>
+                        {activeStateResponses.length > 0 ? (
+                            activeStateResponses.map(resp => (
+                                <span key={resp} className="resp-tag active">{resp}</span>
+                            ))
+                        ) : (
+                            <span className="val">None</span>
+                        )}
                     </div>
                 </div>
 

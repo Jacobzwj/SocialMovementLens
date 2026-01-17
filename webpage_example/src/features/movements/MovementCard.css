@@ -263,15 +263,10 @@
     font-size: 0.75rem;
     padding: 2px 8px;
     border-radius: 4px;
-    background: #27272a;
-    color: #52525b;
-    border: 1px solid transparent;
-}
-
-.topic-tag.active {
-    background: rgba(59, 130, 246, 0.15); /* Blue tint */
-    color: #60a5fa; /* Blue text */
-    border-color: rgba(59, 130, 246, 0.3);
+    /* Active Style by default */
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.3);
     font-weight: 600;
 }
 
@@ -286,16 +281,10 @@
     font-size: 0.75rem;
     padding: 2px 8px;
     border-radius: 4px;
-    background: #27272a; /* Inactive: dark grey */
-    color: #52525b; /* Inactive: muted text */
-    border: 1px solid transparent;
-}
-
-.resp-tag.active {
-    /* Unified Style: Use Blue/Purple theme like Topic */
+    /* Active Style by default (Blue theme) */
     background: rgba(59, 130, 246, 0.15); 
     color: #60a5fa; 
-    border-color: rgba(59, 130, 246, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
     font-weight: 600;
 }
 
