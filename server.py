@@ -456,6 +456,10 @@ def map_row_to_movement(row) -> Movement:
         # User requested to ALWAYS show rationale if it exists in the Rationale sheet,
         # regardless of whether it matches the coding sheet or not.
         return val_rat
+    
+    def safe_capitalize(val):
+        if not val: return val
+        return str(val).capitalize()
 
     # Populate Rationales - ORDER MATCHING THE CARD LAYOUT
     
@@ -464,7 +468,7 @@ def map_row_to_movement(row) -> Movement:
     if r_tw_pen: rationales_found["Twitter Penetration"] = r_tw_pen
 
     r_reoc = get_rationale_if_diff('Reoccurrence')
-    if r_reoc: rationales_found["Reoccurrence"] = r_reoc.capitalize()
+    if r_reoc: rationales_found["Reoccurrence"] = safe_capitalize(r_reoc)
 
     r_regime = get_rationale_if_diff('Regime_Democracy')
     if r_regime: rationales_found["Regime"] = r_regime
@@ -504,16 +508,16 @@ def map_row_to_movement(row) -> Movement:
 
     # 4. Consequences - State Responses
     r_acc = get_rationale_if_diff('State_response_accomendation')
-    if r_acc: rationales_found["State Accommodation"] = r_acc.capitalize()
+    if r_acc: rationales_found["State Accommodation"] = safe_capitalize(r_acc)
 
     r_dis = get_rationale_if_diff('State_response_distraction')
-    if r_dis: rationales_found["State Distraction"] = r_dis.capitalize()
+    if r_dis: rationales_found["State Distraction"] = safe_capitalize(r_dis)
 
     r_rep = get_rationale_if_diff('State_response_repression')
-    if r_rep: rationales_found["State Repression"] = r_rep.capitalize()
+    if r_rep: rationales_found["State Repression"] = safe_capitalize(r_rep)
     
     r_ign = get_rationale_if_diff('State_response_ignore')
-    if r_ign: rationales_found["State Ignore"] = r_ign.capitalize()
+    if r_ign: rationales_found["State Ignore"] = safe_capitalize(r_ign)
 
     # 5. Consequences - Outcome
     r_out = get_rationale_if_diff('Outcome')
