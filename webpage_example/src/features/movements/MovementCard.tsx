@@ -127,7 +127,9 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             </div>
             <div className="stat-item tooltip-container" data-tooltip="Total Tweet Volume">
                 <MessageSquare size={14} className="stat-icon"/> 
-                <span className="stat-val">{movement.tweets_count} Tweets</span>
+                <span className="stat-val">
+                    {Number(movement.tweets_count).toLocaleString()} Tweets
+                </span>
             </div>
 
             {/* Row 2 */}

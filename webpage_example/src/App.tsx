@@ -122,7 +122,7 @@ function App() {
                             {submittedQuery ? (
                                 <>Visualizing Results for: <span className="highlight-query">{submittedQuery}</span></>
                             ) : (
-                                <>Visualizing Results for: <span className="highlight-query">Top 20 Movements by Twitter Impact (Default)</span></>
+                                <>Visualizing Results for: <span className="highlight-query">Top 20 Movements by Tweet Volume (Default)</span></>
                             )}
                         </h2>
                         <span className="count-badge">{results.length} Found</span>
@@ -147,7 +147,7 @@ function App() {
                             {submittedQuery ? (
                                 <>Detailed Movement Records for: <span className="highlight-query">{submittedQuery}</span></>
                             ) : (
-                                <>Detailed Movement Records for: <span className="highlight-query">Top 20 Movements by Twitter Impact (Default)</span></>
+                                <>Detailed Movement Records for: <span className="highlight-query">Top 20 Movements by Tweet Volume (Default)</span></>
                             )}
                         </h3>
                     </div>
