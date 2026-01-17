@@ -678,23 +678,33 @@ def search_movements(q: str = ""):
             pass # Fallback
             
     # Fallback Keyword Search
-    query = q.lower()
-    search_cols = ['protest_name', 'Description', 'Theme_social', 'protest_name_v2']
-    valid_cols = [c for c in search_cols if c in DF_CODES.columns]
-    mask = pd.Series(False, index=DF_CODES.index)
-    for col in valid_cols:
-        mask |= DF_CODES[col].astype(str).str.lower().str.contains(query, na=False)
-    
-    results = DF_CODES[mask].head(20)
-    
-    # Manually assign similarity for keyword matches so the badge appears
-    final_results = []
-    for _, row in results.iterrows():
-        mov = map_row_to_movement(row)
-        mov.similarity = 100.0 # Indicate exact/keyword match
-        final_results.append(mov)
+    try:
+        query = q.lower()
+        # Expanded search columns to ensure hashtags and queries are caught
+        search_cols = ['protest_name', 'Description', 'Theme_social', 'protest_name_v2', 'query', 'Keywords_FACTIVA_for_daybyday_search', 'Article_Title']
+        valid_cols = [c for c in search_cols if c in DF_CODES.columns]
         
-    return final_results
+        mask = pd.Series(False, index=DF_CODES.index)
+        for col in valid_cols:
+            mask |= DF_CODES[col].astype(str).str.lower().str.contains(query, na=False)
+        
+        results = DF_CODES[mask].head(20)
+        
+        # Manually assign similarity for keyword matches so the badge appears
+        final_results = []
+        for _, row in results.iterrows():
+            try:
+                mov = map_row_to_movement(row)
+                mov.similarity = 100.0 # Indicate exact/keyword match
+                final_results.append(mov)
+            except Exception as e:
+                print(f"Error mapping row during keyword search: {e}")
+                continue
+            
+        return final_results
+    except Exception as e:
+        print(f"Keyword search error: {e}")
+        return []
 
 @app.get("/api/debug_rationales")
 def debug_rationales():
