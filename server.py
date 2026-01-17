@@ -30,6 +30,14 @@ DF_RATIONAL = pd.DataFrame()
 EMBEDDINGS = None # Numpy array of embeddings
 EMBEDDINGS_IDS = [] # List of IDs corresponding to embeddings row-wise
 
+# Smart Routing Metadata Index (For exact filtering)
+METADATA_INDEX = {
+    "years": set(),
+    "regions": set(),
+    "topics": set(),
+    "hashtags": set()
+}
+
 CACHE_FILE = "embeddings_cache.pkl"
 
 # --- Global Configuration ---
@@ -93,6 +101,32 @@ def load_data():
             for col in numeric_cols:
                 if col in DF_CODES.columns:
                     DF_CODES[col] = pd.to_numeric(DF_CODES[col], errors='coerce')
+
+            # --- BUILD METADATA INDEX FOR SMART ROUTING ---
+            print("Building Smart Routing Index...")
+            # 1. Years
+            if 'year' in DF_CODES.columns:
+                unique_years = DF_CODES['year'].dropna().astype(str).unique()
+                # Clean up years (remove .0)
+                clean_years = set()
+                for y in unique_years:
+                    if y.endswith('.0'): clean_years.add(y[:-2])
+                    else: clean_years.add(y)
+                METADATA_INDEX["years"] = clean_years
+            
+            # 2. Regions (area)
+            if 'area' in DF_CODES.columns:
+                METADATA_INDEX["regions"] = set(DF_CODES['area'].dropna().str.lower().str.strip().unique())
+            
+            # 3. Topics (Themes)
+            # Check the theme columns
+            topics = set()
+            if 'Theme_political' in DF_CODES.columns: topics.add('political')
+            if 'Theme_social' in DF_CODES.columns: topics.add('social')
+            if 'Theme_environmental' in DF_CODES.columns: topics.add('environmental')
+            METADATA_INDEX["topics"] = topics
+            
+            print(f"Index Built: {len(METADATA_INDEX['years'])} Years, {len(METADATA_INDEX['regions'])} Regions")
         
         # Load Rationale Data - ONLY 'CodingRationale_clean'
         if os.path.exists('CodingRational_LATEST.xlsx'):
@@ -597,45 +631,95 @@ def search_movements(q: str = ""):
     
     # --- Case 0: Empty Query -> Return Top 20 by Tweet Count (Impact) ---
     if not q or not q.strip():
-        # Ensure '#tweets' is numeric, sort descending, take top 20
-        # Note: '#tweets' was converted to numeric in load_data()
         try:
             top_movements = DF_CODES.sort_values(by='#tweets', ascending=False).head(20)
             return [map_row_to_movement(row) for _, row in top_movements.iterrows()]
         except Exception as e:
             print(f"Error sorting by tweets: {e}")
-            # Fallback to first 20 if sort fails
             return [map_row_to_movement(row) for _, row in DF_CODES.head(20).iterrows()]
 
-    # --- Case 1: Exact Year Filter (User Request) ---
-    # If the query is exactly a 4-digit number, treat it as a Year Filter
-    if q.strip().isdigit() and len(q.strip()) == 4:
-        target_year = q.strip()
-        print(f"Detected Year Search: {target_year}")
-        try:
-            # Check both 'year' column and 'Timeline'
-            # Convert year column to string for comparison
-            mask = DF_CODES['year'].astype(str).str.contains(target_year, na=False)
-            if 'Timeline' in DF_CODES.columns:
-                 mask |= DF_CODES['Timeline'].astype(str).str.contains(target_year, na=False)
+    query_lower = q.strip().lower()
+    
+    # --- SMART ROUTING LOGIC (Priority 1: Exact Filters) ---
+    
+    # 1. Hashtag Search (Starts with #)
+    if q.strip().startswith("#"):
+        print(f"Smart Route: Detected Hashtag '{q}'")
+        # Search explicitly in name/hashtag columns
+        mask = DF_CODES['protest_name'].astype(str).str.contains(q.strip(), case=False, na=False)
+        if 'protest_name_v2' in DF_CODES.columns:
+            mask |= DF_CODES['protest_name_v2'].astype(str).str.contains(q.strip(), case=False, na=False)
+        # Also check query column for hashtags
+        if 'query' in DF_CODES.columns:
+            mask |= DF_CODES['query'].astype(str).str.contains(q.strip(), case=False, na=False)
             
-            results = DF_CODES[mask]
-            print(f"Found {len(results)} movements in year {target_year}")
-            
+        results = DF_CODES[mask]
+        if not results.empty:
+            print(f"Smart Route: Found {len(results)} matches for hashtag.")
             final_results = []
             for _, row in results.iterrows():
                 try:
                     mov = map_row_to_movement(row)
-                    mov.similarity = 100.0 # Indicate exact match
+                    mov.similarity = 100.0
                     final_results.append(mov)
-                except:
-                    continue
+                except: continue
             return final_results
-        except Exception as e:
-            print(f"Year filter error: {e}")
-            # Fall through to normal search if this crashes
-            pass
 
+    # 2. Year Filter
+    # Check if query matches a known year in our index
+    # (Handling both "2014" string and 2014 number logic)
+    if query_lower in METADATA_INDEX["years"] or (q.strip().isdigit() and len(q.strip()) == 4):
+        target_year = q.strip()
+        print(f"Smart Route: Detected Year '{target_year}'")
+        mask = DF_CODES['year'].astype(str).str.contains(target_year, na=False)
+        if 'Timeline' in DF_CODES.columns:
+             mask |= DF_CODES['Timeline'].astype(str).str.contains(target_year, na=False)
+        
+        results = DF_CODES[mask]
+        if not results.empty:
+             final_results = []
+             for _, row in results.iterrows():
+                try:
+                    mov = map_row_to_movement(row)
+                    mov.similarity = 100.0
+                    final_results.append(mov)
+                except: continue
+             return final_results
+
+    # 3. Region Filter (Exact Match)
+    if query_lower in METADATA_INDEX["regions"]:
+        print(f"Smart Route: Detected Region '{query_lower}'")
+        mask = DF_CODES['area'].astype(str).str.lower().str.strip() == query_lower
+        results = DF_CODES[mask]
+        if not results.empty:
+             final_results = []
+             for _, row in results.iterrows():
+                try:
+                    mov = map_row_to_movement(row)
+                    mov.similarity = 100.0
+                    final_results.append(mov)
+                except: continue
+             return final_results
+
+    # 4. Topic Filter
+    if query_lower in METADATA_INDEX["topics"]:
+        print(f"Smart Route: Detected Topic '{query_lower}'")
+        col_name = f"Theme_{query_lower}" # e.g. Theme_political
+        if col_name in DF_CODES.columns:
+            # Filter where column is NOT 'no' (case insensitive)
+            mask = DF_CODES[col_name].astype(str).str.lower() != 'no'
+            results = DF_CODES[mask]
+            if not results.empty:
+                 final_results = []
+                 for _, row in results.iterrows():
+                    try:
+                        mov = map_row_to_movement(row)
+                        mov.similarity = 100.0
+                        final_results.append(mov)
+                    except: continue
+                 return final_results
+
+    # --- SEMANTIC SEARCH (Priority 2: AI Embeddings) ---
     client = get_openai_client()
     
     # Strategy: 
