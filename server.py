@@ -667,10 +667,18 @@ def search_movements(q: str = ""):
 
     # 2. Year Filter
     # Check if query matches a known year in our index
-    # (Handling both "2014" string and 2014 number logic)
-    if query_lower in METADATA_INDEX["years"] or (q.strip().isdigit() and len(q.strip()) == 4):
+    # Use Regex to extract 4-digit year from query (e.g. "2014年", "Year 2014")
+    import re
+    year_match = re.search(r'\b(19|20)\d{2}\b', q)
+    target_year = None
+    
+    if year_match:
+        target_year = year_match.group(0)
+    elif query_lower in METADATA_INDEX["years"]:
         target_year = q.strip()
-        print(f"Smart Route: Detected Year '{target_year}'")
+        
+    if target_year:
+        print(f"Smart Route: Detected Year '{target_year}' from query '{q}'")
         mask = DF_CODES['year'].astype(str).str.contains(target_year, na=False)
         if 'Timeline' in DF_CODES.columns:
              mask |= DF_CODES['Timeline'].astype(str).str.contains(target_year, na=False)
@@ -700,24 +708,6 @@ def search_movements(q: str = ""):
                     final_results.append(mov)
                 except: continue
              return final_results
-
-    # 4. Topic Filter
-    if query_lower in METADATA_INDEX["topics"]:
-        print(f"Smart Route: Detected Topic '{query_lower}'")
-        col_name = f"Theme_{query_lower}" # e.g. Theme_political
-        if col_name in DF_CODES.columns:
-            # Filter where column is NOT 'no' (case insensitive)
-            mask = DF_CODES[col_name].astype(str).str.lower() != 'no'
-            results = DF_CODES[mask]
-            if not results.empty:
-                 final_results = []
-                 for _, row in results.iterrows():
-                    try:
-                        mov = map_row_to_movement(row)
-                        mov.similarity = 100.0
-                        final_results.append(mov)
-                    except: continue
-                 return final_results
 
     # --- SEMANTIC SEARCH (Priority 2: AI Embeddings) ---
     client = get_openai_client()
