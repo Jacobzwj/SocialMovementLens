@@ -504,6 +504,9 @@ def map_row_to_movement(row) -> Movement:
     r_regime = get_rationale_if_diff('Regime_Democracy')
     if r_regime: rationales_found["Regime"] = r_regime
 
+    r_tw_pen = get_rationale_if_diff('Twitter_Penetration')
+    if r_tw_pen: rationales_found["Twitter Penetration"] = r_tw_pen
+
     # State Responses are tricky, usually just "yes/no" in both?
     # Let's check accommodation
     r_acc = get_rationale_if_diff('State_response_accomendation')

@@ -110,7 +110,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             <div className="stars-row">
                 {renderStars(movement.star_rating)}
             </div>
-            <span className="score-label">Twitter Impact ({movement.twitter_penetration || 'N/A'})</span>
+            <span className="score-label">Twitter Penetration ({movement.twitter_penetration || 'N/A'})</span>
           </div>
         </div>
         
