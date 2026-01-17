@@ -13,13 +13,14 @@ import './App.css';
 import './features/dashboard/Dashboard.css';
 
 const SUGGESTED_QUERIES = [
+  "BLM",
   "#OscarsSoWhite",
-  "Anti-Austerity",
+  "Feminism",
+  "Climate",
   "Refugees",
   "2014",
   "Europe",
-  "Feminism",
-  "种族相关的"
+  "种族相关"
 ];
 
 function App() {
