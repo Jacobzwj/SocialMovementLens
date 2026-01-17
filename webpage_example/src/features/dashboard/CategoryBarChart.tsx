@@ -53,7 +53,7 @@ const CategoryBarChart: React.FC<Props> = ({ movements }) => {
                 type="category" 
                 stroke="#a1a1aa" 
                 tick={{fontSize: 11, fill: '#a1a1aa'}} 
-                width={70}
+                width={90}
                 tickLine={false}
                 axisLine={false}
             />
