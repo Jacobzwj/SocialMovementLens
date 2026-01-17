@@ -686,7 +686,15 @@ def search_movements(q: str = ""):
         mask |= DF_CODES[col].astype(str).str.lower().str.contains(query, na=False)
     
     results = DF_CODES[mask].head(20)
-    return [map_row_to_movement(row) for _, row in results.iterrows()]
+    
+    # Manually assign similarity for keyword matches so the badge appears
+    final_results = []
+    for _, row in results.iterrows():
+        mov = map_row_to_movement(row)
+        mov.similarity = 100.0 # Indicate exact/keyword match
+        final_results.append(mov)
+        
+    return final_results
 
 @app.get("/api/debug_rationales")
 def debug_rationales():

@@ -69,6 +69,40 @@
     padding: 16px;
 }
 
+/* Tooltip container for Similarity Badge - Forces Right Position */
+.tooltip-right.tooltip-container:hover::after {
+    left: 100%;
+    bottom: 50%;
+    transform: translateY(50%);
+    margin-left: 10px;
+    margin-bottom: 0;
+}
+
+.tooltip-right.tooltip-container:hover::before {
+    left: 100%;
+    bottom: 50%;
+    transform: translateY(50%) rotate(90deg); /* Arrow points left */
+    margin-left: 2px;
+    margin-bottom: 0;
+}
+
+/* Tooltip container for Similarity Badge - Forces Right Position */
+.tooltip-right.tooltip-container:hover::after {
+    left: 100%;
+    bottom: 50%;
+    transform: translateY(50%);
+    margin-left: 10px;
+    margin-bottom: 0;
+}
+
+.tooltip-right.tooltip-container:hover::before {
+    left: 100%;
+    bottom: 50%;
+    transform: translateY(50%) rotate(90deg); /* Arrow points left */
+    margin-left: 2px;
+    margin-bottom: 0;
+}
+
 /* Header */
 .card-header {
   display: flex;

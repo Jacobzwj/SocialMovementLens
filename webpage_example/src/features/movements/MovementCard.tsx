@@ -73,7 +73,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
           <div>
             <div className="header-top-row">
                 {movement.similarity !== undefined && (
-                    <div className="similarity-badge tooltip-container" 
+                    <div className="similarity-badge tooltip-container tooltip-right" 
                          data-tooltip="Semantic Match Score (Vector Similarity)"
                          style={{ borderColor: getSimColor(movement.similarity), color: getSimColor(movement.similarity) }}>
                         <Zap size={10} fill={getSimColor(movement.similarity)} />
