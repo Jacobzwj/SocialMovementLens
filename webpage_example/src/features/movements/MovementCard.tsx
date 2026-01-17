@@ -191,10 +191,10 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             <div className="details-col">
                 <span className="col-header">Consequences</span>
 
-                {/* 1. Casualties (First Row) */}
-                {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') && (
-                    <div className="detail-row tooltip-container" data-tooltip="Reported injuries, deaths, and arrests" style={{ marginBottom: 12 }}>
-                        <span className="label" style={{color: '#f87171'}}>Casualties:</span>
+                {/* 1. Casualties (First Row) - Always show, with fallback */}
+                <div className="detail-row tooltip-container" data-tooltip="Reported injuries, deaths, and arrests" style={{ marginBottom: 12 }}>
+                    <span className="label" style={{color: '#f87171'}}>Casualties:</span>
+                    {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') ? (
                         <div className="casualty-list-v2">
                             {/* Deaths */}
                             {movement.deaths !== '0' && (
@@ -225,8 +225,10 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                                 </div>
                             )}
                         </div>
-                    </div>
-                )}
+                    ) : (
+                        <span className="val" style={{color: '#71717a', fontStyle: 'italic', fontSize: '0.8rem'}}>No data</span>
+                    )}
+                </div>
                 
                 {/* 2. State Response (Active Only) */}
                 <div className="detail-row tooltip-container" data-tooltip="Government or state reaction to the movement" style={{ marginBottom: 8 }}>

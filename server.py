@@ -434,7 +434,7 @@ def map_row_to_movement(row) -> Movement:
             rat_row = matches.iloc[0]
 
     # Helper to check if rationale is substantive (different from code)
-    def get_rationale_if_diff(col_name_code, col_name_rat=None):
+    def get_rationale_if_diff(col_name_code, col_name_rat=None, force_show=False):
         if not col_name_rat: col_name_rat = col_name_code
         
         val_code = clean_nan(row.get(col_name_code), "N/A").strip()
@@ -451,6 +451,9 @@ def map_row_to_movement(row) -> Movement:
         if val_code in ["N/A", "", "nan", "None"] and val_rat:
             return val_rat
 
+        if force_show:
+            return val_rat
+
         # If Code matches Rationale exactly (case insensitive), SKIP (User Request)
         if val_code.lower() == val_rat.lower():
             return None
@@ -464,7 +467,7 @@ def map_row_to_movement(row) -> Movement:
     # Populate Rationales
     # Only add to dict if get_rationale_if_diff returns a value
     
-    r_kind = get_rationale_if_diff('Kind_Movement')
+    r_kind = get_rationale_if_diff('Kind_Movement', force_show=True)
     if r_kind: rationales_found["Kind"] = r_kind
     
     r_grass = get_rationale_if_diff('Grassroots_mobilization') # Note: Check spelling in files
@@ -500,7 +503,7 @@ def map_row_to_movement(row) -> Movement:
     if r_arr: rationales_found["Arrests"] = r_arr
     
     # --- Facts Rationales ---
-    r_reoc = get_rationale_if_diff('Reoccurrence')
+    r_reoc = get_rationale_if_diff('Reoccurrence', force_show=True)
     if r_reoc: rationales_found["Reoccurrence"] = r_reoc
 
     r_regime = get_rationale_if_diff('Regime_Democracy')
