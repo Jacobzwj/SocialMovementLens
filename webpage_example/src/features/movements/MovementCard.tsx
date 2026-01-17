@@ -66,6 +66,34 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
 
   const activeStateResponses = getActiveStateResponses();
 
+  // Helper to render text with clickable links
+  const renderTextWithLinks = (text: string) => {
+    if (!text) return text;
+    
+    // Regular expression to find URLs (http/https)
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    
+    const parts = text.split(urlRegex);
+    
+    return parts.map((part, index) => {
+        if (part.match(urlRegex)) {
+            return (
+                <a 
+                    key={index} 
+                    href={part} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    style={{ color: '#3b82f6', textDecoration: 'underline', wordBreak: 'break-all' }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    {part}
+                </a>
+            );
+        }
+        return part;
+    });
+  };
+
   return (
     <div className={`movement-card-v2 ${showCoding ? 'expanded' : ''}`}>
       <div className="card-primary">
@@ -274,25 +302,25 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
 
       {showCoding && (
         <div className="coding-details">
-          <h4>Coding Decisions & Justifications (Audit Trail)</h4>
+          <h4>Coding Decisions & Justifications</h4>
           
           <div className="rationales-grid">
             {movement.rationales ? (
                 Object.entries(movement.rationales).map(([key, val]) => (
                     <div key={key} className="rationale-item-v2">
                         <span className="rat-label">{key}:</span>
-                        <span className="rat-val">{val}</span>
+                        <span className="rat-val">{renderTextWithLinks(val)}</span>
                     </div>
                 ))
             ) : (
-                <p className="rat-text">{movement.rationale_text || "No detailed rationales available."}</p>
+                <p className="rat-text">{renderTextWithLinks(movement.rationale_text || "No detailed rationales available.")}</p>
             )}
             
             {/* Fallback to main description if not in structured list */}
             {(!movement.rationales || Object.keys(movement.rationales).length === 0) && (
                  <div className="rationale-item-v2">
                     <span className="rat-label">General Description:</span>
-                    <span className="rat-val">{movement.rationale_text}</span>
+                    <span className="rat-val">{renderTextWithLinks(movement.rationale_text)}</span>
                  </div>
             )}
           </div>
