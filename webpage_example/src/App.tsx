@@ -182,7 +182,7 @@ function App() {
                 </div>
                 <div className="footer-column">
                     <h3>Acknowledgements</h3>
-                    <p>We would like to thank Nathan L.T. Tsang and Wangjiang Zhang for their assistance with data collection, as well as Sidi Huang, Yingdan Lu, Yilang Peng, and Cindy Shen for refining the coding scheme and performing manual coding and checking.</p>
+                    <p>We would like to thank Nathan L.T. Tsang and Wanjiang Jacob Zhang for their assistance with data collection, as well as Sidi Huang, Yingdan Lu, Yilang Peng, and Cindy Shen for refining the coding scheme and performing manual coding and checking.</p>
                 </div>
             </div>
         </section>

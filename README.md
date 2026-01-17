@@ -67,7 +67,7 @@ npm run dev
 This work was supported by the Hong Kong Research Grants Council under GRF: 14601723 (PI: Hai Liang, [hailiang@cuhk.edu.hk](mailto:hailiang@cuhk.edu.hk)).
 
 **Acknowledgements:**  
-We would like to thank Nathan L.T. Tsang and Wangjiang Zhang for their assistance with data collection, as well as Sidi Huang, Yingdan Lu, Yilang Peng, and Cindy Shen for refining the coding scheme and performing manual coding and checking.
+We would like to thank Nathan L.T. Tsang and Wanjiang Jacob Zhang for their assistance with data collection, as well as Sidi Huang, Yingdan Lu, Yilang Peng, and Cindy Shen for refining the coding scheme and performing manual coding and checking.
 
 ---
 
@@ -131,7 +131,7 @@ npm run dev
 本研究由香港研究资助局 GRF: 14601723 资助（PI: 梁海, [hailiang@cuhk.edu.hk](mailto:hailiang@cuhk.edu.hk)）。
 
 **致谢 (Acknowledgements):**  
-我们要感谢 Nathan L.T. Tsang 和 Wangjiang Zhang 在数据收集方面的协助，以及 Sidi Huang, Yingdan Lu, Yilang Peng 和 Cindy Shen 对编码方案的改进以及手动编码和检查工作的贡献。
+我们要感谢 Nathan L.T. Tsang 和 Wanjiang Jacob Zhang 在数据收集方面的协助，以及 Sidi Huang, Yingdan Lu, Yilang Peng 和 Cindy Shen 对编码方案的改进以及手动编码和检查工作的贡献。
 
 ---
 *Created by Jacobzwj*
