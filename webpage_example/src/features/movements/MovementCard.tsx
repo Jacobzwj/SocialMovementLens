@@ -143,7 +143,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             </div>
             <div className="stat-item tooltip-container" data-tooltip="Reoccurrence Frequency">
                 <Repeat size={14} className="stat-icon"/> 
-                <span className="stat-val">
+                <span className="stat-val" style={{ textTransform: 'capitalize' }}>
                     {(!movement.reoccurrence || movement.reoccurrence.toLowerCase() === 'no') 
                         ? 'Once' 
                         : movement.reoccurrence}
@@ -152,8 +152,8 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             
             <div className="stat-item tooltip-container" data-tooltip="Political Regime Type">
                 <Landmark size={14} className="stat-icon"/> 
-                <span className="stat-val">
-                    {movement.regime}
+                <span className="stat-val" style={{ textTransform: 'capitalize' }}>
+                    {movement.regime ? movement.regime.charAt(0).toUpperCase() + movement.regime.slice(1) : ''}
                 </span>
             </div>
         </div>
