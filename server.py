@@ -482,24 +482,27 @@ def map_row_to_movement(row) -> Movement:
     if r_out: rationales_found["Outcome"] = r_out
 
     # --- Casualties & Arrests Rationales ---
+    def check_zero(val):
+        return "No data" if val == "0" else val
+
     r_inj = get_rationale_if_diff('Injuries_total')
-    if r_inj: rationales_found["Injuries"] = r_inj
+    if r_inj: rationales_found["Injuries"] = check_zero(r_inj)
     
     r_pol_inj = get_rationale_if_diff('Police_injuries')
-    if r_pol_inj: rationales_found["Police Injuries"] = r_pol_inj
+    if r_pol_inj: rationales_found["Police Injuries"] = check_zero(r_pol_inj)
     
     r_dth = get_rationale_if_diff('Deaths_total')
-    if r_dth: rationales_found["Deaths"] = r_dth
+    if r_dth: rationales_found["Deaths"] = check_zero(r_dth)
     
     r_pol_dth = get_rationale_if_diff('Police_deaths')
-    if r_pol_dth: rationales_found["Police Deaths"] = r_pol_dth
+    if r_pol_dth: rationales_found["Police Deaths"] = check_zero(r_pol_dth)
     
     r_arr = get_rationale_if_diff('Arrested')
-    if r_arr: rationales_found["Arrests"] = r_arr
+    if r_arr: rationales_found["Arrests"] = check_zero(r_arr)
     
     # --- Facts Rationales ---
     r_reoc = get_rationale_if_diff('Reoccurrence')
-    if r_reoc: rationales_found["Reoccurrence"] = r_reoc
+    if r_reoc: rationales_found["Reoccurrence"] = r_reoc.capitalize()
 
     r_regime = get_rationale_if_diff('Regime_Democracy')
     if r_regime: rationales_found["Regime"] = r_regime
@@ -507,10 +510,18 @@ def map_row_to_movement(row) -> Movement:
     r_tw_pen = get_rationale_if_diff('Twitter_Penetration')
     if r_tw_pen: rationales_found["Twitter Penetration"] = r_tw_pen
 
-    # State Responses are tricky, usually just "yes/no" in both?
-    # Let's check accommodation
+    # State Responses Rationales - All 4 Types
     r_acc = get_rationale_if_diff('State_response_accomendation')
-    if r_acc: rationales_found["State Accommodation"] = r_acc
+    if r_acc: rationales_found["State Accommodation"] = r_acc.capitalize()
+
+    r_dis = get_rationale_if_diff('State_response_distraction')
+    if r_dis: rationales_found["State Distraction"] = r_dis.capitalize()
+
+    r_rep = get_rationale_if_diff('State_response_repression')
+    if r_rep: rationales_found["State Repression"] = r_rep.capitalize()
+    
+    r_ign = get_rationale_if_diff('State_response_ignore')
+    if r_ign: rationales_found["State Ignore"] = r_ign.capitalize()
 
     # If no specific rationales found, fallback to merged description if available
     final_rationale_text = clean_nan(row.get('merged_description'), "No rationale available.")
