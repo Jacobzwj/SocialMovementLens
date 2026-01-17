@@ -159,7 +159,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 <span className="col-header">Movement Profile</span>
                 
                 {/* Topic Badges (Active Only) */}
-                <div className="detail-row">
+                <div className="detail-row tooltip-container" data-tooltip="Thematic classification of the movement">
                     <span className="label">Topic:</span>
                     <div className="topic-grid">
                         {movement.tags.length > 0 ? (
@@ -174,11 +174,11 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                     </div>
                 </div>
 
-                <div className="detail-row"><span className="label">Kind:</span> <span className="val">{truncate(movement.kind, 50)}</span></div>
-                <div className="detail-row"><span className="label">Grassroots:</span> <span className="val">{truncate(movement.grassroots, 50)}</span></div>
-                <div className="detail-row"><span className="label">SMO Leaders:</span> <span className="val">{truncate(movement.smo_leader, 50)}</span></div>
-                <div className="detail-row"><span className="label">Participants:</span> <span className="val">{truncate(movement.key_participants, 50)}</span></div>
-                <div className="detail-row"><span className="label">Offline:</span> <span className="val">{truncate(movement.offline_presence, 50)}</span></div>
+                <div className="detail-row tooltip-container" data-tooltip="Nature of the action (e.g., protest, campaign, movement)"><span className="label">Kind:</span> <span className="val">{truncate(movement.kind, 50)}</span></div>
+                <div className="detail-row tooltip-container" data-tooltip="Whether mobilized through grassroots networks"><span className="label">Grassroots:</span> <span className="val">{truncate(movement.grassroots, 50)}</span></div>
+                <div className="detail-row tooltip-container" data-tooltip="Presence of centralized Social Movement Organizations"><span className="label">SMO Leaders:</span> <span className="val">{truncate(movement.smo_leader, 50)}</span></div>
+                <div className="detail-row tooltip-container" data-tooltip="Key social groups or demographics involved"><span className="label">Participants:</span> <span className="val">{truncate(movement.key_participants, 50)}</span></div>
+                <div className="detail-row tooltip-container" data-tooltip="Presence of offline protests or physical gatherings"><span className="label">Offline:</span> <span className="val">{truncate(movement.offline_presence, 50)}</span></div>
             </div>
 
             {/* Column 2: Consequences */}
@@ -187,7 +187,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
 
                 {/* 1. Casualties (First Row) */}
                 {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') && (
-                    <div className="detail-row" style={{ marginBottom: 12 }}>
+                    <div className="detail-row tooltip-container" data-tooltip="Reported injuries, deaths, and arrests" style={{ marginBottom: 12 }}>
                         <span className="label" style={{color: '#f87171'}}>Casualties:</span>
                         <div className="casualty-list-v2">
                             {/* Deaths */}
@@ -223,7 +223,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 )}
                 
                 {/* 2. State Response (Active Only) */}
-                <div className="detail-row" style={{ marginBottom: 8 }}>
+                <div className="detail-row tooltip-container" data-tooltip="Government or state reaction to the movement" style={{ marginBottom: 8 }}>
                     <span className="label">State Resp:</span>
                     <div className="response-grid">
                         {activeStateResponses.length > 0 ? (
@@ -237,7 +237,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 </div>
 
                 {/* 3. Outcome (Third Row) */}
-                <div className="detail-row">
+                <div className="detail-row tooltip-container" data-tooltip="Immediate or long-term results of the movement">
                     <span className="label">Outcome:</span> 
                     <span className="val" style={{ fontWeight: 600, color: '#f4f4f5' }}>{truncate(movement.outcome_raw, 60)}</span>
                 </div>

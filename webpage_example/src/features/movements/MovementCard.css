@@ -25,11 +25,14 @@
 }
 
 /* Specific fix for Details rows (Participants / Offline) to align left */
-.details-preview .tooltip-container:hover::after {
+.details-expanded .tooltip-container:hover::after {
     left: 0;
     transform: none;
+    white-space: normal; /* Allow wrapping for longer descriptions */
+    width: 200px; /* Fixed width for better readability */
+    text-align: left;
 }
-.details-preview .tooltip-container:hover::before {
+.details-expanded .tooltip-container:hover::before {
     left: 10px; /* Adjust arrow position */
     transform: none;
 }
