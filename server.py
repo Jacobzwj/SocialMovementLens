@@ -607,6 +607,35 @@ def search_movements(q: str = ""):
             # Fallback to first 20 if sort fails
             return [map_row_to_movement(row) for _, row in DF_CODES.head(20).iterrows()]
 
+    # --- Case 1: Exact Year Filter (User Request) ---
+    # If the query is exactly a 4-digit number, treat it as a Year Filter
+    if q.strip().isdigit() and len(q.strip()) == 4:
+        target_year = q.strip()
+        print(f"Detected Year Search: {target_year}")
+        try:
+            # Check both 'year' column and 'Timeline'
+            # Convert year column to string for comparison
+            mask = DF_CODES['year'].astype(str).str.contains(target_year, na=False)
+            if 'Timeline' in DF_CODES.columns:
+                 mask |= DF_CODES['Timeline'].astype(str).str.contains(target_year, na=False)
+            
+            results = DF_CODES[mask]
+            print(f"Found {len(results)} movements in year {target_year}")
+            
+            final_results = []
+            for _, row in results.iterrows():
+                try:
+                    mov = map_row_to_movement(row)
+                    mov.similarity = 100.0 # Indicate exact match
+                    final_results.append(mov)
+                except:
+                    continue
+            return final_results
+        except Exception as e:
+            print(f"Year filter error: {e}")
+            # Fall through to normal search if this crashes
+            pass
+
     client = get_openai_client()
     
     # Strategy: 

@@ -38,7 +38,8 @@ function App() {
     setResults([]); 
     setSubmittedQuery(searchTerm);
     try {
-        const res = await fetch(getApiUrl(`/api/search?q=${searchTerm}`));
+        const encodedQuery = encodeURIComponent(searchTerm);
+        const res = await fetch(getApiUrl(`/api/search?q=${encodedQuery}`));
         const data = await res.json();
         setResults(data);
     } catch (err) {
