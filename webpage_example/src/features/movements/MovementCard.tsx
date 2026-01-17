@@ -150,8 +150,12 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 </span>
             </div>
             
-            {/* Empty slot for alignment */}
-            <div className="stat-item empty-stat"></div>
+            <div className="stat-item tooltip-container" data-tooltip="Presence of offline protests or physical gatherings">
+                <Users size={14} className="stat-icon"/> 
+                <span className="stat-val">
+                    Offline: {movement.offline_presence}
+                </span>
+            </div>
         </div>
 
         {/* --- New Details Section (INTERPRETATIVE) --- */}
@@ -180,7 +184,6 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 <div className="detail-row tooltip-container" data-tooltip="Whether mobilized through grassroots networks"><span className="label">Grassroots:</span> <span className="val">{truncate(movement.grassroots, 50)}</span></div>
                 <div className="detail-row tooltip-container" data-tooltip="Presence of centralized Social Movement Organizations"><span className="label">SMO Leaders:</span> <span className="val">{truncate(movement.smo_leader, 50)}</span></div>
                 <div className="detail-row tooltip-container" data-tooltip="Key social groups or demographics involved"><span className="label">Participants:</span> <span className="val">{truncate(movement.key_participants, 50)}</span></div>
-                <div className="detail-row tooltip-container" data-tooltip="Presence of offline protests or physical gatherings"><span className="label">Offline:</span> <span className="val">{truncate(movement.offline_presence, 50)}</span></div>
             </div>
 
             {/* Column 2: Consequences */}
