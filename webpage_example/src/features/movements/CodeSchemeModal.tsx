@@ -6,7 +6,7 @@ interface CodeSchemeModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  content: string;
+  content: React.ReactNode;
 }
 
 const CodeSchemeModal: React.FC<CodeSchemeModalProps> = ({ isOpen, onClose, title, content }) => {
@@ -22,7 +22,7 @@ const CodeSchemeModal: React.FC<CodeSchemeModalProps> = ({ isOpen, onClose, titl
           </button>
         </div>
         <div className="modal-body">
-          <pre className="modal-text">{content}</pre>
+          <div className="modal-html-content">{content}</div>
         </div>
       </div>
     </div>

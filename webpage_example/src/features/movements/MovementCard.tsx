@@ -18,9 +18,9 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
-  const [modalContent, setModalContent] = useState('');
+  const [modalContent, setModalContent] = useState<React.ReactNode>(null);
 
-  const openModal = (title: string, content: string) => {
+  const openModal = (title: string, content: React.ReactNode) => {
       setModalTitle(`Code Scheme: ${title}`);
       setModalContent(content);
       setIsModalOpen(true);
@@ -121,88 +121,181 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
   const SHORT_OUTCOME = "Immediate political results.";
   const SHORT_LONGTERM = "Long-term impact";
 
-  // --- 2. FULL DEFINITIONS (For Modal - EXACT WORD DOC TEXT) ---
+  // --- 2. FULL DEFINITIONS (Structured JSX for Modal) ---
   
-  const FULL_REGIME = `Regime democracy (if local or national)
-Democracy
-Semi-democracy
-Authoritarian`;
+  const FULL_REGIME = (
+    <div>
+        <p>Regime democracy (if local or national):</p>
+        <ul>
+            <li><strong>Democracy</strong></li>
+            <li><strong>Semi-democracy</strong></li>
+            <li><strong>Authoritarian</strong></li>
+        </ul>
+    </div>
+  );
 
-  const FULL_SMO = `SMO Leaders (yes/no): whether containing a recognized leader or organization
-Yes: 
-The movement/campaign established specialized social movement organizations.
-Some pre-existing organizations/figures played leading roles in organizing the movement/campaign.
-No: none of the above`;
+  const FULL_SMO = (
+    <div>
+        <p>SMO Leaders (yes/no): whether containing a recognized leader or organization.</p>
+        <ul>
+            <li><strong>Yes:</strong>
+                <ul>
+                    <li>The movement/campaign established specialized social movement organizations.</li>
+                    <li>Some pre-existing organizations/figures played leading roles in organizing the movement/campaign.</li>
+                </ul>
+            </li>
+            <li><strong>No:</strong> none of the above.</li>
+        </ul>
+    </div>
+  );
 
-  const FULL_GRASSROOTS = `Grassroots Mobilization
-Yes: A significant proportion was driven by grassroots mobilization. It is often characterized by its bottom-up approach, meaning it starts with ordinary people rather than being driven by elites, large organizations, or formal institutions.
-No: primarily top-down.`;
+  const FULL_GRASSROOTS = (
+    <div>
+        <p><strong>Grassroots Mobilization:</strong></p>
+        <ul>
+            <li><strong>Yes:</strong> A significant proportion was driven by grassroots mobilization. It is often characterized by its bottom-up approach, meaning it starts with ordinary people rather than being driven by elites, large organizations, or formal institutions.</li>
+            <li><strong>No:</strong> primarily top-down.</li>
+        </ul>
+    </div>
+  );
 
-  const FULL_OFFLINE = `Offline manifestations (yes/no): whether the movement included offline activities.
-Yes: offline gatherings, demonstrations, petitions, activities, etc.
-No: the movement contains no offline activities or elements and only has online manifestations.`;
+  const FULL_OFFLINE = (
+    <div>
+        <p>Offline manifestations (yes/no): whether the movement included offline activities.</p>
+        <ul>
+            <li><strong>Yes:</strong> offline gatherings, demonstrations, petitions, activities, etc.</li>
+            <li><strong>No:</strong> the movement contains no offline activities or elements and only has online manifestations.</li>
+        </ul>
+    </div>
+  );
 
-  const FULL_KIND = `Movement type: What kind of online movement is it? (election campaign/non-election campaign/others)
-Election campaign
-Non-election campaign: [online] campaigns not aiming for election goals, e.g., #OscarSoWhite, climate change petition, etc. 
-Protest/demonstration/rally: offline activities if 8 == yes
-Others: online activities that have a smaller scale or are less structured as campaigns (usually voluntary), e.g., feminism online discussion, online deliberation on a particular issue, etc.`;
+  const FULL_KIND = (
+    <div>
+        <p>Movement type: What kind of online movement is it?</p>
+        <ul>
+            <li><strong>Election campaign</strong></li>
+            <li><strong>Non-election campaign:</strong> [online] campaigns not aiming for election goals, e.g., #OscarSoWhite, climate change petition, etc.</li>
+            <li><strong>Protest/demonstration/rally:</strong> offline activities if <em>Offline manifestations</em> == yes.</li>
+            <li><strong>Others:</strong> online activities that have a smaller scale or are less structured as campaigns (usually voluntary), e.g., feminism online discussion, online deliberation on a particular issue, etc.</li>
+        </ul>
+    </div>
+  );
 
-  const FULL_TOPIC = `Theme of the movement (binary coding:  political or not/economic or not/social or not/environmental or not/others)
-Political: the movement targeting a political entity (politicians, government agencies, parties, security forces)
-Economic: the movement targeting an economic issue or entity (e.g., Occupy Wall Street)
-Environmental: the movement that targets an environmental issue (e.g., climate change)
-Social: the movement targeting other social issues, phenomena, or aspects (gender, race, entertainment, immigration, prestige, health, etc.)
-Others: the movement that could not be categorized by the above themes`;
+  const FULL_TOPIC = (
+    <div>
+        <p>Theme of the movement (binary coding: political or not / economic or not / social or not / environmental or not / others).</p>
+        <ul>
+            <li><strong>Political:</strong> the movement targeting a political entity (politicians, government agencies, parties, security forces).</li>
+            <li><strong>Economic:</strong> the movement targeting an economic issue or entity (e.g., Occupy Wall Street).</li>
+            <li><strong>Environmental:</strong> the movement that targets an environmental issue (e.g., climate change).</li>
+            <li><strong>Social:</strong> the movement targeting other social issues, phenomena, or aspects (gender, race, entertainment, immigration, prestige, health, etc.).</li>
+            <li><strong>Others:</strong> the movement that could not be categorized by the above themes.</li>
+        </ul>
+    </div>
+  );
 
-  const FULL_PARTICIPANTS = `Key participants (general public/young/women/racial minority/LGBTQIA2+): determining the key participants who organize or facilitate the mobilization:
-General public
-Young: younger generations or students
-Women
-Racial minority: African Americans, Hispanics, Asians, Pacific Islanders, etc.
-Religious groups
-LGBTQIA2+
-Other social groups`;
+  const FULL_PARTICIPANTS = (
+    <div>
+        <p>Key participants: determining the key participants who organize or facilitate the mobilization:</p>
+        <ul>
+            <li>General public</li>
+            <li>Young: younger generations or students</li>
+            <li>Women</li>
+            <li>Racial minority: African Americans, Hispanics, Asians, Pacific Islanders, etc.</li>
+            <li>Religious groups</li>
+            <li>LGBTQIA2+</li>
+            <li>Other social groups</li>
+        </ul>
+    </div>
+  );
 
-  const FULL_CASUALTIES = `Number of injuries, if any (copy from Wikipedia or news websites, determined by the peak size) - make judgment based on a one-year length (adding multiple waves together)
-Police injuries
-Number of deaths, if any (copy from Wikipedia or news websites, determined by the peak size) - make judgment based on a one-year length (adding multiple waves together)
-Police deaths
-Number of arrested, if any (copy from Wikipedia or news websites, determined by the peak size) - make judgment based on a one-year length (adding multiple waves together)`;
+  const FULL_CASUALTIES = (
+    <div>
+        <p>Casualties statistics (judged based on a one-year length, adding multiple waves together):</p>
+        <ul>
+            <li><strong>Number of injuries:</strong> if any (copy from Wikipedia or news websites, determined by the peak size).
+                <ul><li>Police injuries</li></ul>
+            </li>
+            <li><strong>Number of deaths:</strong> if any.
+                <ul><li>Police deaths</li></ul>
+            </li>
+            <li><strong>Number of arrested:</strong> if any.</li>
+        </ul>
+    </div>
+  );
 
-  const FULL_REOCCURRENCE = `Reoccurrence of the movement (yes/no): whether the movement happened in this specific year or in prior years.
-Yes: the movement occurred in prior years (e.g., BLM)
-No`;
+  const FULL_REOCCURRENCE = (
+    <div>
+        <p>Reoccurrence of the movement (yes/no): whether the movement happened in this specific year or in prior years.</p>
+        <ul>
+            <li><strong>Yes:</strong> the movement occurred in prior years (e.g., BLM).</li>
+            <li><strong>No:</strong> first time occurrence.</li>
+        </ul>
+    </div>
+  );
 
-  const FULL_LENGTH = `Length of the movement (#days ongoing/unclear) - make a judgment based on a one-year length (adding multiple waves together)
-Number of days: calculate #days based on the start and end date of the OFFLINE activities of this movement in the specific year (e.g., BLM 2020)
-Ongoing: if this movement continues to 2023
-Unclear: the #days are not able to be calculated, or the movement progress is not well documented.`;
+  const FULL_LENGTH = (
+    <div>
+        <p>Length of the movement (#days ongoing/unclear) - make a judgment based on a one-year length:</p>
+        <ul>
+            <li><strong>Number of days:</strong> calculate #days based on the start and end date of the OFFLINE activities of this movement in the specific year (e.g., BLM 2020).</li>
+            <li><strong>Ongoing:</strong> if this movement continues to 2023.</li>
+            <li><strong>Unclear:</strong> the #days are not able to be calculated, or the movement progress is not well documented.</li>
+        </ul>
+    </div>
+  );
 
-  const FULL_STATE_RESP = `State response (binary coding: accommodation or not/distraction or not/repression or not/ignore or not):
-Accommodation: the state made changes or took actions in response to the demands of the protestors
-Acceptance: whether the movement/campaign was accepted by elites as a legitimate challenger OR acceptance of challenging group as a legitimate constituency representative. 
-Advantage: whether the challenging movement received new advantages and benefits it was explicitly seeking OR success in achieving particular goals, such as passage of legislation.
-Distraction: the state distracted the attention of protestors by manipulating online attention to other issues (e.g., flooding) or distracting the locus of problem to non-government entities (e.g., enterprises)
-Repression: the state took legitimate or illegitimate coercive actions toward the protestors (e.g., violence, arrests, crowd dispersal, shootings, or killings)
-Physical repression
-Legal repression
-Ignore: the state ignored the demands of the protestors and did not take any actions.
-Ignore
-Attrition`;
+  const FULL_STATE_RESP = (
+    <div>
+        <p>State response (binary coding):</p>
+        <ul>
+            <li><strong>Accommodation:</strong> the state made changes or took actions in response to the demands of the protestors.
+                <ul>
+                    <li><strong>Acceptance:</strong> whether the movement/campaign was accepted by elites as a legitimate challenger OR acceptance of challenging group as a legitimate constituency representative.</li>
+                    <li><strong>Advantage:</strong> whether the challenging movement received new advantages and benefits it was explicitly seeking OR success in achieving particular goals, such as passage of legislation.</li>
+                </ul>
+            </li>
+            <li><strong>Distraction:</strong> the state distracted the attention of protestors by manipulating online attention to other issues (e.g., flooding) or distracting the locus of problem to non-government entities (e.g., enterprises).</li>
+            <li><strong>Repression:</strong> the state took legitimate or illegitimate coercive actions toward the protestors (e.g., violence, arrests, crowd dispersal, shootings, or killings).
+                <ul>
+                    <li>Physical repression</li>
+                    <li>Legal repression</li>
+                </ul>
+            </li>
+            <li><strong>Ignore:</strong> the state ignored the demands of the protestors and did not take any actions.
+                <ul>
+                    <li>Ignore</li>
+                    <li>Attrition</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+  );
 
-  const FULL_OUTCOME = `Political outcomes of the movement (regime change/major policy change/policy revision/fail):
-Regime change: the regime was overthrown or shifted fundamentally.
-Major policy change: a new policy or law was created or enacted.
-Policy revision: revisions on existing policies or laws were made.
-Other reactions: non-policy change (e.g., Police arrested the criminal, increasing empty seats in campaigns, government responses/statements, quitting the government/party, etc.)
-NA: only increasing awareness or symbolic benefits (measured by social media power)
-Fail: nothing mentioned above was achieved.`;
+  const FULL_OUTCOME = (
+    <div>
+        <p>Political outcomes of the movement:</p>
+        <ul>
+            <li><strong>Regime change:</strong> the regime was overthrown or shifted fundamentally.</li>
+            <li><strong>Major policy change:</strong> a new policy or law was created or enacted.</li>
+            <li><strong>Policy revision:</strong> revisions on existing policies or laws were made.</li>
+            <li><strong>Other reactions:</strong> non-policy change (e.g., Police arrested the criminal, increasing empty seats in campaigns, government responses/statements, quitting the government/party, etc.).</li>
+            <li><strong>NA:</strong> only increasing awareness or symbolic benefits (measured by social media power).</li>
+            <li><strong>Fail:</strong> nothing mentioned above was achieved.</li>
+        </ul>
+    </div>
+  );
 
-  const FULL_LONGTERM = `Long-term outcomes:
-Continue: Continual change in the direction brought about/demanded by the movement.
-Contraction: Repression and/or contraction in the direction opposite to what the movement demanded.
-No: No identified long-term change`;
+  const FULL_LONGTERM = (
+    <div>
+        <p>Long-term outcomes:</p>
+        <ul>
+            <li><strong>Continue:</strong> Continual change in the direction brought about/demanded by the movement.</li>
+            <li><strong>Contraction:</strong> Repression and/or contraction in the direction opposite to what the movement demanded.</li>
+            <li><strong>No:</strong> No identified long-term change.</li>
+        </ul>
+    </div>
+  );
 
 
   return (

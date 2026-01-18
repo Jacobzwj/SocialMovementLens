@@ -17,7 +17,7 @@
     border: 1px solid #3f3f46;
     border-radius: 12px;
     width: 90%;
-    max-width: 600px;
+    max-width: 650px; /* Slightly wider for better reading */
     max-height: 85vh;
     display: flex;
     flex-direction: column;
@@ -31,6 +31,8 @@
     align-items: center;
     padding: 16px 24px;
     border-bottom: 1px solid #27272a;
+    background-color: #27272a; /* Slightly lighter header */
+    border-radius: 12px 12px 0 0;
 }
 
 .modal-header h3 {
@@ -54,22 +56,41 @@
 }
 
 .modal-close-btn:hover {
-    background-color: #27272a;
+    background-color: #3f3f46;
     color: #e4e4e7;
 }
 
 .modal-body {
     padding: 24px;
     overflow-y: auto;
+    font-size: 0.95rem;
+    color: #d4d4d8;
+    line-height: 1.6;
 }
 
-.modal-text {
-    margin: 0;
-    white-space: pre-wrap; /* Preserve line breaks and spaces */
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: #d4d4d8;
+/* Rich Text Styling for Modal Content */
+.modal-html-content p {
+    margin-bottom: 12px;
+}
+
+.modal-html-content ul {
+    list-style-type: disc;
+    padding-left: 24px;
+    margin-bottom: 12px;
+}
+
+.modal-html-content ul ul {
+    list-style-type: circle; /* Nested list */
+    margin-top: 6px;
+}
+
+.modal-html-content li {
+    margin-bottom: 6px;
+}
+
+.modal-html-content strong {
+    color: #fff;
+    font-weight: 600;
 }
 
 @keyframes fadeIn {
