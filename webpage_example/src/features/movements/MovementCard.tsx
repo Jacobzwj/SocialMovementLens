@@ -260,7 +260,7 @@ No: No identified long-term change`;
             </div>
 
             {/* Row 2 */}
-            <div className="stat-item">
+            <div className="stat-item tooltip-container" data-tooltip="Length of the movement (#days ongoing/unclear) - make a judgment based on a one-year length.">
                 <Clock size={14} className="stat-icon"/> 
                 <span className="stat-val">
                     {movement.length_days && movement.length_days.toLowerCase().includes('ongoing') 
@@ -269,7 +269,7 @@ No: No identified long-term change`;
                 </span>
                 <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("Duration", SCHEME_LENGTH)} />
             </div>
-            <div className="stat-item">
+            <div className="stat-item tooltip-container" data-tooltip="Reoccurrence of the movement (yes/no): whether the movement happened in this specific year or in prior years.">
                 <Repeat size={14} className="stat-icon"/> 
                 <span className="stat-val" style={{ textTransform: 'capitalize' }}>
                     {(!movement.reoccurrence || movement.reoccurrence.toLowerCase() === 'no') 
@@ -279,7 +279,7 @@ No: No identified long-term change`;
                 <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("Reoccurrence", SCHEME_REOCCURRENCE)} />
             </div>
             
-            <div className="stat-item">
+            <div className="stat-item tooltip-container" data-tooltip="Regime democracy (if local or national): Democracy, Semi-democracy, or Authoritarian.">
                 <Landmark size={14} className="stat-icon"/> 
                 <span className="stat-val" style={{ textTransform: 'capitalize' }}>
                     {movement.regime ? movement.regime.charAt(0).toUpperCase() + movement.regime.slice(1) : ''}
@@ -295,7 +295,7 @@ No: No identified long-term change`;
                 <span className="col-header">Movement Profile</span>
                 
                 {/* Topic Badges (Active Only) */}
-                <div className="detail-row">
+                <div className="detail-row tooltip-container" data-tooltip="Theme of the movement. Political: targeting a political entity; Economic: targeting an economic issue; Environmental: targets an environmental issue; Social: targeting social issues; Others.">
                     <span className="label-with-icon">
                         Topic:
                         <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("Theme", SCHEME_TOPIC)} />
@@ -313,7 +313,7 @@ No: No identified long-term change`;
                     </div>
                 </div>
 
-                <div className="detail-row">
+                <div className="detail-row tooltip-container" data-tooltip="Movement type: What kind of online movement is it? (Election campaign / Non-election campaign / Protest/demonstration/rally / Others).">
                     <span className="label-with-icon">
                         Kind:
                         <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("Movement Type", SCHEME_KIND)} />
@@ -321,7 +321,7 @@ No: No identified long-term change`;
                     <span className="val">{truncate(movement.kind, 50)}</span>
                 </div>
                 
-                <div className="detail-row">
+                <div className="detail-row tooltip-container" data-tooltip="Grassroots Mobilization: A significant proportion was driven by grassroots mobilization. It is often characterized by its bottom-up approach, meaning it starts with ordinary people rather than being driven by elites, large organizations, or formal institutions.">
                     <span className="label-with-icon">
                         Grassroots:
                         <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("Grassroots Mobilization", SCHEME_GRASSROOTS)} />
@@ -329,7 +329,7 @@ No: No identified long-term change`;
                     <span className="val">{truncate(movement.grassroots, 50)}</span>
                 </div>
                 
-                <div className="detail-row">
+                <div className="detail-row tooltip-container" data-tooltip="SMO Leaders (yes/no): whether containing a recognized leader or organization. Yes means the movement established specialized SMOs or pre-existing figures played leading roles.">
                     <span className="label-with-icon">
                         SMO Leaders:
                         <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("SMO Leaders", SCHEME_SMO)} />
@@ -337,7 +337,7 @@ No: No identified long-term change`;
                     <span className="val">{truncate(movement.smo_leader, 50)}</span>
                 </div>
                 
-                <div className="detail-row">
+                <div className="detail-row tooltip-container" data-tooltip="Key participants: determining the key participants who organize or facilitate the mobilization (general public/young/women/racial minority/LGBTQIA2+/etc.).">
                     <span className="label-with-icon">
                         Participants:
                         <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("Key Participants", SCHEME_PARTICIPANTS)} />
@@ -345,7 +345,7 @@ No: No identified long-term change`;
                     <span className="val">{truncate(movement.key_participants, 50)}</span>
                 </div>
                 
-                <div className="detail-row">
+                <div className="detail-row tooltip-container" data-tooltip="Offline manifestations (yes/no): whether the movement included offline activities (gatherings, demonstrations, petitions, etc.).">
                     <span className="label-with-icon">
                         Offline:
                         <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("Offline Manifestations", SCHEME_OFFLINE)} />
@@ -359,7 +359,7 @@ No: No identified long-term change`;
                 <span className="col-header">Consequences</span>
 
                 {/* 1. Casualties (First Row) - Always show, with fallback */}
-                <div className="detail-row" style={{ marginBottom: 12 }}>
+                <div className="detail-row tooltip-container" data-tooltip="Number of injuries, deaths, and arrested: make judgment based on a one-year length (adding multiple waves together), determined by the peak size." style={{ marginBottom: 12 }}>
                     <span className="label-with-icon" style={{color: '#f87171'}}>
                         Casualties:
                         <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("Casualties", SCHEME_CASUALTIES)} />
@@ -401,7 +401,7 @@ No: No identified long-term change`;
                 </div>
                 
                 {/* 2. State Response (Active Only) */}
-                <div className="detail-row" style={{ marginBottom: 8 }}>
+                <div className="detail-row tooltip-container" data-tooltip="State response: Accommodation (state made changes), Distraction (distracted attention), Repression (coercive actions), or Ignore (did not take any actions)." style={{ marginBottom: 8 }}>
                     <span className="label-with-icon">
                         State Resp:
                         <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("State Response", SCHEME_STATE_RESP)} />
@@ -418,7 +418,7 @@ No: No identified long-term change`;
                 </div>
 
                 {/* 3. Outcomes (Third Row) */}
-                <div className="detail-row">
+                <div className="detail-row tooltip-container" data-tooltip="Political outcomes of the movement: Regime change, Major policy change, Policy revision, Other reactions (non-policy change), or Fail.">
                     <span className="label-with-icon">
                         Political Outcome:
                         <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("Political Outcome", SCHEME_OUTCOME)} />
@@ -426,7 +426,7 @@ No: No identified long-term change`;
                     <span className="val">{truncate(movement.outcome_raw, 60)}</span>
                 </div>
                 
-                <div className="detail-row">
+                <div className="detail-row tooltip-container" data-tooltip="Long-term outcomes: Continue (continual change in the direction brought about/demanded), Contraction (repression/contraction in opposite direction), or No (no identified long-term change).">
                     <span className="label-with-icon">
                         Long-term Outcome:
                         <HelpCircle size={12} className="info-icon" onClick={() => openSchemeModal("Long-term Outcome", SCHEME_LONGTERM)} />
