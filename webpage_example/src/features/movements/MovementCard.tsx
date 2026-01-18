@@ -275,7 +275,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 {/* 3. Outcomes (Third Row) */}
                 <div className="detail-row tooltip-container" data-tooltip="Immediate results of the movement">
                     <span className="label">Political Outcome:</span> 
-                    <span className="val" style={{ fontWeight: 600, color: '#f4f4f5' }}>{truncate(movement.outcome_raw, 60)}</span>
+                    <span className="val">{truncate(movement.outcome_raw, 60)}</span>
                 </div>
                 
                 <div className="detail-row tooltip-container" data-tooltip="Long-term impact or legacy">
