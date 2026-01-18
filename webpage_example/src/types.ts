@@ -34,6 +34,7 @@ export interface Movement {
   grassroots: string;
   kind: string;
   outcome_raw: string;
+  longterm_outcome: string;
   state_accommodation: string;
   state_distraction: string;
   state_repression: string;

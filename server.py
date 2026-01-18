@@ -304,6 +304,7 @@ class Movement(BaseModel):
     grassroots: str
     kind: str
     outcome_raw: str
+    longterm_outcome: str
     state_accommodation: str
     state_distraction: str
     state_repression: str
@@ -483,7 +484,10 @@ def map_row_to_movement(row) -> Movement:
     if r_off: rationales_found["Offline"] = r_off
     
     r_out = get_rationale_if_diff('Outcome')
-    if r_out: rationales_found["Outcome"] = r_out
+    if r_out: rationales_found["Political Outcome"] = r_out
+
+    r_long = get_rationale_if_diff('Longterm')
+    if r_long: rationales_found["Long-term Outcome"] = r_long
 
     # --- Casualties & Arrests Rationales ---
     def check_zero(val):
@@ -570,6 +574,7 @@ def map_row_to_movement(row) -> Movement:
         grassroots=clean_nan(row.get('Grassroots_Mobilization'), "Unknown"),
         kind=clean_nan(row.get('Kind_Movement'), "General"),
         outcome_raw=clean_nan(row.get('Outcome'), "Ongoing"),
+        longterm_outcome=clean_nan(row.get('Longterm'), "N/A"),
         state_accommodation=clean_nan(row.get('State_response_accomendation'), "No"),
         state_distraction=clean_nan(row.get('State_response_distraction'), "No"),
         state_repression=clean_nan(row.get('State_response_repression'), "No"),
