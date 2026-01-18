@@ -460,6 +460,10 @@ def map_row_to_movement(row) -> Movement:
     # Populate Rationales
     # Only add to dict if get_rationale_if_diff returns a value
     
+    # 1. Description (Requested as first line)
+    r_desc = get_rationale_if_diff('Description')
+    if r_desc: rationales_found["Description"] = r_desc
+
     r_kind = get_rationale_if_diff('Kind_Movement')
     if r_kind: rationales_found["Kind"] = r_kind
     
