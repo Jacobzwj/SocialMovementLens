@@ -127,14 +127,14 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
   const SHORT_SMO = "Presence of centralized social movement organizations or leaders";
   const SHORT_GRASSROOTS = "Whether mobilized through grassroots";
   const SHORT_OFFLINE = "Includes offline protests/events?";
-  const SHORT_KIND = "Movement Type.";
-  const SHORT_TOPIC = "Thematic classification of the movement.";
-  const SHORT_PARTICIPANTS = "Main demographic groups involved.";
-  const SHORT_CASUALTIES = "Reported injuries, deaths, arrests.";
+  const SHORT_KIND = "Movement Type";
+  const SHORT_TOPIC = "Thematic classification of the movement";
+  const SHORT_PARTICIPANTS = "Main demographic groups involved";
+  const SHORT_CASUALTIES = "Reported injuries, deaths, arrests";
   const SHORT_REOCCURRENCE = "Reoccurrence of the movement (yes/no)";
   const SHORT_LENGTH = "Duration in days";
-  const SHORT_STATE_RESP = "Government reaction to protests.";
-  const SHORT_OUTCOME = "Immediate political results.";
+  const SHORT_STATE_RESP = "Government reaction to protests";
+  const SHORT_OUTCOME = "Immediate political results";
   const SHORT_LONGTERM = "Long-term impact";
 
   // --- 2. FULL DEFINITIONS (Structured JSX for Modal) ---
