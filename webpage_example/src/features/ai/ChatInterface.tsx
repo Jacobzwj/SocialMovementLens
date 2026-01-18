@@ -96,7 +96,7 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
     <div className="chat-container">
       <div className="bot-header">
         <Bot size={20} />
-        <span>SocialGraph-Agent v1.2</span>
+        <span>SocialMovement-Agent</span>
       </div>
       
       <div className="chat-messages" ref={scrollRef}>
