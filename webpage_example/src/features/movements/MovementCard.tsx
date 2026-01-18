@@ -40,32 +40,6 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
     return text.substring(0, limit) + '...';
   };
 
-  // Process Twitter Query: Take only the first term
-  const rawQuery = movement.twitter_query || movement.hashtag || "";
-  // Split by comma or space to get the first tag/term
-  const firstTerm = rawQuery.split(/[\s,]+/)[0].replace(/['"]+/g, '');
-  
-  const twitterLink = rawQuery 
-    ? (rawQuery.startsWith('http') 
-        ? rawQuery 
-        : `https://twitter.com/search?q=${encodeURIComponent(rawQuery)}`)
-    : null;
-
-  // Predefined Topics
-  const ALL_TOPICS = ['Political', 'Economic', 'Environmental', 'Social', 'Others'];
-
-  // Helper to get active state responses
-  const getActiveStateResponses = () => {
-      const responses = [];
-      if (movement.state_accommodation.toLowerCase() === 'yes') responses.push('Accommodation');
-      if (movement.state_distraction.toLowerCase() === 'yes') responses.push('Distraction');
-      if (movement.state_repression.toLowerCase() === 'yes') responses.push('Repression');
-      if (movement.state_ignore.toLowerCase() === 'yes') responses.push('Ignore');
-      return responses;
-  };
-
-  const activeStateResponses = getActiveStateResponses();
-
   // Helper to render text with clickable links
   const renderTextWithLinks = (text: string) => {
     if (!text) return text;
@@ -93,6 +67,32 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
         return part;
     });
   };
+
+  // Process Twitter Query: Take only the first term
+  const rawQuery = movement.twitter_query || movement.hashtag || "";
+  // Split by comma or space to get the first tag/term
+  const firstTerm = rawQuery.split(/[\s,]+/)[0].replace(/['"]+/g, '');
+  
+  const twitterLink = rawQuery 
+    ? (rawQuery.startsWith('http') 
+        ? rawQuery 
+        : `https://twitter.com/search?q=${encodeURIComponent(rawQuery)}`)
+    : null;
+
+  // Predefined Topics
+  const ALL_TOPICS = ['Political', 'Economic', 'Environmental', 'Social', 'Others'];
+
+  // Helper to get active state responses
+  const getActiveStateResponses = () => {
+      const responses = [];
+      if (movement.state_accommodation.toLowerCase() === 'yes') responses.push('Accommodation');
+      if (movement.state_distraction.toLowerCase() === 'yes') responses.push('Distraction');
+      if (movement.state_repression.toLowerCase() === 'yes') responses.push('Repression');
+      if (movement.state_ignore.toLowerCase() === 'yes') responses.push('Ignore');
+      return responses;
+  };
+
+  const activeStateResponses = getActiveStateResponses();
 
   return (
     <div className={`movement-card-v2 ${showCoding ? 'expanded' : ''}`}>
@@ -161,7 +161,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             </div>
 
             {/* Row 2 */}
-            <div className="stat-item tooltip-container" data-tooltip="Duration in Days">
+            <div className="stat-item tooltip-container" data-tooltip="Length of the movement (#days ongoing/unclear) - make a judgment based on a one-year length.">
                 <Clock size={14} className="stat-icon"/> 
                 <span className="stat-val">
                     {movement.length_days && movement.length_days.toLowerCase().includes('ongoing') 
@@ -169,7 +169,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                         : `${movement.length_days} Days`}
                 </span>
             </div>
-            <div className="stat-item tooltip-container" data-tooltip="Reoccurrence Frequency">
+            <div className="stat-item tooltip-container" data-tooltip="Reoccurrence of the movement (yes/no): whether the movement happened in this specific year or in prior years.">
                 <Repeat size={14} className="stat-icon"/> 
                 <span className="stat-val" style={{ textTransform: 'capitalize' }}>
                     {(!movement.reoccurrence || movement.reoccurrence.toLowerCase() === 'no') 
@@ -178,7 +178,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 </span>
             </div>
             
-            <div className="stat-item tooltip-container" data-tooltip="Political Regime Type">
+            <div className="stat-item tooltip-container" data-tooltip="Regime democracy (if local or national): Democracy, Semi-democracy, or Authoritarian.">
                 <Landmark size={14} className="stat-icon"/> 
                 <span className="stat-val" style={{ textTransform: 'capitalize' }}>
                     {movement.regime ? movement.regime.charAt(0).toUpperCase() + movement.regime.slice(1) : ''}
@@ -193,7 +193,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 <span className="col-header">Movement Profile</span>
                 
                 {/* Topic Badges (Active Only) */}
-                <div className="detail-row tooltip-container" data-tooltip="Thematic classification of the movement">
+                <div className="detail-row tooltip-container" data-tooltip="Theme of the movement. Political: targeting a political entity; Economic: targeting an economic issue; Environmental: targets an environmental issue; Social: targeting social issues; Others.">
                     <span className="label">Topic:</span>
                     <div className="topic-grid">
                         {movement.tags.length > 0 ? (
@@ -208,11 +208,11 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                     </div>
                 </div>
 
-                <div className="detail-row tooltip-container" data-tooltip="Nature of the action (e.g., protest, campaign, movement)"><span className="label">Kind:</span> <span className="val">{truncate(movement.kind, 50)}</span></div>
-                <div className="detail-row tooltip-container" data-tooltip="Whether mobilized through grassroots networks"><span className="label">Grassroots:</span> <span className="val">{truncate(movement.grassroots, 50)}</span></div>
-                <div className="detail-row tooltip-container" data-tooltip="Presence of centralized Social Movement Organizations or leaders"><span className="label">SMO Leaders:</span> <span className="val">{truncate(movement.smo_leader, 50)}</span></div>
-                <div className="detail-row tooltip-container" data-tooltip="Key social groups or demographics involved"><span className="label">Participants:</span> <span className="val">{truncate(movement.key_participants, 50)}</span></div>
-                <div className="detail-row tooltip-container" data-tooltip="Presence of offline protests or physical gatherings"><span className="label">Offline:</span> <span className="val">{truncate(movement.offline_presence, 50)}</span></div>
+                <div className="detail-row tooltip-container" data-tooltip="Movement type: What kind of online movement is it? (Election campaign / Non-election campaign / Protest/demonstration/rally / Others)."><span className="label">Kind:</span> <span className="val">{truncate(movement.kind, 50)}</span></div>
+                <div className="detail-row tooltip-container" data-tooltip="Grassroots Mobilization: A significant proportion was driven by grassroots mobilization. It is often characterized by its bottom-up approach, meaning it starts with ordinary people rather than being driven by elites, large organizations, or formal institutions."><span className="label">Grassroots:</span> <span className="val">{truncate(movement.grassroots, 50)}</span></div>
+                <div className="detail-row tooltip-container" data-tooltip="SMO Leaders (yes/no): whether containing a recognized leader or organization. Yes means the movement established specialized SMOs or pre-existing figures played leading roles."><span className="label">SMO Leaders:</span> <span className="val">{truncate(movement.smo_leader, 50)}</span></div>
+                <div className="detail-row tooltip-container" data-tooltip="Key participants: determining the key participants who organize or facilitate the mobilization (general public/young/women/racial minority/LGBTQIA2+/etc.)."><span className="label">Participants:</span> <span className="val">{truncate(movement.key_participants, 50)}</span></div>
+                <div className="detail-row tooltip-container" data-tooltip="Offline manifestations (yes/no): whether the movement included offline activities (gatherings, demonstrations, petitions, etc.)."><span className="label">Offline:</span> <span className="val">{truncate(movement.offline_presence, 50)}</span></div>
             </div>
 
             {/* Column 2: Consequences */}
@@ -220,7 +220,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 <span className="col-header">Consequences</span>
 
                 {/* 1. Casualties (First Row) - Always show, with fallback */}
-                <div className="detail-row tooltip-container" data-tooltip="Reported injuries, deaths, and arrests" style={{ marginBottom: 12 }}>
+                <div className="detail-row tooltip-container" data-tooltip="Number of injuries, deaths, and arrested: make judgment based on a one-year length (adding multiple waves together), determined by the peak size." style={{ marginBottom: 12 }}>
                     <span className="label" style={{color: '#f87171'}}>Casualties:</span>
                     {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') ? (
                         <div className="casualty-list-v2">
@@ -259,7 +259,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 </div>
                 
                 {/* 2. State Response (Active Only) */}
-                <div className="detail-row tooltip-container" data-tooltip="Government or state reaction to the movement" style={{ marginBottom: 8 }}>
+                <div className="detail-row tooltip-container" data-tooltip="State response: Accommodation (state made changes), Distraction (distracted attention), Repression (coercive actions), or Ignore (did not take any actions)." style={{ marginBottom: 8 }}>
                     <span className="label">State Resp:</span>
                     <div className="response-grid">
                         {activeStateResponses.length > 0 ? (
@@ -273,12 +273,12 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 </div>
 
                 {/* 3. Outcomes (Third Row) */}
-                <div className="detail-row tooltip-container" data-tooltip="Immediate results of the movement">
+                <div className="detail-row tooltip-container" data-tooltip="Political outcomes of the movement: Regime change, Major policy change, Policy revision, Other reactions (non-policy change), or Fail.">
                     <span className="label">Political Outcome:</span> 
                     <span className="val">{truncate(movement.outcome_raw, 60)}</span>
                 </div>
                 
-                <div className="detail-row tooltip-container" data-tooltip="Long-term impact or legacy">
+                <div className="detail-row tooltip-container" data-tooltip="Long-term outcomes: Continue (continual change in the direction brought about/demanded), Contraction (repression/contraction in opposite direction), or No (no identified long-term change).">
                     <span className="label">Long-term Outcome:</span> 
                     <span className="val">{truncate(movement.longterm_outcome, 60)}</span>
                 </div>

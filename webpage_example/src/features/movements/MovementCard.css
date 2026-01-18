@@ -29,8 +29,9 @@
     left: 0;
     transform: none;
     white-space: normal; /* Allow wrapping for longer descriptions */
-    width: 200px; /* Fixed width for better readability */
+    width: 300px; /* Increased width for full Code Scheme definitions */
     text-align: left;
+    line-height: 1.4;
 }
 .details-expanded .tooltip-container:hover::before {
     left: 10px; /* Adjust arrow position */
