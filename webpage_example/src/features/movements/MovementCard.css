@@ -214,7 +214,6 @@
     color: #d4d4d8;
     font-size: 0.8rem;
     position: relative; /* For Tooltip */
-    cursor: help; /* Indicate hoverable */
 }
 
 .stat-icon {
@@ -273,7 +272,6 @@
 
 .label {
     color: #71717a;
-    cursor: help; /* Change cursor to question mark on hover */
     /* min-width removed as parent controls width */
 }
 
