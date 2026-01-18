@@ -211,9 +211,9 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
 
   const FULL_CASUALTIES = (
     <div>
-        <p>Casualties statistics (judged based on a one-year length, adding multiple waves together):</p>
+        <p>Casualties statistics (judged based on a one-year length, adding multiple waves together; copy from Wikipedia or news websites, determined by the peak size):</p>
         <ul>
-            <li><strong>Number of injuries:</strong> if any (copy from Wikipedia or news websites, determined by the peak size).
+            <li><strong>Number of injuries:</strong> if any.
                 <ul><li>Police injuries</li></ul>
             </li>
             <li><strong>Number of deaths:</strong> if any.
