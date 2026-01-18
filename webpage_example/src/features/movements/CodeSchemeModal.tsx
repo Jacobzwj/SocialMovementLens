@@ -3,26 +3,26 @@ import { X } from 'lucide-react';
 import './CodeSchemeModal.css';
 
 interface CodeSchemeModalProps {
-  title: string;
-  content: string;
   isOpen: boolean;
   onClose: () => void;
+  title: string;
+  content: string;
 }
 
-const CodeSchemeModal: React.FC<CodeSchemeModalProps> = ({ title, content, isOpen, onClose }) => {
+const CodeSchemeModal: React.FC<CodeSchemeModalProps> = ({ isOpen, onClose, title, content }) => {
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>Code Scheme: {title}</h3>
-          <button className="close-button" onClick={onClose}>
+          <h3>{title}</h3>
+          <button className="modal-close-btn" onClick={onClose}>
             <X size={20} />
           </button>
         </div>
         <div className="modal-body">
-          <pre className="scheme-text">{content}</pre>
+          <pre className="modal-text">{content}</pre>
         </div>
       </div>
     </div>

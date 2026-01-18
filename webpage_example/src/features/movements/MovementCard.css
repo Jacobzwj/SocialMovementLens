@@ -28,11 +28,10 @@
 .details-expanded .tooltip-container:hover::after {
     left: 0;
     transform: none;
-    white-space: pre-wrap; /* Preserve original line breaks from Code Scheme */
-    width: 500px; /* Greatly increased width for full Code Scheme definitions */
+    white-space: normal; /* Allow wrapping for descriptions */
+    width: 220px; /* Reverted to smaller width for short descriptions */
     text-align: left;
-    line-height: 1.4;
-    padding: 8px 12px;
+    line-height: 1.3;
 }
 .details-expanded .tooltip-container:hover::before {
     left: 10px; /* Adjust arrow position */
@@ -69,23 +68,6 @@
 
 .card-primary {
     padding: 16px;
-}
-
-/* Tooltip container for Similarity Badge - Forces Right Position */
-.tooltip-right.tooltip-container:hover::after {
-    left: 100%;
-    bottom: 50%;
-    transform: translateY(50%);
-    margin-left: 10px;
-    margin-bottom: 0;
-}
-
-.tooltip-right.tooltip-container:hover::before {
-    left: 100%;
-    bottom: 50%;
-    transform: translateY(50%) rotate(90deg); /* Arrow points left */
-    margin-left: 2px;
-    margin-bottom: 0;
 }
 
 /* Tooltip container for Similarity Badge - Forces Right Position */
@@ -276,34 +258,42 @@
     align-items: flex-start;
     gap: 8px;
     font-size: 0.85rem;
+    position: relative; /* For tooltip */
 }
 
-/* Label with Help Icon */
+/* Container for Label + Icon */
 .label-with-icon {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 4px;
-    color: #71717a;
-    min-width: 110px; /* Increased slightly to fit icon */
+    min-width: 110px; /* Slightly wider to accommodate icon */
     flex-shrink: 0;
+}
+
+.label {
+    color: #71717a;
+    /* min-width removed as parent controls width */
 }
 
 .info-icon {
     color: #52525b;
     cursor: pointer;
     transition: color 0.2s;
-    opacity: 0.7;
 }
 
 .info-icon:hover {
-    color: #e4e4e7;
-    opacity: 1;
+    color: #3b82f6; /* Blue on hover */
 }
 
-.label {
-    color: #71717a;
-    min-width: 90px; /* Aligns values */
-    flex-shrink: 0;
+.info-icon-stat {
+    margin-left: 4px;
+    color: #52525b;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.info-icon-stat:hover {
+    color: #3b82f6;
 }
 
 .val {
