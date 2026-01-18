@@ -52,6 +52,33 @@
     z-index: 10;
 }
 
+/* Info Icon Styles */
+.info-icon {
+    margin-left: 6px;
+    color: #71717a;
+    cursor: pointer;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.info-icon:hover {
+    color: #3b82f6; /* Blue on hover */
+}
+
+.info-icon-label {
+    margin-left: 4px;
+    margin-right: 2px;
+    color: #71717a;
+    cursor: pointer;
+    transition: color 0.2s;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.info-icon-label:hover {
+    color: #3b82f6;
+}
+
 /* ... rest of the file ... */
 .movement-card-v2 {
     background: #18181b;
