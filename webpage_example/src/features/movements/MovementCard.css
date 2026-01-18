@@ -273,6 +273,7 @@
 
 .label {
     color: #71717a;
+    cursor: help; /* Change cursor to question mark on hover */
     /* min-width removed as parent controls width */
 }
 
