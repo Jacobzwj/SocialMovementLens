@@ -127,7 +127,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
   const SHORT_SMO = "Presence of centralized social movement organizations or leaders";
   const SHORT_GRASSROOTS = "Whether mobilized through grassroots";
   const SHORT_OFFLINE = "Includes offline protests/events?";
-  const SHORT_KIND = "Movement Kind.";
+  const SHORT_KIND = "Movement Type.";
   const SHORT_TOPIC = "Thematic classification of the movement.";
   const SHORT_PARTICIPANTS = "Main demographic groups involved.";
   const SHORT_CASUALTIES = "Reported injuries, deaths, arrests.";
@@ -462,10 +462,10 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
 
                 <div className="detail-row">
                     <div className="label-with-icon">
-                        <span className="label tooltip-container" data-tooltip={SHORT_KIND}>Kind:</span>
+                        <span className="label tooltip-container" data-tooltip={SHORT_KIND}>Type:</span>
                         <CodeSchemeHelpIcon 
                             className="info-icon" 
-                            onClick={(e) => { e.stopPropagation(); openModal("Kind", FULL_KIND); }} 
+                            onClick={(e) => { e.stopPropagation(); openModal("Type", FULL_KIND); }} 
                         />
                     </div>
                     <span className="val">{truncate(movement.kind, 50)}</span>

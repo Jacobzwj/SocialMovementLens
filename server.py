@@ -466,7 +466,7 @@ def map_row_to_movement(row) -> Movement:
     if r_desc: rationales_found["Description"] = r_desc
 
     r_kind = get_rationale_if_diff('Kind_Movement')
-    if r_kind: rationales_found["Kind"] = r_kind
+    if r_kind: rationales_found["Type"] = r_kind
     
     r_grass = get_rationale_if_diff('Grassroots_mobilization') # Note: Check spelling in files
     if not r_grass: r_grass = get_rationale_if_diff('Grassroots_Mobilization')
