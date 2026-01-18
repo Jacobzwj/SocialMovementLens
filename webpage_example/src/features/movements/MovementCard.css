@@ -29,7 +29,8 @@
     left: 0;
     transform: none;
     white-space: normal; /* Allow wrapping for descriptions */
-    width: 220px; /* Reverted to smaller width for short descriptions */
+    width: max-content; /* Auto width based on content */
+    max-width: 250px; /* Cap width to prevent too wide */
     text-align: left;
     line-height: 1.3;
 }

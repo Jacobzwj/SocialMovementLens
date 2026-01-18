@@ -107,19 +107,19 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
   const activeStateResponses = getActiveStateResponses();
 
   // --- 1. SHORT TOOLTIPS (For Hover) ---
-  const SHORT_REGIME = "Political Regime Type.";
-  const SHORT_SMO = "Presence of SMO Leaders.";
-  const SHORT_GRASSROOTS = "Grassroots Mobilization.";
-  const SHORT_OFFLINE = "Offline Manifestations.";
-  const SHORT_KIND = "Movement Type.";
-  const SHORT_TOPIC = "Theme of the movement.";
-  const SHORT_PARTICIPANTS = "Key Participants.";
-  const SHORT_CASUALTIES = "Casualties count.";
-  const SHORT_REOCCURRENCE = "Reoccurrence of the movement (Yes/No).";
-  const SHORT_LENGTH = "Length of the movements.";
-  const SHORT_STATE_RESP = "State Response.";
-  const SHORT_OUTCOME = "Political Outcomes.";
-  const SHORT_LONGTERM = "Long-term Outcomes.";
+  const SHORT_REGIME = "National/Local political system.";
+  const SHORT_SMO = "Led by formal organizations?";
+  const SHORT_GRASSROOTS = "Driven by bottom-up mobilization?";
+  const SHORT_OFFLINE = "Includes offline protests/events?";
+  const SHORT_KIND = "Type of online/offline action.";
+  const SHORT_TOPIC = "Main themes covered by the movement.";
+  const SHORT_PARTICIPANTS = "Main demographic groups involved.";
+  const SHORT_CASUALTIES = "Reported injuries, deaths, arrests.";
+  const SHORT_REOCCURRENCE = "Did it happen in prior years?";
+  const SHORT_LENGTH = "Duration in days (approx).";
+  const SHORT_STATE_RESP = "Government reaction to protests.";
+  const SHORT_OUTCOME = "Immediate political results.";
+  const SHORT_LONGTERM = "Long-term impact or legacy.";
 
   // --- 2. FULL DEFINITIONS (For Modal - EXACT WORD DOC TEXT) ---
   
