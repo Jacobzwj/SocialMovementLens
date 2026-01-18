@@ -373,35 +373,41 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
             </div>
 
             {/* Row 2 */}
-            <div className="stat-item tooltip-container" data-tooltip={SHORT_LENGTH}>
-                <Clock size={14} className="stat-icon"/> 
-                <span className="stat-val">
-                    {movement.length_days && movement.length_days.toLowerCase().includes('ongoing') 
-                        ? 'Ongoing' 
-                        : `${movement.length_days} Days`}
-                </span>
-                <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+            <div className="stat-item">
+                <div className="tooltip-container" data-tooltip={SHORT_LENGTH} style={{display:'flex', alignItems:'center', gap:'8px'}}>
+                    <Clock size={14} className="stat-icon"/> 
+                    <span className="stat-val">
+                        {movement.length_days && movement.length_days.toLowerCase().includes('ongoing') 
+                            ? 'Ongoing' 
+                            : `${movement.length_days} Days`}
+                    </span>
+                </div>
+                <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                     <HelpCircle size={12} className="info-icon-stat" onClick={(e) => { e.stopPropagation(); openModal("Length", FULL_LENGTH); }} />
                 </span>
             </div>
-            <div className="stat-item tooltip-container" data-tooltip={SHORT_REOCCURRENCE}>
-                <Repeat size={14} className="stat-icon"/> 
-                <span className="stat-val" style={{ textTransform: 'capitalize' }}>
-                    {(!movement.reoccurrence || movement.reoccurrence.toLowerCase() === 'no') 
-                        ? 'Once' 
-                        : movement.reoccurrence}
-                </span>
-                <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+            <div className="stat-item">
+                <div className="tooltip-container" data-tooltip={SHORT_REOCCURRENCE} style={{display:'flex', alignItems:'center', gap:'8px'}}>
+                    <Repeat size={14} className="stat-icon"/> 
+                    <span className="stat-val" style={{ textTransform: 'capitalize' }}>
+                        {(!movement.reoccurrence || movement.reoccurrence.toLowerCase() === 'no') 
+                            ? 'Once' 
+                            : movement.reoccurrence}
+                    </span>
+                </div>
+                <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                     <HelpCircle size={12} className="info-icon-stat" onClick={(e) => { e.stopPropagation(); openModal("Reoccurrence", FULL_REOCCURRENCE); }} />
                 </span>
             </div>
             
-            <div className="stat-item tooltip-container" data-tooltip={SHORT_REGIME}>
-                <Landmark size={14} className="stat-icon"/> 
-                <span className="stat-val" style={{ textTransform: 'capitalize' }}>
-                    {movement.regime ? movement.regime.charAt(0).toUpperCase() + movement.regime.slice(1) : ''}
-                </span>
-                <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+            <div className="stat-item">
+                <div className="tooltip-container" data-tooltip={SHORT_REGIME} style={{display:'flex', alignItems:'center', gap:'8px'}}>
+                    <Landmark size={14} className="stat-icon"/> 
+                    <span className="stat-val" style={{ textTransform: 'capitalize' }}>
+                        {movement.regime ? movement.regime.charAt(0).toUpperCase() + movement.regime.slice(1) : ''}
+                    </span>
+                </div>
+                <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                     <HelpCircle size={12} className="info-icon-stat" onClick={(e) => { e.stopPropagation(); openModal("Regime", FULL_REGIME); }} />
                 </span>
             </div>
@@ -414,10 +420,10 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 <span className="col-header">Movement Profile</span>
                 
                 {/* Topic Badges (Active Only) */}
-                <div className="detail-row tooltip-container" data-tooltip={SHORT_TOPIC}>
+                <div className="detail-row" >
                     <div className="label-with-icon">
-                        <span className="label">Topic:</span>
-                        <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+                        <span className="label tooltip-container" data-tooltip={SHORT_TOPIC}>Topic:</span>
+                        <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                             <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Topic", FULL_TOPIC); }} />
                         </span>
                     </div>
@@ -434,50 +440,50 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                     </div>
                 </div>
 
-                <div className="detail-row tooltip-container" data-tooltip={SHORT_KIND}>
+                <div className="detail-row">
                     <div className="label-with-icon">
-                        <span className="label">Kind:</span>
-                        <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+                        <span className="label tooltip-container" data-tooltip={SHORT_KIND}>Kind:</span>
+                        <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                             <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Kind", FULL_KIND); }} />
                         </span>
                     </div>
                     <span className="val">{truncate(movement.kind, 50)}</span>
                 </div>
                 
-                <div className="detail-row tooltip-container" data-tooltip={SHORT_GRASSROOTS}>
+                <div className="detail-row">
                     <div className="label-with-icon">
-                        <span className="label">Grassroots:</span>
-                        <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+                        <span className="label tooltip-container" data-tooltip={SHORT_GRASSROOTS}>Grassroots:</span>
+                        <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                             <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Grassroots", FULL_GRASSROOTS); }} />
                         </span>
                     </div>
                     <span className="val">{truncate(movement.grassroots, 50)}</span>
                 </div>
                 
-                <div className="detail-row tooltip-container" data-tooltip={SHORT_SMO}>
+                <div className="detail-row">
                     <div className="label-with-icon">
-                        <span className="label">SMO Leaders:</span>
-                        <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+                        <span className="label tooltip-container" data-tooltip={SHORT_SMO}>SMO Leaders:</span>
+                        <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                             <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("SMO Leaders", FULL_SMO); }} />
                         </span>
                     </div>
                     <span className="val">{truncate(movement.smo_leader, 50)}</span>
                 </div>
                 
-                <div className="detail-row tooltip-container" data-tooltip={SHORT_PARTICIPANTS}>
+                <div className="detail-row">
                     <div className="label-with-icon">
-                        <span className="label">Participants:</span>
-                        <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+                        <span className="label tooltip-container" data-tooltip={SHORT_PARTICIPANTS}>Participants:</span>
+                        <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                             <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Participants", FULL_PARTICIPANTS); }} />
                         </span>
                     </div>
                     <span className="val">{truncate(movement.key_participants, 50)}</span>
                 </div>
                 
-                <div className="detail-row tooltip-container" data-tooltip={SHORT_OFFLINE}>
+                <div className="detail-row">
                     <div className="label-with-icon">
-                        <span className="label">Offline:</span>
-                        <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+                        <span className="label tooltip-container" data-tooltip={SHORT_OFFLINE}>Offline:</span>
+                        <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                             <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Offline", FULL_OFFLINE); }} />
                         </span>
                     </div>
@@ -490,10 +496,10 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 <span className="col-header">Consequences</span>
 
                 {/* 1. Casualties (First Row) - Always show, with fallback */}
-                <div className="detail-row tooltip-container" data-tooltip={SHORT_CASUALTIES} style={{ marginBottom: 12 }}>
+                <div className="detail-row" style={{ marginBottom: 12 }}>
                     <div className="label-with-icon">
-                        <span className="label" style={{color: '#f87171'}}>Casualties:</span>
-                        <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+                        <span className="label tooltip-container" data-tooltip={SHORT_CASUALTIES} style={{color: '#f87171'}}>Casualties:</span>
+                        <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                             <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Casualties", FULL_CASUALTIES); }} />
                         </span>
                     </div>
@@ -534,10 +540,10 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 </div>
                 
                 {/* 2. State Response (Active Only) */}
-                <div className="detail-row tooltip-container" data-tooltip={SHORT_STATE_RESP} style={{ marginBottom: 8 }}>
+                <div className="detail-row" style={{ marginBottom: 8 }}>
                     <div className="label-with-icon">
-                        <span className="label">State Resp:</span>
-                        <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+                        <span className="label tooltip-container" data-tooltip={SHORT_STATE_RESP}>State Resp:</span>
+                        <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                             <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("State Response", FULL_STATE_RESP); }} />
                         </span>
                     </div>
@@ -553,20 +559,20 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 </div>
 
                 {/* 3. Outcomes (Third Row) */}
-                <div className="detail-row tooltip-container" data-tooltip={SHORT_OUTCOME}>
+                <div className="detail-row">
                     <div className="label-with-icon">
-                        <span className="label">Political Outcome:</span> 
-                        <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+                        <span className="label tooltip-container" data-tooltip={SHORT_OUTCOME}>Political Outcome:</span> 
+                        <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                             <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Political Outcome", FULL_OUTCOME); }} />
                         </span>
                     </div>
                     <span className="val">{truncate(movement.outcome_raw, 60)}</span>
                 </div>
                 
-                <div className="detail-row tooltip-container" data-tooltip={SHORT_LONGTERM}>
+                <div className="detail-row">
                     <div className="label-with-icon">
-                        <span className="label">Long-term Outcome:</span> 
-                        <span className="tooltip-container tooltip-right" data-tooltip="Click to view Code Scheme">
+                        <span className="label tooltip-container" data-tooltip={SHORT_LONGTERM}>Long-term Outcome:</span> 
+                        <span className="tooltip-container tooltip-right" data-tooltip="Click ? to view Code Scheme">
                             <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Long-term Outcome", FULL_LONGTERM); }} />
                         </span>
                     </div>
