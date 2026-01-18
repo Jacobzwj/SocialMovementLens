@@ -28,10 +28,11 @@
 .details-expanded .tooltip-container:hover::after {
     left: 0;
     transform: none;
-    white-space: normal; /* Allow wrapping for longer descriptions */
-    width: 300px; /* Increased width for full Code Scheme definitions */
+    white-space: pre-wrap; /* Preserve original line breaks from Code Scheme */
+    width: 500px; /* Greatly increased width for full Code Scheme definitions */
     text-align: left;
     line-height: 1.4;
+    padding: 8px 12px;
 }
 .details-expanded .tooltip-container:hover::before {
     left: 10px; /* Adjust arrow position */
