@@ -21,7 +21,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
   const [modalContent, setModalContent] = useState('');
 
   const openModal = (title: string, content: string) => {
-      setModalTitle(title);
+      setModalTitle(`Code Scheme: ${title}`);
       setModalContent(content);
       setIsModalOpen(true);
   };
@@ -107,19 +107,19 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
   const activeStateResponses = getActiveStateResponses();
 
   // --- 1. SHORT TOOLTIPS (For Hover) ---
-  const SHORT_REGIME = "Political Regime Type (Democracy, Semi-democracy, Authoritarian)";
-  const SHORT_SMO = "Presence of centralized Social Movement Organizations or leaders";
-  const SHORT_GRASSROOTS = "Whether mobilized through grassroots (bottom-up) networks";
-  const SHORT_OFFLINE = "Presence of offline protests or physical gatherings";
-  const SHORT_KIND = "Nature of the action (e.g., protest, campaign, movement)";
-  const SHORT_TOPIC = "Thematic classification of the movement";
-  const SHORT_PARTICIPANTS = "Key social groups or demographics involved";
-  const SHORT_CASUALTIES = "Reported injuries, deaths, and arrests";
-  const SHORT_REOCCURRENCE = "Whether the movement happened in prior years";
-  const SHORT_LENGTH = "Duration of the movement in days";
-  const SHORT_STATE_RESP = "Government or state reaction to the movement";
-  const SHORT_OUTCOME = "Immediate political results (policy change, regime change)";
-  const SHORT_LONGTERM = "Long-term impact or legacy of the movement";
+  const SHORT_REGIME = "Political Regime Type.";
+  const SHORT_SMO = "Presence of SMO Leaders.";
+  const SHORT_GRASSROOTS = "Grassroots Mobilization.";
+  const SHORT_OFFLINE = "Offline Manifestations.";
+  const SHORT_KIND = "Movement Type.";
+  const SHORT_TOPIC = "Theme of the movement.";
+  const SHORT_PARTICIPANTS = "Key Participants.";
+  const SHORT_CASUALTIES = "Casualties count.";
+  const SHORT_REOCCURRENCE = "Reoccurrence of the movement (Yes/No).";
+  const SHORT_LENGTH = "Length of the movements.";
+  const SHORT_STATE_RESP = "State Response.";
+  const SHORT_OUTCOME = "Political Outcomes.";
+  const SHORT_LONGTERM = "Long-term Outcomes.";
 
   // --- 2. FULL DEFINITIONS (For Modal - EXACT WORD DOC TEXT) ---
   
