@@ -276,24 +276,42 @@
 }
 
 .info-icon {
-    color: #52525b;
+    color: #52525b; /* Default subtle color */
     cursor: pointer;
-    transition: color 0.2s;
+    transition: all 0.2s;
+    opacity: 0.7;
 }
 
 .info-icon:hover {
-    color: #3b82f6; /* Blue on hover */
+    color: #60a5fa; /* Blue on direct hover */
+    opacity: 1;
+    transform: scale(1.1); /* Slight zoom on hover */
+}
+
+/* Row Hover Effect: Highlight icon when row is hovered */
+.detail-row:hover .info-icon {
+    color: #3b82f6;
+    opacity: 1;
 }
 
 .info-icon-stat {
     margin-left: 4px;
     color: #52525b;
     cursor: pointer;
-    transition: color 0.2s;
+    transition: all 0.2s;
+    opacity: 0.7;
 }
 
 .info-icon-stat:hover {
+    color: #60a5fa;
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Stat Item Hover Effect */
+.stat-item:hover .info-icon-stat {
     color: #3b82f6;
+    opacity: 1;
 }
 
 .val {

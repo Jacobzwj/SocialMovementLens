@@ -287,7 +287,7 @@ No: No identified long-term change`;
                         ? 'Ongoing' 
                         : `${movement.length_days} Days`}
                 </span>
-                <HelpCircle size={12} className="info-icon-stat" onClick={(e) => { e.stopPropagation(); openModal("Length", FULL_LENGTH); }} />
+                <HelpCircle size={12} className="info-icon-stat" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Length", FULL_LENGTH); }} />
             </div>
             <div className="stat-item tooltip-container" data-tooltip={SHORT_REOCCURRENCE}>
                 <Repeat size={14} className="stat-icon"/> 
@@ -296,7 +296,7 @@ No: No identified long-term change`;
                         ? 'Once' 
                         : movement.reoccurrence}
                 </span>
-                <HelpCircle size={12} className="info-icon-stat" onClick={(e) => { e.stopPropagation(); openModal("Reoccurrence", FULL_REOCCURRENCE); }} />
+                <HelpCircle size={12} className="info-icon-stat" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Reoccurrence", FULL_REOCCURRENCE); }} />
             </div>
             
             <div className="stat-item tooltip-container" data-tooltip={SHORT_REGIME}>
@@ -304,7 +304,7 @@ No: No identified long-term change`;
                 <span className="stat-val" style={{ textTransform: 'capitalize' }}>
                     {movement.regime ? movement.regime.charAt(0).toUpperCase() + movement.regime.slice(1) : ''}
                 </span>
-                <HelpCircle size={12} className="info-icon-stat" onClick={(e) => { e.stopPropagation(); openModal("Regime", FULL_REGIME); }} />
+                <HelpCircle size={12} className="info-icon-stat" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Regime", FULL_REGIME); }} />
             </div>
         </div>
 
@@ -318,7 +318,7 @@ No: No identified long-term change`;
                 <div className="detail-row tooltip-container" data-tooltip={SHORT_TOPIC}>
                     <div className="label-with-icon">
                         <span className="label">Topic:</span>
-                        <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Topic", FULL_TOPIC); }} />
+                        <HelpCircle size={12} className="info-icon" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Topic", FULL_TOPIC); }} />
                     </div>
                     <div className="topic-grid">
                         {movement.tags.length > 0 ? (
@@ -336,7 +336,7 @@ No: No identified long-term change`;
                 <div className="detail-row tooltip-container" data-tooltip={SHORT_KIND}>
                     <div className="label-with-icon">
                         <span className="label">Kind:</span>
-                        <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Kind", FULL_KIND); }} />
+                        <HelpCircle size={12} className="info-icon" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Kind", FULL_KIND); }} />
                     </div>
                     <span className="val">{truncate(movement.kind, 50)}</span>
                 </div>
@@ -344,7 +344,7 @@ No: No identified long-term change`;
                 <div className="detail-row tooltip-container" data-tooltip={SHORT_GRASSROOTS}>
                     <div className="label-with-icon">
                         <span className="label">Grassroots:</span>
-                        <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Grassroots", FULL_GRASSROOTS); }} />
+                        <HelpCircle size={12} className="info-icon" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Grassroots", FULL_GRASSROOTS); }} />
                     </div>
                     <span className="val">{truncate(movement.grassroots, 50)}</span>
                 </div>
@@ -352,7 +352,7 @@ No: No identified long-term change`;
                 <div className="detail-row tooltip-container" data-tooltip={SHORT_SMO}>
                     <div className="label-with-icon">
                         <span className="label">SMO Leaders:</span>
-                        <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("SMO Leaders", FULL_SMO); }} />
+                        <HelpCircle size={12} className="info-icon" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("SMO Leaders", FULL_SMO); }} />
                     </div>
                     <span className="val">{truncate(movement.smo_leader, 50)}</span>
                 </div>
@@ -360,7 +360,7 @@ No: No identified long-term change`;
                 <div className="detail-row tooltip-container" data-tooltip={SHORT_PARTICIPANTS}>
                     <div className="label-with-icon">
                         <span className="label">Participants:</span>
-                        <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Participants", FULL_PARTICIPANTS); }} />
+                        <HelpCircle size={12} className="info-icon" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Participants", FULL_PARTICIPANTS); }} />
                     </div>
                     <span className="val">{truncate(movement.key_participants, 50)}</span>
                 </div>
@@ -368,7 +368,7 @@ No: No identified long-term change`;
                 <div className="detail-row tooltip-container" data-tooltip={SHORT_OFFLINE}>
                     <div className="label-with-icon">
                         <span className="label">Offline:</span>
-                        <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Offline", FULL_OFFLINE); }} />
+                        <HelpCircle size={12} className="info-icon" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Offline", FULL_OFFLINE); }} />
                     </div>
                     <span className="val">{truncate(movement.offline_presence, 50)}</span>
                 </div>
@@ -382,7 +382,7 @@ No: No identified long-term change`;
                 <div className="detail-row tooltip-container" data-tooltip={SHORT_CASUALTIES} style={{ marginBottom: 12 }}>
                     <div className="label-with-icon">
                         <span className="label" style={{color: '#f87171'}}>Casualties:</span>
-                        <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Casualties", FULL_CASUALTIES); }} />
+                        <HelpCircle size={12} className="info-icon" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Casualties", FULL_CASUALTIES); }} />
                     </div>
                     {(movement.injuries !== '0' || movement.deaths !== '0' || movement.arrests !== '0') ? (
                         <div className="casualty-list-v2">
@@ -424,7 +424,7 @@ No: No identified long-term change`;
                 <div className="detail-row tooltip-container" data-tooltip={SHORT_STATE_RESP} style={{ marginBottom: 8 }}>
                     <div className="label-with-icon">
                         <span className="label">State Resp:</span>
-                        <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("State Response", FULL_STATE_RESP); }} />
+                        <HelpCircle size={12} className="info-icon" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("State Response", FULL_STATE_RESP); }} />
                     </div>
                     <div className="response-grid">
                         {activeStateResponses.length > 0 ? (
@@ -441,7 +441,7 @@ No: No identified long-term change`;
                 <div className="detail-row tooltip-container" data-tooltip={SHORT_OUTCOME}>
                     <div className="label-with-icon">
                         <span className="label">Political Outcome:</span> 
-                        <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Political Outcome", FULL_OUTCOME); }} />
+                        <HelpCircle size={12} className="info-icon" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Political Outcome", FULL_OUTCOME); }} />
                     </div>
                     <span className="val">{truncate(movement.outcome_raw, 60)}</span>
                 </div>
@@ -449,7 +449,7 @@ No: No identified long-term change`;
                 <div className="detail-row tooltip-container" data-tooltip={SHORT_LONGTERM}>
                     <div className="label-with-icon">
                         <span className="label">Long-term Outcome:</span> 
-                        <HelpCircle size={12} className="info-icon" onClick={(e) => { e.stopPropagation(); openModal("Long-term Outcome", FULL_LONGTERM); }} />
+                        <HelpCircle size={12} className="info-icon" title="View Code Scheme Definition" onClick={(e) => { e.stopPropagation(); openModal("Long-term Outcome", FULL_LONGTERM); }} />
                     </div>
                     <span className="val">{truncate(movement.longterm_outcome, 60)}</span>
                 </div>
