@@ -40,8 +40,8 @@ const CategoryBarChart: React.FC<Props> = ({ movements }) => {
   return (
     <div className="dashboard-card category-card">
       <div className="card-header-sm">
-        <h3>Theme Spectrum</h3>
-        <span className="subtitle">Category Distribution</span>
+        <h3>Thematic Distribution</h3>
+        <span className="subtitle">Main themes of the movements</span>
       </div>
       <div style={{ width: '100%', flex: 1, minHeight: 0 }}>
         <ResponsiveContainer width="100%" height="100%">
@@ -61,6 +61,7 @@ const CategoryBarChart: React.FC<Props> = ({ movements }) => {
                 cursor={{fill: 'rgba(255,255,255,0.05)'}}
                 contentStyle={{ backgroundColor: '#18181b', border: '1px solid #333', borderRadius: '4px' }}
                 itemStyle={{ color: '#e4e4e7' }}
+                formatter={(value: number) => [`${value} Movements`, 'Count']}
             />
             <Bar dataKey="count" radius={[0, 4, 4, 0]} barSize={20}>
               {data.map((entry, index) => (

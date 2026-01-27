@@ -49,8 +49,8 @@ const RegimeChart: React.FC<Props> = ({ movements }) => {
   return (
     <div className="dashboard-card regime-card">
       <div className="card-header-sm">
-        <h3>Political Context</h3>
-        <span className="subtitle">Regime Type Distribution</span>
+        <h3>Political Regime Context</h3>
+        <span className="subtitle">Regime types where movements occurred</span>
       </div>
       <div style={{ width: '100%', flex: 1, minHeight: 0, position: 'relative' }}>
         <ResponsiveContainer width="100%" height="100%">
@@ -72,6 +72,7 @@ const RegimeChart: React.FC<Props> = ({ movements }) => {
             <Tooltip 
                 contentStyle={{ backgroundColor: '#18181b', border: '1px solid #333', borderRadius: '4px' }}
                 itemStyle={{ color: '#e4e4e7' }}
+                formatter={(value: number) => [`${value} Movements`, 'Count']}
             />
             <Legend 
                 verticalAlign="bottom" 

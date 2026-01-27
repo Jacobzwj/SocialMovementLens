@@ -57,8 +57,8 @@ const TimelineChart: React.FC<Props> = ({ movements }) => {
   return (
     <div className="dashboard-card timeline-card">
       <div className="card-header-sm">
-        <h3>Temporal Pulse</h3>
-        <span className="subtitle">Movement Frequency Over Time</span>
+        <h3>Movement Timeline</h3>
+        <span className="subtitle">Number of movements started per year</span>
       </div>
       {/* Changed height to 100% and flex-grow to fill the card */}
       <div style={{ width: '100%', flex: 1, minHeight: 0 }}>

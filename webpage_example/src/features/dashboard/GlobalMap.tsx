@@ -40,8 +40,8 @@ const GlobalMap: React.FC<Props> = ({ movements }) => {
   return (
     <div className="dashboard-card map-card">
       <div className="card-header-sm">
-        <h3>Geospatial Intelligence</h3>
-        <span className="subtitle">Active Zones</span>
+        <h3>Global Distribution of Movements</h3>
+        <span className="subtitle">Locations where movements occurred</span>
       </div>
       
       <div className="map-container">
