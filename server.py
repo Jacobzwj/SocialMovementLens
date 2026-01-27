@@ -561,7 +561,7 @@ def map_row_to_movement(row) -> Movement:
         twitter_query=clean_nan(row.get('query'), ""),
         tweets_count=clean_nan(row.get('#tweets'), "N/A"),
         key_participants=clean_nan(row.get('Key_Participants'), "General Public"),
-        reoccurrence=clean_nan(row.get('Reoccurrence'), "Once"),
+        reoccurrence=clean_nan(row.get('Reoccurrence'), "No"),
         length_days=format_float_to_int(row.get('Length_Days'), "Unknown"),
         wikipedia=clean_nan(row.get('Wikipedia'), ""),
         twitter_penetration=tw_pen,

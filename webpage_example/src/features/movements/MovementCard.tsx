@@ -425,9 +425,7 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 <div className="tooltip-container" data-tooltip={SHORT_REOCCURRENCE} style={{display:'flex', alignItems:'center', gap:'8px'}}>
                     <Repeat size={14} className="stat-icon"/> 
                     <span className="stat-val" style={{ textTransform: 'capitalize' }}>
-                        {(!movement.reoccurrence || movement.reoccurrence.toLowerCase() === 'no') 
-                            ? 'Once' 
-                            : movement.reoccurrence}
+                        {movement.reoccurrence}
                     </span>
                 </div>
                 <CodeSchemeHelpIcon 
