@@ -7,6 +7,7 @@ import {
 import { Movement, Rationale } from '../../types';
 import CodeSchemeModal from './CodeSchemeModal';
 import './MovementCard.css';
+import { ISO_ALPHA3_TO_NAME } from '../../data/iso_mapping';
 
 interface Props {
   movement: Movement;
@@ -121,6 +122,15 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
   };
 
   const activeStateResponses = getActiveStateResponses();
+
+  // Helper to get full country name from ISO
+  const getCountryName = (isoCode: string) => {
+      if (!isoCode) return 'Global';
+      // Handle multiple ISOs if present (e.g. "USA, GBR") - take the first one or map all
+      const codes = isoCode.split(',').map(c => c.trim());
+      const names = codes.map(code => ISO_ALPHA3_TO_NAME[code] || code);
+      return names.join(', ');
+  };
 
   // --- 1. SHORT TOOLTIPS (For Hover) ---
   const SHORT_REGIME = "Political Regime";
@@ -377,9 +387,17 @@ const MovementCard: React.FC<Props> = ({ movement }) => {
                 <Calendar size={14} className="stat-icon"/> 
                 <span className="stat-val">{movement.year}</span>
             </div>
-            <div className="stat-item tooltip-container" data-tooltip="Geographic Region (ISO Code)">
+            <div className="stat-item tooltip-container" data-tooltip="Country/Location (ISO Code)">
                 <MapPin size={14} className="stat-icon"/> 
-                <span className="stat-val">{movement.region} ({movement.iso || 'Global'})</span>
+                {movement.iso ? (
+                    <span className="stat-val">
+                        {getCountryName(movement.iso)} ({movement.iso})
+                    </span>
+                ) : (
+                    <span className="stat-val" style={{ color: '#71717a', fontStyle: 'italic' }}>
+                        No data
+                    </span>
+                )}
             </div>
             <div className="stat-item tooltip-container" data-tooltip="Total Tweet Volume">
                 <MessageSquare size={14} className="stat-icon"/> 
