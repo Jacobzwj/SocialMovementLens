@@ -20,9 +20,33 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [statusText, setStatusText] = useState(''); // Status text for typing animation
+  const [loadingStep, setLoadingStep] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastAnalyzedQueryRef = useRef<string>('');
+
+  const LOADING_MESSAGES = [
+      "Analyzing query...",
+      "Consulting Social Movement Database...",
+      "Reading context & rationales...",
+      "Synthesizing response..."
+  ];
+
+  // Progressive Loading Timer
+  useEffect(() => {
+      let interval: NodeJS.Timeout;
+      if (isTyping) {
+          setLoadingStep(0);
+          let step = 0;
+          // Change text every 1.5s to simulate progress
+          interval = setInterval(() => {
+              step++;
+              if (step < LOADING_MESSAGES.length) {
+                  setLoadingStep(step);
+              }
+          }, 1500); 
+      }
+      return () => clearInterval(interval);
+  }, [isTyping]);
 
   // Create a stable key for results to prevent unnecessary re-renders
   const resultsFingerprint = results.map(r => r.id).join(',');
@@ -45,28 +69,6 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
 
     return () => clearTimeout(timer);
   }, [activeQuery, resultsFingerprint]);
-
-  // Progressive Status Animation
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isTyping) {
-        // Initial state
-        setStatusText("Analyzing Query...");
-        
-        let step = 0;
-        // Update every 1.5 seconds to simulate backend stages
-        interval = setInterval(() => {
-            step++;
-            if (step === 1) setStatusText("Deciding Strategy...");     // 1.5s
-            else if (step === 2) setStatusText("Checking Knowledge Base..."); // 3.0s
-            else if (step === 3) setStatusText("Reading Context...");   // 4.5s
-            else if (step === 4) setStatusText("Synthesizing Response..."); // 6.0s
-        }, 1500); 
-    } else {
-        setStatusText('');
-    }
-    return () => clearInterval(interval);
-  }, [isTyping]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -137,10 +139,12 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
                     <div className="typing-indicator">
                         <span></span><span></span><span></span>
                     </div>
-                    <span className="typing-status">{statusText}</span>
+                    <span className="loading-text" key={loadingStep}>
+                        {LOADING_MESSAGES[loadingStep]}
+                    </span>
                 </div>
             </div>
-        )}
+      )}
       </div>
 
       <div className="chat-input-area">
