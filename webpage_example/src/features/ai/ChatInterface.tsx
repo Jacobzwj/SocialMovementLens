@@ -61,7 +61,7 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
     const queryToSend = userMessage || `Summarize the key themes and findings from the searched movements related to "${activeQuery}".`;
 
     try {
-        const response = await fetch(getApiUrl('/api/chat'), {
+        const response = await fetch(getApiUrl('/api/chat_stream'), {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -69,11 +69,44 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
                 context_movements: results.map(r => `ID ${r.id}: ${r.name} (${r.year}) - ${r.description.substring(0, 100)}...`)
             })
         });
-        const data = await response.json();
+
+        if (!response.body) throw new Error("No response body");
         
-        setMessages(prev => [...prev, { role: 'ai', content: data.response }]);
+        // Add initial empty message
+        setMessages(prev => [...prev, { role: 'ai', content: '' }]);
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            const chunk = decoder.decode(value, { stream: true });
+            
+            setMessages(prev => {
+                const newMsgs = [...prev];
+                const lastMsgIndex = newMsgs.length - 1;
+                if (lastMsgIndex >= 0 && newMsgs[lastMsgIndex].role === 'ai') {
+                    newMsgs[lastMsgIndex] = {
+                        ...newMsgs[lastMsgIndex],
+                        content: newMsgs[lastMsgIndex].content + chunk
+                    };
+                }
+                return newMsgs;
+            });
+        }
+
     } catch (err) {
-        setMessages(prev => [...prev, { role: 'ai', content: "Error connecting to Analysis Engine." }]);
+        console.error("Chat Error:", err);
+        setMessages(prev => {
+            // Check if we already added an AI message
+            const lastMsg = prev[prev.length - 1];
+            if (lastMsg && lastMsg.role === 'ai') {
+                return [...prev.slice(0, -1), { role: 'ai', content: lastMsg.content + "\n[Error: Connection interrupted]" }];
+            }
+            return [...prev, { role: 'ai', content: "Error connecting to Analysis Engine." }];
+        });
     } finally {
         setIsTyping(false);
       }

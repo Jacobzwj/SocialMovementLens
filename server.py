@@ -3,7 +3,7 @@ import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional
 import os
@@ -1024,6 +1024,86 @@ def chat_with_ai(req: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 # --- Serve Frontend (Last Route) ---
+@app.post("/api/chat_stream")
+async def chat_with_ai_stream(req: ChatRequest):
+    client = get_openai_client()
+    if not client:
+        raise HTTPException(status_code=500, detail="OpenAI API Key not set")
+
+    # 1. Prepare Screen Context
+    current_screen_context = "--- CURRENT SEARCH RESULTS (VISIBLE TO USER) ---\n"
+    if req.context_movements:
+        current_screen_context += "\n".join(req.context_movements[:30])
+    else:
+        current_screen_context += "No specific movements currently displayed."
+    current_screen_context += "\n--- END OF SEARCH RESULTS ---\n"
+
+    # 2. Router Decision
+    router_messages = [
+        {"role": "system", "content": "You are a routing agent. Your ONLY job is to decide if the user's query requires accessing the FULL database of all 151 movements (e.g. for global stats, counts, or searching for a movement not currently visible). \n\nInput: User Query + Current Visible List.\nOutput: 'YES' if full database is needed. 'NO' if the question can be answered with current list or is general chat. Return ONLY 'YES' or 'NO'."},
+        {"role": "user", "content": f"Current List:\n{current_screen_context}\n\nUser Query: {req.query}"}
+    ]
+    
+    needs_full_db = False
+    try:
+        router_res = client.chat.completions.create(
+            model=CHAT_MODEL,
+            messages=router_messages,
+            max_tokens=5,
+            temperature=0
+        )
+        decision = router_res.choices[0].message.content.strip().upper()
+        if "YES" in decision:
+            needs_full_db = True
+            print(f"Router Decision: YES (Load Full DB) for query: {req.query}")
+        else:
+            print(f"Router Decision: NO (Use Screen Context) for query: {req.query}")
+    except Exception as e:
+        print(f"Router Error: {e}. Defaulting to NO.")
+
+    # 3. Construct Context & System Prompt
+    system_prompt = """You are an expert Social Movement Research Agent.
+    
+    You have access to information about social movements.
+    
+    **YOUR STRATEGY:**
+    - **First Priority**: Answer the user's question using ONLY the `Current Search Results` if possible.
+    - **Second Priority**: If the Full Database context is provided below, use it to answer questions about global statistics or movements not on screen.
+    
+    **CRITICAL RULES:**
+    - **Context Awareness**: The `Current Search Results` list IS the user's screen.
+    - **No Hallucination**: Do NOT claim a movement is present in the search results just because you know it exists in the database. 
+    - **Privacy**: **NEVER** mention internal movement IDs (e.g., "ID 248", "ID: 12") in your response to the user. Refer to movements by their **Name** only.
+    """
+    
+    user_content = f"{current_screen_context}\n\n"
+    if needs_full_db:
+        full_data = generate_full_context_csv()
+        user_content += f"--- FULL DATABASE CONTEXT (Loaded by Router) ---\n{full_data}\n--- END FULL DATABASE ---\n\n"
+        
+    user_content += f"User Question: {req.query}"
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_content}
+    ]
+
+    # 4. Stream Generator
+    def generate():
+        try:
+            stream = client.chat.completions.create(
+                model=CHAT_MODEL,
+                messages=messages,
+                stream=True
+            )
+            for chunk in stream:
+                if chunk.choices[0].delta.content:
+                    yield chunk.choices[0].delta.content
+        except Exception as e:
+            yield f"Error generating response: {str(e)}"
+
+    return StreamingResponse(generate(), media_type="text/plain")
+
 # Mount the built React app static files
 # Make sure to run 'npm run build' in webpage_example first!
 if os.path.exists("webpage_example/dist"):
