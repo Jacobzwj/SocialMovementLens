@@ -20,6 +20,7 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [statusText, setStatusText] = useState(''); // Status text for typing animation
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastAnalyzedQueryRef = useRef<string>('');
 
@@ -44,6 +45,28 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
 
     return () => clearTimeout(timer);
   }, [activeQuery, resultsFingerprint]);
+
+  // Progressive Status Animation
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isTyping) {
+        // Initial state
+        setStatusText("Analyzing Query...");
+        
+        let step = 0;
+        // Update every 1.5 seconds to simulate backend stages
+        interval = setInterval(() => {
+            step++;
+            if (step === 1) setStatusText("Deciding Strategy...");     // 1.5s
+            else if (step === 2) setStatusText("Checking Knowledge Base..."); // 3.0s
+            else if (step === 3) setStatusText("Reading Context...");   // 4.5s
+            else if (step === 4) setStatusText("Synthesizing Response..."); // 6.0s
+        }, 1500); 
+    } else {
+        setStatusText('');
+    }
+    return () => clearInterval(interval);
+  }, [isTyping]);
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -110,11 +133,14 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
         
         {isTyping && (
             <div className="message ai">
-                <div className="typing-indicator" style={{ display: 'flex' }}>
-                    <span></span><span></span><span></span>
-          </div>
-        </div>
-      )}
+                <div className="typing-container">
+                    <div className="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span className="typing-status">{statusText}</span>
+                </div>
+            </div>
+        )}
       </div>
 
       <div className="chat-input-area">
