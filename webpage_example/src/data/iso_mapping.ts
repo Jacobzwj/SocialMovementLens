@@ -1,4 +1,5 @@
 // Mapping from ISO 3166-1 numeric code to Alpha-3 code
+// Updated for deployment
 // Source: https://en.wikipedia.org/wiki/ISO_3166-1_numeric
 export const ISO_NUMERIC_TO_ALPHA3: Record<string, string> = {
     "004": "AFG", "008": "ALB", "012": "DZA", "024": "AGO", "032": "ARG", "036": "AUS",
@@ -39,4 +40,46 @@ export const ISO_NUMERIC_TO_ALPHA3: Record<string, string> = {
     "796": "TCA", "798": "TUV", "800": "UGA", "804": "UKR", "807": "MKD", "818": "EGY",
     "826": "GBR", "834": "TZA", "840": "USA", "850": "VIR", "854": "BFA", "858": "URY",
     "860": "UZB", "862": "VEN", "876": "WLF", "882": "WSM", "887": "YEM", "894": "ZMB"
+};
+
+// Mapping from ISO Alpha-3 code to Full Country Name
+export const ISO_ALPHA3_TO_NAME: Record<string, string> = {
+    "AFG": "Afghanistan", "ALB": "Albania", "DZA": "Algeria", "AGO": "Angola", "ARG": "Argentina", "AUS": "Australia",
+    "AUT": "Austria", "AZE": "Azerbaijan", "BHS": "Bahamas", "BGD": "Bangladesh", "ARM": "Armenia", "BRB": "Barbados",
+    "BEL": "Belgium", "BMU": "Bermuda", "BTN": "Bhutan", "BOL": "Bolivia", "BIH": "Bosnia and Herzegovina", "BWA": "Botswana",
+    "BRA": "Brazil", "BLZ": "Belize", "SLB": "Solomon Islands", "VGB": "British Virgin Islands", "BRN": "Brunei Darussalam", "BGR": "Bulgaria",
+    "MMR": "Myanmar", "BDI": "Burundi", "BLR": "Belarus", "KHM": "Cambodia", "CMR": "Cameroon", "CAN": "Canada",
+    "CPV": "Cabo Verde", "CYM": "Cayman Islands", "CAF": "Central African Republic", "LKA": "Sri Lanka", "TCD": "Chad", "CHL": "Chile",
+    "CHN": "China", "TWN": "Taiwan", "COL": "Colombia", "COM": "Comoros", "COG": "Congo", "COD": "Congo (Democratic Republic)",
+    "CRI": "Costa Rica", "HRV": "Croatia", "CUB": "Cuba", "CYP": "Cyprus", "CZE": "Czechia", "BEN": "Benin",
+    "DNK": "Denmark", "DMA": "Dominica", "DOM": "Dominican Republic", "ECU": "Ecuador", "SLV": "El Salvador", "GNQ": "Equatorial Guinea",
+    "ETH": "Ethiopia", "ERI": "Eritrea", "EST": "Estonia", "FJI": "Fiji", "FIN": "Finland", "FRA": "France",
+    "GUF": "French Guiana", "PYF": "French Polynesia", "ATF": "French Southern Territories", "DJI": "Djibouti", "GAB": "Gabon", "GEO": "Georgia",
+    "GMB": "Gambia", "PSE": "Palestine", "DEU": "Germany", "GHA": "Ghana", "GIB": "Gibraltar", "KIR": "Kiribati",
+    "GRC": "Greece", "GRL": "Greenland", "GRD": "Grenada", "GLP": "Guadeloupe", "GUM": "Guam", "GTM": "Guatemala",
+    "GIN": "Guinea", "GUY": "Guyana", "HTI": "Haiti", "VAT": "Holy See", "HND": "Honduras", "HKG": "Hong Kong",
+    "HUN": "Hungary", "ISL": "Iceland", "IND": "India", "IDN": "Indonesia", "IRN": "Iran", "IRQ": "Iraq",
+    "IRL": "Ireland", "ISR": "Israel", "ITA": "Italy", "CIV": "Côte d'Ivoire", "JAM": "Jamaica", "JPN": "Japan",
+    "KAZ": "Kazakhstan", "JOR": "Jordan", "KEN": "Kenya", "PRK": "Korea (Democratic People's Republic)", "KOR": "Korea (Republic of)", "KWT": "Kuwait",
+    "KGZ": "Kyrgyzstan", "LAO": "Lao People's Democratic Republic", "LBN": "Lebanon", "LSO": "Lesotho", "LVA": "Latvia", "LBR": "Liberia",
+    "LBY": "Libya", "LIE": "Liechtenstein", "LTU": "Lithuania", "LUX": "Luxembourg", "MAC": "Macao", "MDG": "Madagascar",
+    "MWI": "Malawi", "MYS": "Malaysia", "MDV": "Maldives", "MLI": "Mali", "MLT": "Malta", "MTQ": "Martinique",
+    "MRT": "Mauritania", "MUS": "Mauritius", "MEX": "Mexico", "MCO": "Monaco", "MNG": "Mongolia", "MDA": "Moldova",
+    "MSR": "Montserrat", "MAR": "Morocco", "MOZ": "Mozambique", "OMN": "Oman", "NAM": "Namibia", "NRU": "Nauru",
+    "NPL": "Nepal", "NLD": "Netherlands", "CUW": "Curaçao", "ABW": "Aruba", "SXM": "Sint Maarten", "NCL": "New Caledonia",
+    "VUT": "Vanuatu", "NZL": "New Zealand", "NIC": "Nicaragua", "NER": "Niger", "NGA": "Nigeria", "NIU": "Niue",
+    "NFK": "Norfolk Island", "NOR": "Norway", "MNP": "Northern Mariana Islands", "UMI": "United States Minor Outlying Islands", "FSM": "Micronesia", "MHL": "Marshall Islands",
+    "PLW": "Palau", "PAK": "Pakistan", "PAN": "Panama", "PNG": "Papua New Guinea", "PRY": "Paraguay", "PER": "Peru",
+    "PHL": "Philippines", "PCN": "Pitcairn", "POL": "Poland", "PRT": "Portugal", "GNB": "Guinea-Bissau", "TLS": "Timor-Leste",
+    "PRI": "Puerto Rico", "QAT": "Qatar", "REU": "Réunion", "ROU": "Romania", "RUS": "Russian Federation", "RWA": "Rwanda",
+    "BLM": "Saint Barthélemy", "SHN": "Saint Helena", "KNA": "Saint Kitts and Nevis", "AIA": "Anguilla", "LCA": "Saint Lucia", "MAF": "Saint Martin",
+    "SPM": "Saint Pierre and Miquelon", "VCT": "Saint Vincent and the Grenadines", "SMR": "San Marino", "STP": "Sao Tome and Principe", "SAU": "Saudi Arabia", "SEN": "Senegal",
+    "SRB": "Serbia", "SYC": "Seychelles", "SLE": "Sierra Leone", "SGP": "Singapore", "SVK": "Slovakia", "VNM": "Viet Nam",
+    "SVN": "Slovenia", "SOM": "Somalia", "ZAF": "South Africa", "ZWE": "Zimbabwe", "ESP": "Spain", "SSD": "South Sudan",
+    "SDN": "Sudan", "ESH": "Western Sahara", "SUR": "Suriname", "SJM": "Svalbard and Jan Mayen", "SWZ": "Eswatini", "SWE": "Sweden",
+    "CHE": "Switzerland", "SYR": "Syrian Arab Republic", "TJK": "Tajikistan", "THA": "Thailand", "TGO": "Togo", "TKL": "Tokelau",
+    "TON": "Tonga", "TTO": "Trinidad and Tobago", "ARE": "United Arab Emirates", "TUN": "Tunisia", "TUR": "Turkey", "TKM": "Turkmenistan",
+    "TCA": "Turks and Caicos Islands", "TUV": "Tuvalu", "UGA": "Uganda", "UKR": "Ukraine", "MKD": "North Macedonia", "EGY": "Egypt",
+    "GBR": "United Kingdom", "TZA": "Tanzania", "USA": "United States", "VIR": "Virgin Islands (U.S.)", "BFA": "Burkina Faso", "URY": "Uruguay",
+    "UZB": "Uzbekistan", "VEN": "Venezuela", "WLF": "Wallis and Futuna", "WSM": "Samoa", "YEM": "Yemen", "ZMB": "Zambia"
 };
