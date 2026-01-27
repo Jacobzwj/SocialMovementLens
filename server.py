@@ -509,6 +509,9 @@ def map_row_to_movement(row) -> Movement:
     if r_arr: rationales_found["Arrests"] = check_zero(r_arr)
     
     # --- Facts Rationales ---
+    r_iso = get_rationale_if_diff('ISO')
+    if r_iso: rationales_found["Country/Location (ISO Code)"] = r_iso
+
     r_reoc = get_rationale_if_diff('Reoccurrence')
     if r_reoc: rationales_found["Reoccurrence"] = r_reoc.capitalize()
 
