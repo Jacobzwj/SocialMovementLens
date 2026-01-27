@@ -133,21 +133,25 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
       </div>
       
       <div className="chat-messages" ref={scrollRef}>
-        {messages.map((msg, idx) => (
-            <div key={idx} className={`message ${msg.role}`}>
-        <div className="message-content">
-                    <ReactMarkdown>{msg.content}</ReactMarkdown>
-      </div>
-            </div>
-        ))}
+        {messages.map((msg, idx) => {
+            // Hide empty AI messages (waiting for stream) to avoid "empty bar" glitch
+            if (msg.role === 'ai' && !msg.content) return null;
+            return (
+                <div key={idx} className={`message ${msg.role}`}>
+                    <div className="message-content">
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    </div>
+                </div>
+            );
+        })}
         
-        {isTyping && messages[messages.length - 1]?.role !== 'ai' && (
+        {isTyping && (messages.length === 0 || messages[messages.length - 1]?.role !== 'ai' || !messages[messages.length - 1]?.content) && (
             <div className="message ai">
                 <div className="typing-indicator" style={{ display: 'flex' }}>
                     <span></span><span></span><span></span>
-          </div>
-        </div>
-      )}
+                </div>
+            </div>
+        )}
       </div>
 
       <div className="chat-input-area">
