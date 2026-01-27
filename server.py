@@ -962,11 +962,8 @@ def chat_with_ai(req: ChatRequest):
     2. **Full Database**: The entire dataset of 151 movements (accessible via the `get_full_database_context` tool).
     
     **YOUR STRATEGY:**
-    - **EFFICIENCY PRIORITY (Direct Answer)**: For greetings, general concept definitions (e.g. "What is Regime?"), or questions fully answerable by the `Current Search Results`, **DO NOT** use the tool. Answer immediately.
-    - **DATA PRIORITY (Full Database)**: ONLY call `get_full_database_context` if the user SPECIFICALLY asks for:
-        1. Global statistics (e.g. "total number of movements in the database").
-        2. A specific movement that is NOT in the `Current Search Results`.
-        3. Information clearly missing from the current view.
+    - **First Priority**: Answer the user's question using ONLY the `Current Search Results` if possible. This is faster and more relevant for questions like "Which of these..." or "How many movements did I find?".
+    - **Second Priority**: If the user asks about Global Statistics (e.g. "Total movements in database", "Global tweet count"), or asks for a movement NOT in the current list, YOU MUST CALL the `get_full_database_context` tool.
     
     **CRITICAL RULES:**
     - **Context Awareness**: The `Current Search Results` list IS the user's screen. If a movement is NOT in that list, you MUST say "It is not currently displayed in your search results".

@@ -20,33 +20,8 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [loadingStep, setLoadingStep] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const lastAnalyzedQueryRef = useRef<string>('');
-
-  const LOADING_MESSAGES = [
-      "Analyzing query...",
-      "Consulting Social Movement Database...",
-      "Reading context & rationales...",
-      "Synthesizing response..."
-  ];
-
-  // Progressive Loading Timer
-  useEffect(() => {
-      let interval: NodeJS.Timeout;
-      if (isTyping) {
-          setLoadingStep(0);
-          let step = 0;
-          // Change text every 1.5s to simulate progress
-          interval = setInterval(() => {
-              step++;
-              if (step < LOADING_MESSAGES.length) {
-                  setLoadingStep(step);
-              }
-          }, 1500); 
-      }
-      return () => clearInterval(interval);
-  }, [isTyping]);
 
   // Create a stable key for results to prevent unnecessary re-renders
   const resultsFingerprint = results.map(r => r.id).join(',');
@@ -135,15 +110,10 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
         
         {isTyping && (
             <div className="message ai">
-                <div className="typing-container">
-                    <div className="typing-indicator">
-                        <span></span><span></span><span></span>
-                    </div>
-                    <span className="loading-text" key={loadingStep}>
-                        {LOADING_MESSAGES[loadingStep]}
-                    </span>
-                </div>
-            </div>
+                <div className="typing-indicator" style={{ display: 'flex' }}>
+                    <span></span><span></span><span></span>
+          </div>
+        </div>
       )}
       </div>
 

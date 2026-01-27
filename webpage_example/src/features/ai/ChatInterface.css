@@ -78,30 +78,7 @@
   margin-bottom: 4px;
 }
 
-/* Typing Indicator Container */
-.typing-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-/* Text Animation */
-.loading-text {
-    font-size: 0.85rem;
-    color: #a1a1aa;
-    font-style: italic;
-    font-family: monospace;
-    animation: pulse 2s infinite ease-in-out;
-    min-width: 180px; /* Prevent jitter */
-}
-
-@keyframes pulse {
-    0% { opacity: 0.5; }
-    50% { opacity: 1; }
-    100% { opacity: 0.5; }
-}
-
-/* Typing Dots */
+/* Typing Indicator */
 .typing-indicator {
   display: flex;
   gap: 4px;
