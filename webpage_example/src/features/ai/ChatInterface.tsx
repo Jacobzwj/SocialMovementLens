@@ -141,7 +141,7 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
             </div>
         ))}
         
-        {isTyping && (
+        {isTyping && messages[messages.length - 1]?.role !== 'ai' && (
             <div className="message ai">
                 <div className="typing-indicator" style={{ display: 'flex' }}>
                     <span></span><span></span><span></span>
