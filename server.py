@@ -1229,24 +1229,28 @@ async def chat_with_ai_stream(req: ChatRequest):
         current_screen_context += "No specific movements currently displayed."
     current_screen_context += "\n--- END OF SEARCH RESULTS ---\n"
 
-    # 2. System prompt — describes the two information sources and tool usage policy
+    # 2. System prompt — strict no-hallucinated-numbers policy
     system_prompt = """You are an expert Social Movement Research Agent.
 
 You have THREE sources of information:
 1. **Current Search Results** — movements visible on the user's screen (provided in this message).
-2. **analyze_database tool** — for ANY question requiring exact statistics (counts, sums, averages, max/min, top-N, group-by). Always call this for numbers; never estimate from context.
-3. **get_full_database_context tool** — loads the full narrative CSV. Use ONLY for questions about a specific movement that is NOT in the current screen results, or for cross-movement reading of descriptions/outcomes.
+2. **analyze_database tool** — exact statistics over all 148 movements (count, sum, mean, median, max, min, top_n, group_by, list).
+3. **get_full_database_context tool** — full narrative CSV for "tell me about <movement>" type questions about non-visible movements.
 
-**STRATEGY:**
-- For questions about the CURRENT visible list ("which of these...", "in my results..."), answer from the Current Search Results without any tool.
-- For statistical or aggregate questions about the WHOLE database, call analyze_database. Compose multiple calls if a question needs multiple stats.
-- For narrative questions about a specific non-visible movement ("tell me about XYZ"), call get_full_database_context.
-- For purely conversational input ("hi", "thanks"), just reply.
+**ABSOLUTE RULES (violations are forbidden):**
+- ⚠️ NEVER state any number (count, total, average, max, min, percentage, "X movements", "Y tweets", etc.) unless that exact number was returned by a tool call in this conversation. If you don't have it from a tool, you MUST call analyze_database first.
+- ⚠️ NEVER guess or estimate from the Current Search Results or your training memory when the question is about the FULL database.
+- The only legitimate path to a number is: call analyze_database → receive {"result": N} → quote N.
 
-**RULES:**
-- Never invent numbers. If a stat isn't already in tool output, call analyze_database again.
-- Never mention internal movement IDs in the final reply; refer to movements by name only.
-- Final answer must be in the SAME LANGUAGE as the user's question.
+**WHEN TO USE WHICH SOURCE:**
+- Question about items ON SCREEN ("which of these…", "in my results…", "of the displayed movements…") → answer from Current Search Results, no tool.
+- Question requiring EXACT NUMBERS about the whole database → call analyze_database. Compose multiple calls for compound questions.
+- Question wanting the description/background of a specific movement that's NOT on screen → call get_full_database_context.
+- Pure greeting / chitchat → reply directly, no tool.
+
+**OUTPUT RULES:**
+- Reply in the SAME LANGUAGE as the user's question.
+- Never mention internal movement IDs in the reply; refer to movements by their **Name** only.
 """
 
     messages = [
@@ -1254,16 +1258,44 @@ You have THREE sources of information:
         {"role": "user", "content": f"{current_screen_context}\n\nUser Question: {req.query}"},
     ]
 
+    # 2b. Statistical-intent detection: if the query clearly asks for a number/aggregate
+    # over the whole database, force a tool call on the first round so the model can't
+    # skip and hallucinate. We exclude phrases that scope the question to the screen.
+    q_lower = req.query.lower()
+    SCREEN_SCOPE_TOKENS = (
+        "of these", "in these", "from these", "among these",
+        "in my results", "of the displayed", "in the displayed",
+        "of the visible", "in the visible", "shown above", "shown below",
+        "上面这些", "这些里", "这些中", "我搜到的", "搜索结果里", "屏幕上",
+    )
+    STAT_INTENT_TOKENS = (
+        "how many", "how much", "total", "count", "average", "mean",
+        "median", "max ", "maximum", "min ", "minimum", "most ", "least ",
+        "top ", "sum ", "percentage", "percent", "proportion", "ratio",
+        "across all", "in the database", "in your database", "全部", "所有",
+        "多少", "几个", "几条", "总共", "总计", "总数", "平均", "最多",
+        "最少", "最大", "最小", "占比", "比例", "百分", "排名", "前几",
+        "数据库",
+    )
+    is_screen_scoped = any(tok in q_lower for tok in SCREEN_SCOPE_TOKENS)
+    has_stat_intent = any(tok in q_lower for tok in STAT_INTENT_TOKENS)
+    force_first_tool = has_stat_intent and not is_screen_scoped
+
     # 3. Tool-calling loop (non-streaming) until the model is ready to produce its final answer.
     MAX_TOOL_ROUNDS = 5
     last_error = None
     for round_idx in range(MAX_TOOL_ROUNDS):
+        # First round: force a tool call if the query has clear statistical intent.
+        if round_idx == 0 and force_first_tool:
+            tool_choice_param = {"type": "function", "function": {"name": "analyze_database"}}
+        else:
+            tool_choice_param = "auto"
         try:
             resp = client.chat.completions.create(
                 model=CHAT_MODEL,
                 messages=messages,
                 tools=STREAM_TOOLS,
-                tool_choice="auto",
+                tool_choice=tool_choice_param,
                 temperature=0.3,
             )
         except Exception as e:
