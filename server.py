@@ -1263,10 +1263,26 @@ You have THREE sources of information:
     # When ambiguous, the model is asked to answer BOTH scopes in one reply.
     q_lower = req.query.lower()
     SCREEN_SCOPE_TOKENS = (
+        # English: list-deictic
         "of these", "in these", "from these", "among these",
-        "in my results", "of the displayed", "in the displayed",
+        "in my results", "in my search", "in my search results",
+        "of the displayed", "in the displayed",
         "of the visible", "in the visible", "shown above", "shown below",
-        "上面这些", "这些里", "这些中", "我搜到的", "搜索结果里", "屏幕上",
+        "current results", "currently displayed", "currently visible",
+        "on my screen", "on screen", "you returned", "you found",
+        "did you find", "did you search", "did you get",
+        "you searched", "you searched for", "you search",
+        "you got", "you matched", "the results", "your results",
+        # Chinese: list-deictic
+        "上面这些", "这些里", "这些中", "这些之中", "其中",
+        "我搜到的", "我搜的", "我搜索的", "我搜索到的",
+        "搜索结果里", "搜索结果中", "搜索到的结果",
+        "屏幕上", "屏幕中", "屏幕里",
+        # Chinese: action verbs implying "in what I just searched"
+        "搜到", "搜索到", "找到", "找出", "找出来", "返回了",
+        "你搜到", "你搜索到", "你找到", "你返回",
+        "你现在搜", "你现在找", "现在搜到", "现在找到",
+        "目前搜到", "目前显示",
     )
     FULL_DB_SCOPE_TOKENS = (
         "in the database", "in your database", "across all", "across the database",
