@@ -741,7 +741,11 @@ STREAM_TOOLS = [
                 "Compute exact statistics over the full social-movements database (148 rows). "
                 "ALWAYS use this for questions involving counts, sums, averages, medians, "
                 "max/min, top-N, group-by, or any numeric/categorical aggregation. "
-                "Do NOT estimate from context — always call this tool for precise numbers."
+                "Do NOT estimate from context — always call this tool for precise numbers.\n\n"
+                "DEFAULT SCOPE: pass filter_expr='True' (the entire 148-row database). "
+                "Only narrow the filter when the CURRENT user question explicitly references "
+                "a subset (e.g. 'environmental', 'in 2014', 'of these', '这些里'). "
+                "Do NOT carry over scope from earlier turns in the conversation."
             ),
             "parameters": {
                 "type": "object",
@@ -1253,14 +1257,10 @@ You have THREE sources of information:
 - Never mention internal movement IDs in the reply; refer to movements by their **Name** only.
 """
 
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": f"{current_screen_context}\n\nUser Question: {req.query}"},
-    ]
-
-    # 2b. Statistical-intent detection: if the query clearly asks for a number/aggregate
-    # over the whole database, force a tool call on the first round so the model can't
-    # skip and hallucinate. We exclude phrases that scope the question to the screen.
+    # 2b. Scope analysis for the query.
+    # We classify the question into: screen-scoped, full-DB-scoped, or ambiguous.
+    # Ambiguous = stat-intent + screen has a strict subset of the DB + neither scope token present.
+    # When ambiguous, the model is asked to answer BOTH scopes in one reply.
     q_lower = req.query.lower()
     SCREEN_SCOPE_TOKENS = (
         "of these", "in these", "from these", "among these",
@@ -1268,17 +1268,69 @@ You have THREE sources of information:
         "of the visible", "in the visible", "shown above", "shown below",
         "上面这些", "这些里", "这些中", "我搜到的", "搜索结果里", "屏幕上",
     )
+    FULL_DB_SCOPE_TOKENS = (
+        "in the database", "in your database", "across all", "across the database",
+        "in the full database", "out of all", "globally", "in total",
+        "全数据库", "全部数据库", "整个数据库", "数据库中", "数据库里", "数据库的",
+        "全库", "总数据", "全部 148", "所有 148", "所有148", "全部148",
+    )
     STAT_INTENT_TOKENS = (
         "how many", "how much", "total", "count", "average", "mean",
         "median", "max ", "maximum", "min ", "minimum", "most ", "least ",
         "top ", "sum ", "percentage", "percent", "proportion", "ratio",
-        "across all", "in the database", "in your database", "全部", "所有",
+        "全部", "所有",
         "多少", "几个", "几条", "总共", "总计", "总数", "平均", "最多",
         "最少", "最大", "最小", "占比", "比例", "百分", "排名", "前几",
         "数据库",
     )
     is_screen_scoped = any(tok in q_lower for tok in SCREEN_SCOPE_TOKENS)
+    is_full_db_scoped = any(tok in q_lower for tok in FULL_DB_SCOPE_TOKENS)
     has_stat_intent = any(tok in q_lower for tok in STAT_INTENT_TOKENS)
+
+    # Extract screen subset IDs from context_movements (frontend format: "ID 287: Name (year) - desc...").
+    import re as _re
+    screen_ids = []
+    for s in (req.context_movements or []):
+        m = _re.match(r"\s*ID\s+(\S+?)\s*[:：]", s)
+        if m:
+            screen_ids.append(m.group(1).strip().rstrip(".0"))
+    screen_ids = list(dict.fromkeys(screen_ids))  # dedupe, preserve order
+    screen_is_strict_subset = (0 < len(screen_ids) < len(DF_CODES))
+
+    is_ambiguous_scope = (
+        has_stat_intent
+        and screen_is_strict_subset
+        and not is_screen_scoped
+        and not is_full_db_scoped
+    )
+
+    # If ambiguous, build a screen-subset filter expression for analyze_database
+    # and append a special instruction to the system prompt.
+    if is_ambiguous_scope:
+        ids_literal = ", ".join(repr(i) for i in screen_ids)
+        screen_filter_expr = f"index in [{ids_literal}]"
+        ambiguity_addendum = (
+            "\n\n**SCOPE AMBIGUITY DETECTED FOR THIS QUESTION**\n"
+            f"The user asked a statistical question without explicit scope, while {len(screen_ids)} "
+            f"movements (a strict subset of the 148-row database) are currently visible on screen.\n"
+            "You MUST answer BOTH plausible interpretations in a single reply. Specifically:\n"
+            "1. Call `analyze_database` with `filter_expr=\"True\"` for the FULL DATABASE answer.\n"
+            f"2. Call `analyze_database` with `filter_expr=\"{screen_filter_expr}\"` for the CURRENT SCREEN SUBSET answer.\n"
+            "3. Then present BOTH results to the user, clearly labeled (e.g. '📊 Full database (148): ...' and "
+            "'📊 Current search results (N): ...'), and end with a one-line note inviting the user to clarify if they only wanted one.\n"
+            "If the two answers happen to be identical, just give one answer.\n"
+            "Always reply in the SAME LANGUAGE as the user's question."
+        )
+        system_prompt = system_prompt + ambiguity_addendum
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": f"{current_screen_context}\n\nUser Question: {req.query}"},
+    ]
+
+    # Force a tool call on the first round when the query clearly asks for a number,
+    # so the model cannot skip and hallucinate. Both ambiguous and full-DB-scoped
+    # cases qualify; pure screen-scoped cases use auto so the model can answer from screen.
     force_first_tool = has_stat_intent and not is_screen_scoped
 
     # 3. Tool-calling loop (non-streaming) until the model is ready to produce its final answer.
