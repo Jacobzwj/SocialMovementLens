@@ -1092,7 +1092,9 @@ async def chat_with_ai_stream(req: ChatRequest):
             stream = client.chat.completions.create(
                 model=CHAT_MODEL,
                 messages=messages,
-                stream=True
+                stream=True,
+                temperature=0.7,
+                frequency_penalty=0.5,
             )
             for chunk in stream:
                 if chunk.choices[0].delta.content:
