@@ -631,7 +631,88 @@ def generate_full_context_csv():
     context += "--- FULL DATABASE END ---\n"
     return context
 
+# --- Deterministic statistical analysis (precise, no LLM math) ---
+def analyze_database(filter_expr: str, aggregation: str,
+                     column: Optional[str] = None,
+                     group_by: Optional[str] = None,
+                     n: int = 10):
+    """
+    Run a precise pandas query against DF_CODES.
+    Returns a dict with either {'result': ..., 'row_count_after_filter': N}
+    or {'error': '...'}.
+    """
+    if DF_CODES.empty:
+        return {"error": "Database not loaded."}
+    try:
+        # Apply filter
+        if filter_expr and filter_expr.strip().lower() not in ("true", ""):
+            sub = DF_CODES.query(filter_expr)
+        else:
+            sub = DF_CODES
+
+        n_rows = int(len(sub))
+
+        # Group then aggregate
+        if group_by:
+            if group_by not in DF_CODES.columns:
+                return {"error": f"Unknown group_by column '{group_by}'."}
+            grouped = sub.groupby(group_by)
+            if aggregation == "count":
+                result = {str(k): int(v) for k, v in grouped.size().to_dict().items()}
+            elif aggregation in ("sum", "mean", "median", "max", "min"):
+                if not column:
+                    return {"error": f"'{aggregation}' with group_by needs a column."}
+                if column not in DF_CODES.columns:
+                    return {"error": f"Unknown column '{column}'."}
+                series = pd.to_numeric(sub[column], errors="coerce")
+                tmp = series.groupby(sub[group_by]).agg(aggregation)
+                result = {str(k): (float(v) if pd.notna(v) else None) for k, v in tmp.to_dict().items()}
+            else:
+                return {"error": f"Aggregation '{aggregation}' not supported with group_by."}
+            return {"result": result, "row_count_after_filter": n_rows}
+
+        # No group_by
+        if aggregation == "count":
+            return {"result": n_rows, "row_count_after_filter": n_rows}
+
+        if aggregation == "list":
+            names = sub["protest_name"].astype(str).tolist() if "protest_name" in sub.columns else []
+            return {"result": names[:200], "row_count_after_filter": n_rows}
+
+        if aggregation == "top_n":
+            if not column:
+                return {"error": "'top_n' requires a column to sort by."}
+            if column not in DF_CODES.columns:
+                return {"error": f"Unknown column '{column}'."}
+            series = pd.to_numeric(sub[column], errors="coerce")
+            sub2 = sub.assign(__sortkey=series).dropna(subset=["__sortkey"])
+            top = sub2.nlargest(int(n), "__sortkey")
+            rows = []
+            for _, r in top.iterrows():
+                rows.append({
+                    "name": str(r.get("protest_name", "")),
+                    "year": (int(r["year"]) if pd.notna(r.get("year")) else None),
+                    column: (float(r["__sortkey"]) if pd.notna(r["__sortkey"]) else None),
+                })
+            return {"result": rows, "row_count_after_filter": n_rows}
+
+        if aggregation in ("sum", "mean", "median", "max", "min"):
+            if not column:
+                return {"error": f"'{aggregation}' requires a column."}
+            if column not in DF_CODES.columns:
+                return {"error": f"Unknown column '{column}'."}
+            series = pd.to_numeric(sub[column], errors="coerce")
+            val = getattr(series, aggregation)()
+            return {"result": (float(val) if pd.notna(val) else None),
+                    "row_count_after_filter": n_rows}
+
+        return {"error": f"Aggregation '{aggregation}' not supported."}
+    except Exception as e:
+        return {"error": f"{type(e).__name__}: {e}"}
+
+
 # --- Tools Definition ---
+# Schema for /api/chat (legacy single-tool flow); kept unchanged so /api/chat behavior is preserved.
 tools = [
     {
         "type": "function",
@@ -647,6 +728,103 @@ tools = [
             }
         }
     }
+]
+
+# Richer tools for the streaming chat endpoint. analyze_database does precise stats;
+# get_full_database_context loads the raw narrative (for "tell me about X" questions).
+STREAM_TOOLS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "analyze_database",
+            "description": (
+                "Compute exact statistics over the full social-movements database (148 rows). "
+                "ALWAYS use this for questions involving counts, sums, averages, medians, "
+                "max/min, top-N, group-by, or any numeric/categorical aggregation. "
+                "Do NOT estimate from context — always call this tool for precise numbers."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filter_expr": {
+                        "type": "string",
+                        "description": (
+                            "Pandas .query() expression. Use 'True' for all rows. "
+                            "Wrap special-character columns in backticks: e.g. `#tweets`. "
+                            "Examples: \"True\", \"year == 2014\", "
+                            "\"Theme_environmental == 'yes' and area == 'AS'\", "
+                            "\"`#tweets` > 1000000 and Reoccurrence == 'yes'\".\n\n"
+                            "AVAILABLE COLUMNS:\n"
+                            "- year (int): 2008-2020\n"
+                            "- area (str): one of 'AF','AS','EU','GLOBAL','OA','SA' (Africa, Asia, Europe, Global, Oceania/Americas, South America)\n"
+                            "- ISO (str): country code, e.g. 'USA','DEU','HKG'\n"
+                            "- protest_name (str)\n"
+                            "- `#tweets` (int)\n"
+                            "- duration (int): days\n"
+                            "- Length_Days (str): may contain 'ongoing','unclear' or numeric strings\n"
+                            "- Scale (str): 'local'/'national'/'transnational'\n"
+                            "- Regime_Democracy (str): 'democracy'/'semi-democracy'/'authoritarian'\n"
+                            "- Theme_political, Theme_economic, Theme_environmental, Theme_social, Theme_others (str: 'yes'/'no')\n"
+                            "- Reoccurrence (str: 'yes'/'no')\n"
+                            "- Offline (str: 'yes'/'no')\n"
+                            "- Protester_Violence (str: 'yes'/'no')\n"
+                            "- SMO_Leaders, Grassroots_Mobilization, Symbolic_Figures (str: 'yes'/'no')\n"
+                            "- State_response_accomendation, State_response_distraction, State_response_repression, State_response_ignore (str: 'yes'/'no')\n"
+                            "- Physical_repression, Legal_repression, Acceptance, Advantage, Attrition, Ignore (str: 'yes'/'no')\n"
+                            "- Outcome (str): 'fail'/'major policy change'/'other reactions'/'policy revision'/'regime change'\n"
+                            "- Longterm (str): 'continue'/'contraction'/'no'\n"
+                            "- Kind_Movement (str): 'election campaign'/'non-election campaign'/'others'/'protest'\n"
+                            "- Goal (str): 'others'/'reform'/'revolutionary'\n"
+                            "- Key_Participants (str): 'general public'/'women'/'men'/'young'/'racial minority'/'religious groups'/'LGBTQIA2+'/'other social groups'\n"
+                            "All string comparisons are case-sensitive — use lowercase values shown above."
+                        ),
+                    },
+                    "aggregation": {
+                        "type": "string",
+                        "enum": ["count", "sum", "mean", "median", "max", "min", "top_n", "list"],
+                        "description": (
+                            "count = number of matching rows; "
+                            "sum/mean/median/max/min = numeric stat over `column`; "
+                            "top_n = the n rows with highest `column` value (returns names + year + value); "
+                            "list = all matching protest_name values (capped at 200)."
+                        ),
+                    },
+                    "column": {
+                        "type": "string",
+                        "description": "Column to aggregate. Required for sum/mean/median/max/min/top_n. Use plain name (no backticks here): '#tweets', 'duration', 'Number_Participants', etc.",
+                    },
+                    "group_by": {
+                        "type": "string",
+                        "description": "Optional. Column to group by before aggregating. E.g. 'area', 'year', 'Regime_Democracy', 'Outcome'.",
+                    },
+                    "n": {
+                        "type": "integer",
+                        "description": "Used by top_n only. Default 10.",
+                    },
+                },
+                "required": ["filter_expr", "aggregation"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_full_database_context",
+            "description": (
+                "Load the full narrative database (movement names, descriptions, outcomes, etc.) "
+                "as a CSV-like string. Use ONLY when the user asks about a SPECIFIC movement that "
+                "is not in the current screen results, or wants to read details/descriptions across "
+                "many movements. For pure statistics, use analyze_database instead — it is faster and exact."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "reason": {"type": "string", "description": "Why the full narrative DB is needed."}
+                },
+                "required": ["reason"],
+            },
+        },
+    },
 ]
 
 # --- Routes ---
@@ -1022,6 +1200,21 @@ def chat_with_ai(req: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 # --- Serve Frontend (Last Route) ---
+def _dispatch_tool(name: str, args: dict):
+    """Execute a single tool call and return its raw result (will be JSON-serialized)."""
+    if name == "analyze_database":
+        return analyze_database(
+            filter_expr=args.get("filter_expr", "True"),
+            aggregation=args.get("aggregation", "count"),
+            column=args.get("column"),
+            group_by=args.get("group_by"),
+            n=int(args.get("n", 10)),
+        )
+    if name == "get_full_database_context":
+        return {"full_database_csv": generate_full_context_csv()}
+    return {"error": f"Unknown tool '{name}'."}
+
+
 @app.post("/api/chat_stream")
 async def chat_with_ai_stream(req: ChatRequest):
     client = get_openai_client()
@@ -1036,58 +1229,90 @@ async def chat_with_ai_stream(req: ChatRequest):
         current_screen_context += "No specific movements currently displayed."
     current_screen_context += "\n--- END OF SEARCH RESULTS ---\n"
 
-    # 2. Router Decision
-    router_messages = [
-        {"role": "system", "content": "You are a routing agent. Your ONLY job is to decide if the user's query requires accessing the FULL database of all 151 movements (e.g. for global stats, counts, or searching for a movement not currently visible). \n\nInput: User Query + Current Visible List.\nOutput: 'YES' if full database is needed. 'NO' if the question can be answered with current list or is general chat. Return ONLY 'YES' or 'NO'."},
-        {"role": "user", "content": f"Current List:\n{current_screen_context}\n\nUser Query: {req.query}"}
-    ]
-    
-    needs_full_db = False
-    try:
-        router_res = client.chat.completions.create(
-            model=CHAT_MODEL,
-            messages=router_messages,
-            max_tokens=5,
-            temperature=0
-        )
-        decision = router_res.choices[0].message.content.strip().upper()
-        if "YES" in decision:
-            needs_full_db = True
-            print(f"Router Decision: YES (Load Full DB) for query: {req.query}")
-        else:
-            print(f"Router Decision: NO (Use Screen Context) for query: {req.query}")
-    except Exception as e:
-        print(f"Router Error: {e}. Defaulting to NO.")
-
-    # 3. Construct Context & System Prompt
+    # 2. System prompt — describes the two information sources and tool usage policy
     system_prompt = """You are an expert Social Movement Research Agent.
-    
-    You have access to information about social movements.
-    
-    **YOUR STRATEGY:**
-    - **First Priority**: Answer the user's question using ONLY the `Current Search Results` if possible.
-    - **Second Priority**: If the Full Database context is provided below, use it to answer questions about global statistics or movements not on screen.
-    
-    **CRITICAL RULES:**
-    - **Context Awareness**: The `Current Search Results` list IS the user's screen.
-    - **No Hallucination**: Do NOT claim a movement is present in the search results just because you know it exists in the database. 
-    - **Privacy**: **NEVER** mention internal movement IDs (e.g., "ID 248", "ID: 12") in your response to the user. Refer to movements by their **Name** only.
-    """
-    
-    user_content = f"{current_screen_context}\n\n"
-    if needs_full_db:
-        full_data = generate_full_context_csv()
-        user_content += f"--- FULL DATABASE CONTEXT (Loaded by Router) ---\n{full_data}\n--- END FULL DATABASE ---\n\n"
-        
-    user_content += f"User Question: {req.query}"
+
+You have THREE sources of information:
+1. **Current Search Results** — movements visible on the user's screen (provided in this message).
+2. **analyze_database tool** — for ANY question requiring exact statistics (counts, sums, averages, max/min, top-N, group-by). Always call this for numbers; never estimate from context.
+3. **get_full_database_context tool** — loads the full narrative CSV. Use ONLY for questions about a specific movement that is NOT in the current screen results, or for cross-movement reading of descriptions/outcomes.
+
+**STRATEGY:**
+- For questions about the CURRENT visible list ("which of these...", "in my results..."), answer from the Current Search Results without any tool.
+- For statistical or aggregate questions about the WHOLE database, call analyze_database. Compose multiple calls if a question needs multiple stats.
+- For narrative questions about a specific non-visible movement ("tell me about XYZ"), call get_full_database_context.
+- For purely conversational input ("hi", "thanks"), just reply.
+
+**RULES:**
+- Never invent numbers. If a stat isn't already in tool output, call analyze_database again.
+- Never mention internal movement IDs in the final reply; refer to movements by name only.
+- Final answer must be in the SAME LANGUAGE as the user's question.
+"""
 
     messages = [
         {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_content}
+        {"role": "user", "content": f"{current_screen_context}\n\nUser Question: {req.query}"},
     ]
 
-    # 4. Stream Generator
+    # 3. Tool-calling loop (non-streaming) until the model is ready to produce its final answer.
+    MAX_TOOL_ROUNDS = 5
+    last_error = None
+    for round_idx in range(MAX_TOOL_ROUNDS):
+        try:
+            resp = client.chat.completions.create(
+                model=CHAT_MODEL,
+                messages=messages,
+                tools=STREAM_TOOLS,
+                tool_choice="auto",
+                temperature=0.3,
+            )
+        except Exception as e:
+            last_error = f"LLM call failed: {e}"
+            print(f"[chat_stream] {last_error}")
+            break
+
+        msg = resp.choices[0].message
+        if not msg.tool_calls:
+            # No more tools needed — break, then re-issue the SAME messages with stream=True.
+            break
+
+        # Append assistant message (with tool_calls) so the next call has correct history.
+        messages.append({
+            "role": "assistant",
+            "content": msg.content or "",
+            "tool_calls": [
+                {
+                    "id": tc.id,
+                    "type": "function",
+                    "function": {"name": tc.function.name, "arguments": tc.function.arguments},
+                }
+                for tc in msg.tool_calls
+            ],
+        })
+
+        # Dispatch each tool and append its result.
+        for tc in msg.tool_calls:
+            try:
+                args = json.loads(tc.function.arguments) if tc.function.arguments else {}
+            except json.JSONDecodeError as je:
+                args_result = {"error": f"Invalid JSON in tool args: {je}"}
+            else:
+                args_result = _dispatch_tool(tc.function.name, args)
+            print(f"[chat_stream r{round_idx+1}] tool={tc.function.name} args={tc.function.arguments[:200] if tc.function.arguments else ''} -> {str(args_result)[:200]}")
+            messages.append({
+                "role": "tool",
+                "tool_call_id": tc.id,
+                "content": json.dumps(args_result, ensure_ascii=False, default=str),
+            })
+    else:
+        # Loop exhausted without a clean break. Continue to streaming anyway.
+        print(f"[chat_stream] hit MAX_TOOL_ROUNDS={MAX_TOOL_ROUNDS}; forcing final answer.")
+
+    # 4. Final streaming answer (no tools — the model has all the data it asked for).
     def generate():
+        if last_error:
+            yield f"Error generating response: {last_error}"
+            return
         try:
             stream = client.chat.completions.create(
                 model=CHAT_MODEL,
