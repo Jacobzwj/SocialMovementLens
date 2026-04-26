@@ -54,7 +54,7 @@ def get_openai_client():
     # Check if it's an OpenRouter key to set the correct base_url
     if api_key.startswith("sk-or-"):
         EMBEDDING_MODEL = "baai/bge-m3"
-        CHAT_MODEL = "deepseek/deepseek-v4-flash"
+        CHAT_MODEL = "deepseek/deepseek-v3.2"
         return OpenAI(
             api_key=api_key,
             base_url="https://openrouter.ai/api/v1"
