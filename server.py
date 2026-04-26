@@ -322,9 +322,14 @@ class Rationale(BaseModel):
     coderId: str
     evidenceSource: str
 
+class ChatHistoryMessage(BaseModel):
+    role: str  # "user" or "assistant"
+    content: str
+
 class ChatRequest(BaseModel):
     query: str
-    context_movements: List[str] # Now used as the "Current Screen Context"
+    context_movements: List[str]  # Now used as the "Current Screen Context"
+    history: Optional[List[ChatHistoryMessage]] = None  # Prior turns in this chat thread
 
 # --- Helpers ---
 def clean_nan(val, default=""):
@@ -1276,28 +1281,44 @@ You have THREE sources of information:
     if n_screen == 0:
         intent_label = "FULL_DB_ONLY"
 
+    # Trim history to keep prompt size sane: last 12 turns max.
+    history_msgs = []
+    if req.history:
+        for h in req.history[-12:]:
+            if h.role in ("user", "assistant") and h.content:
+                history_msgs.append({"role": h.role, "content": h.content})
+
     if screen_is_strict_subset:
         # Run the tiny classifier only when there's a real subset to consider.
+        # Include recent conversation history so follow-up questions like "有多少 tweets"
+        # after the model just said "Take a Knee" are correctly classified as NOT_STATS
+        # (a follow-up about a specific movement) rather than as a new aggregate question.
         classifier_sys = (
-            "You classify the SCOPE INTENT of a user's question for a social-movements database app.\n"
+            "You classify the SCOPE INTENT of a user's LATEST question for a social-movements database app.\n"
             f"Setup: The full database has {n_total} movements. The user's screen currently shows {n_screen} of them as search results.\n"
+            "If prior conversation turns are provided, use them — a short follow-up like 'how many tweets' usually refers to the entity just discussed, not a new aggregate query.\n"
             "Output exactly ONE label, nothing else, no punctuation:\n"
-            "  SCREEN_ONLY    — the user is clearly asking about the visible search results only "
-            "(e.g. 'how many of these / 这些里 / 你搜到了几个 / 收到了多少 / current results / your search returned').\n"
-            f"  FULL_DB_ONLY   — the user is clearly asking about the entire {n_total}-row database "
+            "  SCREEN_ONLY    — clearly asking about the visible search results only "
+            "(e.g. 'how many of these / 这些里 / 你搜到了几个 / 收到了多少 / current results').\n"
+            f"  FULL_DB_ONLY   — clearly asking about the entire {n_total}-row database "
             "(e.g. 'in the database / 全数据库 / 数据库中 / across all movements / 总共有多少个运动').\n"
-            "  AMBIGUOUS      — the question asks for a statistic with NO explicit scope reference, so both interpretations are plausible "
+            "  AMBIGUOUS      — a fresh statistical/aggregate question with NO explicit scope reference and NO clear referent in prior turns "
             "(e.g. 'tweets 数最多的一条是? / which has the most tweets / what's the average duration').\n"
-            "  NOT_STATS      — not a statistical/aggregate question (greetings, narrative requests, descriptions, follow-ups about a single named movement).\n"
-            "Use semantic judgment, not keyword matching. Output exactly one of: SCREEN_ONLY FULL_DB_ONLY AMBIGUOUS NOT_STATS"
+            "  NOT_STATS      — not a fresh aggregate question. Includes: greetings, narrative requests, descriptions, "
+            "AND follow-up questions about a specific movement just mentioned in prior turns "
+            "(e.g. after assistant said 'Take a Knee Movement', user asks '有多少条 tweets / what's it about / 具体是什么事情').\n"
+            "Output exactly one of: SCREEN_ONLY FULL_DB_ONLY AMBIGUOUS NOT_STATS"
         )
+        # Build classifier message list: system + recent history + current query.
+        # Use 'user'/'assistant' roles so the model reads it as a real conversation.
+        classifier_messages = [{"role": "system", "content": classifier_sys}]
+        for h in history_msgs[-6:]:  # last 3 user/assistant pairs is plenty for context
+            classifier_messages.append(h)
+        classifier_messages.append({"role": "user", "content": req.query})
         try:
             cl = client.chat.completions.create(
                 model=CHAT_MODEL,
-                messages=[
-                    {"role": "system", "content": classifier_sys},
-                    {"role": "user", "content": f"User question: {req.query}"},
-                ],
+                messages=classifier_messages,
                 max_tokens=8,
                 temperature=0,
             )
@@ -1335,10 +1356,18 @@ You have THREE sources of information:
         )
     # FULL_DB_ONLY and NOT_STATS need no addendum — main system prompt + tool_choice handles them.
 
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": f"{current_screen_context}\n\nUser Question: {req.query}"},
-    ]
+    # Build the main message list: system + screen context + prior turns + new user question.
+    # Putting screen context as a system-style framing message keeps history clean of redundant copies.
+    messages = [{"role": "system", "content": system_prompt}]
+    if history_msgs:
+        # Inject screen context as a system message ahead of history so the model knows what's
+        # currently visible without re-attaching context to every prior user turn.
+        messages.append({"role": "system", "content": current_screen_context})
+        messages.extend(history_msgs)
+        messages.append({"role": "user", "content": req.query})
+    else:
+        # First turn: keep the original combined format.
+        messages.append({"role": "user", "content": f"{current_screen_context}\n\nUser Question: {req.query}"})
 
     # Force a tool call on the first round only when the classifier says the question
     # needs database statistics (FULL_DB_ONLY or AMBIGUOUS). SCREEN_ONLY and NOT_STATS

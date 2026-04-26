@@ -61,12 +61,22 @@ const ChatInterface: React.FC<Props> = ({ activeQuery, results }) => {
     const queryToSend = userMessage || `Summarize the key themes and findings from the searched movements related to "${activeQuery}".`;
 
     try {
+        // Build chat history from prior turns (last 12 messages, excluding any in-progress empty AI bubble).
+        const historyToSend = messages
+            .filter(m => m.content && m.content.trim().length > 0)
+            .slice(-12)
+            .map(m => ({
+                role: m.role === 'ai' ? 'assistant' : 'user',
+                content: m.content
+            }));
+
         const response = await fetch(getApiUrl('/api/chat_stream'), {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 query: queryToSend,
-                context_movements: results.map(r => `ID ${r.id}: ${r.name} (${r.year}) - ${r.description.substring(0, 100)}...`)
+                context_movements: results.map(r => `ID ${r.id}: ${r.name} (${r.year}) - ${r.description.substring(0, 100)}...`),
+                history: historyToSend
             })
         });
 
