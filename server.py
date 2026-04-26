@@ -1257,53 +1257,9 @@ You have THREE sources of information:
 - Never mention internal movement IDs in the reply; refer to movements by their **Name** only.
 """
 
-    # 2b. Scope analysis for the query.
-    # We classify the question into: screen-scoped, full-DB-scoped, or ambiguous.
-    # Ambiguous = stat-intent + screen has a strict subset of the DB + neither scope token present.
-    # When ambiguous, the model is asked to answer BOTH scopes in one reply.
-    q_lower = req.query.lower()
-    SCREEN_SCOPE_TOKENS = (
-        # English: list-deictic
-        "of these", "in these", "from these", "among these",
-        "in my results", "in my search", "in my search results",
-        "of the displayed", "in the displayed",
-        "of the visible", "in the visible", "shown above", "shown below",
-        "current results", "currently displayed", "currently visible",
-        "on my screen", "on screen", "you returned", "you found",
-        "did you find", "did you search", "did you get",
-        "you searched", "you searched for", "you search",
-        "you got", "you matched", "the results", "your results",
-        # Chinese: list-deictic
-        "上面这些", "这些里", "这些中", "这些之中", "其中",
-        "我搜到的", "我搜的", "我搜索的", "我搜索到的",
-        "搜索结果里", "搜索结果中", "搜索到的结果",
-        "屏幕上", "屏幕中", "屏幕里",
-        # Chinese: action verbs implying "in what I just searched"
-        "搜到", "搜索到", "找到", "找出", "找出来", "返回了",
-        "你搜到", "你搜索到", "你找到", "你返回",
-        "你现在搜", "你现在找", "现在搜到", "现在找到",
-        "目前搜到", "目前显示",
-    )
-    FULL_DB_SCOPE_TOKENS = (
-        "in the database", "in your database", "across all", "across the database",
-        "in the full database", "out of all", "globally", "in total",
-        "全数据库", "全部数据库", "整个数据库", "数据库中", "数据库里", "数据库的",
-        "全库", "总数据", "全部 148", "所有 148", "所有148", "全部148",
-    )
-    STAT_INTENT_TOKENS = (
-        "how many", "how much", "total", "count", "average", "mean",
-        "median", "max ", "maximum", "min ", "minimum", "most ", "least ",
-        "top ", "sum ", "percentage", "percent", "proportion", "ratio",
-        "全部", "所有",
-        "多少", "几个", "几条", "总共", "总计", "总数", "平均", "最多",
-        "最少", "最大", "最小", "占比", "比例", "百分", "排名", "前几",
-        "数据库",
-    )
-    is_screen_scoped = any(tok in q_lower for tok in SCREEN_SCOPE_TOKENS)
-    is_full_db_scoped = any(tok in q_lower for tok in FULL_DB_SCOPE_TOKENS)
-    has_stat_intent = any(tok in q_lower for tok in STAT_INTENT_TOKENS)
-
-    # Extract screen subset IDs from context_movements (frontend format: "ID 287: Name (year) - desc...").
+    # 2b. Scope analysis: ask the model itself to classify the query into one of four
+    # intent labels. Pure semantic — works for any phrasing in any language, no
+    # keyword whack-a-mole.
     import re as _re
     screen_ids = []
     for s in (req.context_movements or []):
@@ -1311,43 +1267,83 @@ You have THREE sources of information:
         if m:
             screen_ids.append(m.group(1).strip().rstrip(".0"))
     screen_ids = list(dict.fromkeys(screen_ids))  # dedupe, preserve order
-    screen_is_strict_subset = (0 < len(screen_ids) < len(DF_CODES))
+    n_screen = len(screen_ids)
+    n_total = len(DF_CODES)
+    screen_is_strict_subset = (0 < n_screen < n_total)
 
-    is_ambiguous_scope = (
-        has_stat_intent
-        and screen_is_strict_subset
-        and not is_screen_scoped
-        and not is_full_db_scoped
-    )
+    # Default intent if classifier fails.
+    intent_label = "AMBIGUOUS" if screen_is_strict_subset else "FULL_DB_ONLY"
+    if n_screen == 0:
+        intent_label = "FULL_DB_ONLY"
 
-    # If ambiguous, build a screen-subset filter expression for analyze_database
-    # and append a special instruction to the system prompt.
-    if is_ambiguous_scope:
+    if screen_is_strict_subset:
+        # Run the tiny classifier only when there's a real subset to consider.
+        classifier_sys = (
+            "You classify the SCOPE INTENT of a user's question for a social-movements database app.\n"
+            f"Setup: The full database has {n_total} movements. The user's screen currently shows {n_screen} of them as search results.\n"
+            "Output exactly ONE label, nothing else, no punctuation:\n"
+            "  SCREEN_ONLY    — the user is clearly asking about the visible search results only "
+            "(e.g. 'how many of these / 这些里 / 你搜到了几个 / 收到了多少 / current results / your search returned').\n"
+            f"  FULL_DB_ONLY   — the user is clearly asking about the entire {n_total}-row database "
+            "(e.g. 'in the database / 全数据库 / 数据库中 / across all movements / 总共有多少个运动').\n"
+            "  AMBIGUOUS      — the question asks for a statistic with NO explicit scope reference, so both interpretations are plausible "
+            "(e.g. 'tweets 数最多的一条是? / which has the most tweets / what's the average duration').\n"
+            "  NOT_STATS      — not a statistical/aggregate question (greetings, narrative requests, descriptions, follow-ups about a single named movement).\n"
+            "Use semantic judgment, not keyword matching. Output exactly one of: SCREEN_ONLY FULL_DB_ONLY AMBIGUOUS NOT_STATS"
+        )
+        try:
+            cl = client.chat.completions.create(
+                model=CHAT_MODEL,
+                messages=[
+                    {"role": "system", "content": classifier_sys},
+                    {"role": "user", "content": f"User question: {req.query}"},
+                ],
+                max_tokens=8,
+                temperature=0,
+            )
+            raw = (cl.choices[0].message.content or "").strip().upper()
+            for cand in ("SCREEN_ONLY", "FULL_DB_ONLY", "AMBIGUOUS", "NOT_STATS"):
+                if cand in raw:
+                    intent_label = cand
+                    break
+            print(f"[chat_stream] scope intent: {intent_label} (raw={raw!r}) for query={req.query!r}")
+        except Exception as e:
+            print(f"[chat_stream] classifier failed: {e}; defaulting to {intent_label}")
+
+    # If classifier says AMBIGUOUS, append a one-shot dual-scope instruction to the system prompt.
+    if intent_label == "AMBIGUOUS":
         ids_literal = ", ".join(repr(i) for i in screen_ids)
         screen_filter_expr = f"index in [{ids_literal}]"
-        ambiguity_addendum = (
+        system_prompt += (
             "\n\n**SCOPE AMBIGUITY DETECTED FOR THIS QUESTION**\n"
-            f"The user asked a statistical question without explicit scope, while {len(screen_ids)} "
-            f"movements (a strict subset of the 148-row database) are currently visible on screen.\n"
+            f"The user asked a statistical question without explicit scope, while {n_screen} "
+            f"movements (a strict subset of the {n_total}-row database) are currently visible on screen.\n"
             "You MUST answer BOTH plausible interpretations in a single reply. Specifically:\n"
             "1. Call `analyze_database` with `filter_expr=\"True\"` for the FULL DATABASE answer.\n"
             f"2. Call `analyze_database` with `filter_expr=\"{screen_filter_expr}\"` for the CURRENT SCREEN SUBSET answer.\n"
             "3. Then present BOTH results to the user, clearly labeled (e.g. '📊 Full database (148): ...' and "
-            "'📊 Current search results (N): ...'), and end with a one-line note inviting the user to clarify if they only wanted one.\n"
+            f"'📊 Current search results ({n_screen}): ...'), and end with a one-line note inviting the user to clarify if they only wanted one.\n"
             "If the two answers happen to be identical, just give one answer.\n"
             "Always reply in the SAME LANGUAGE as the user's question."
         )
-        system_prompt = system_prompt + ambiguity_addendum
+    elif intent_label == "SCREEN_ONLY":
+        system_prompt += (
+            "\n\n**SCOPE FOR THIS QUESTION: SCREEN ONLY**\n"
+            "Answer using ONLY the Current Search Results visible on the user's screen. "
+            "Do NOT call analyze_database or get_full_database_context. "
+            "Always reply in the SAME LANGUAGE as the user's question."
+        )
+    # FULL_DB_ONLY and NOT_STATS need no addendum — main system prompt + tool_choice handles them.
 
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": f"{current_screen_context}\n\nUser Question: {req.query}"},
     ]
 
-    # Force a tool call on the first round when the query clearly asks for a number,
-    # so the model cannot skip and hallucinate. Both ambiguous and full-DB-scoped
-    # cases qualify; pure screen-scoped cases use auto so the model can answer from screen.
-    force_first_tool = has_stat_intent and not is_screen_scoped
+    # Force a tool call on the first round only when the classifier says the question
+    # needs database statistics (FULL_DB_ONLY or AMBIGUOUS). SCREEN_ONLY and NOT_STATS
+    # leave tool_choice="auto" so the model can answer freely.
+    force_first_tool = intent_label in ("FULL_DB_ONLY", "AMBIGUOUS")
 
     # 3. Tool-calling loop (non-streaming) until the model is ready to produce its final answer.
     MAX_TOOL_ROUNDS = 5
