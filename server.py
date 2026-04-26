@@ -53,10 +53,8 @@ def get_openai_client():
     
     # Check if it's an OpenRouter key to set the correct base_url
     if api_key.startswith("sk-or-"):
-        # Use OpenRouter prefixes for models
-        EMBEDDING_MODEL = "openai/text-embedding-3-small"
-        # Switch to Google Gemini 3 Flash Preview as requested
-        CHAT_MODEL = "google/gemini-3-flash-preview" 
+        EMBEDDING_MODEL = "baai/bge-m3"
+        CHAT_MODEL = "deepseek/deepseek-v4-flash"
         return OpenAI(
             api_key=api_key,
             base_url="https://openrouter.ai/api/v1"
